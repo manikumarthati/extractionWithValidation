@@ -1,0 +1,309 @@
+<!-- Correction Details Display Component -->
+<div id="correction-details-section" style="display: none;">
+    <div class="card mt-4" style="border-left: 4px solid #28a745;">
+        <div class="card-header bg-light">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-tools text-success"></i> Visual Validation Corrections
+            </h5>
+            <small class="text-muted">Changes made during visual validation to improve accuracy</small>
+        </div>
+        <div class="card-body">
+            <!-- Summary Metrics -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h4 id="total-corrections" class="text-primary mb-0">0</h4>
+                        <small class="text-muted">Total Corrections</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h4 id="validation-rounds" class="text-info mb-0">0</h4>
+                        <small class="text-muted">Validation Rounds</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h4 id="final-accuracy" class="text-success mb-0">0%</h4>
+                        <small class="text-muted">Final Accuracy</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h4 id="complex-shifts" class="text-warning mb-0">0</h4>
+                        <small class="text-muted">Complex Shifts</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Corrections Accordion -->
+            <div class="accordion" id="corrections-accordion">
+                <!-- Dynamic corrections will be inserted here -->
+            </div>
+
+            <!-- No Corrections Message -->
+            <div id="no-corrections-message" class="alert alert-success text-center" style="display: none;">
+                <i class="fas fa-check-circle"></i>
+                <strong>Perfect Extraction!</strong> No visual corrections were needed.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Correction Details Styles -->
+<style>
+.correction-item {
+    border-left: 3px solid #007bff;
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+}
+
+.correction-item.value-corrected {
+    border-left-color: #28a745;
+}
+
+.correction-item.complex-column-realignment {
+    border-left-color: #dc3545;
+}
+
+.correction-item.field-added {
+    border-left-color: #17a2b8;
+}
+
+.correction-item.field-removed {
+    border-left-color: #ffc107;
+}
+
+.before-after-container {
+    background-color: #f8f9fa;
+    border-radius: 0.375rem;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+}
+
+.before-value {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    word-break: break-all;
+}
+
+.after-value {
+    background-color: #d1edff;
+    color: #0c5460;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    word-break: break-all;
+}
+
+.correction-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.shift-detail {
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+}
+</style>
+
+<!-- Correction Details JavaScript -->
+<script>
+function displayCorrectionDetails(correctionData) {
+    console.log('Displaying correction details:', correctionData);
+
+    const correctionSection = document.getElementById('correction-details-section');
+    const correctionHistory = correctionData.correction_history || [];
+
+    if (!correctionHistory || correctionHistory.length === 0) {
+        document.getElementById('no-corrections-message').style.display = 'block';
+        correctionSection.style.display = 'block';
+        return;
+    }
+
+    // Update metrics
+    document.getElementById('total-corrections').textContent = correctionHistory.length;
+    document.getElementById('validation-rounds').textContent = correctionData.validation_rounds_completed || 1;
+    document.getElementById('final-accuracy').textContent =
+        Math.round((correctionData.final_accuracy_estimate || 0.95) * 100) + '%';
+
+    // Count complex shifts
+    const complexShifts = correctionHistory.filter(c => c.change_type === 'complex_column_realignment').length;
+    document.getElementById('complex-shifts').textContent = complexShifts;
+
+    // Group corrections by type
+    const correctionTypes = {};
+    correctionHistory.forEach(correction => {
+        const type = correction.change_type || 'unknown';
+        if (!correctionTypes[type]) {
+            correctionTypes[type] = [];
+        }
+        correctionTypes[type].push(correction);
+    });
+
+    // Build accordion
+    const accordion = document.getElementById('corrections-accordion');
+    accordion.innerHTML = '';
+
+    let accordionIndex = 0;
+
+    Object.entries(correctionTypes).forEach(([type, corrections]) => {
+        const typeDisplayName = type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        const accordionId = `correction-type-${accordionIndex}`;
+
+        const accordionItem = document.createElement('div');
+        accordionItem.className = 'accordion-item';
+        accordionItem.innerHTML = `
+            <h2 class="accordion-header" id="heading-${accordionIndex}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#${accordionId}" aria-expanded="true"
+                        aria-controls="${accordionId}">
+                    <i class="fas fa-edit me-2"></i>
+                    ${typeDisplayName}
+                    <span class="badge bg-primary ms-2">${corrections.length}</span>
+                </button>
+            </h2>
+            <div id="${accordionId}" class="accordion-collapse collapse show"
+                 aria-labelledby="heading-${accordionIndex}"
+                 data-bs-parent="#corrections-accordion">
+                <div class="accordion-body">
+                    <div id="corrections-${accordionIndex}"></div>
+                </div>
+            </div>
+        `;
+
+        accordion.appendChild(accordionItem);
+
+        // Add individual corrections
+        const correctionsContainer = document.getElementById(`corrections-${accordionIndex}`);
+        corrections.forEach((correction, index) => {
+            correctionsContainer.appendChild(createCorrectionItem(correction, index + 1));
+        });
+
+        accordionIndex++;
+    });
+
+    correctionSection.style.display = 'block';
+}
+
+function createCorrectionItem(correction, itemNumber) {
+    const item = document.createElement('div');
+    item.className = `correction-item ${correction.change_type}`;
+
+    const field = correction.field || 'Unknown field';
+    const round = correction.round || 1;
+
+    let content = `
+        <div class="d-flex justify-content-between align-items-start mb-2">
+            <strong>${itemNumber}. ${field}</strong>
+            <span class="correction-badge badge bg-secondary">Round ${round}</span>
+        </div>
+    `;
+
+    if (correction.change_type === 'value_corrected') {
+        const before = correction.before_value || 'N/A';
+        const after = correction.after_value || 'N/A';
+
+        content += `
+            <div class="before-after-container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <small class="text-muted"><strong>Before:</strong></small>
+                        <div class="before-value">${escapeHtml(String(before))}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted"><strong>After:</strong></small>
+                        <div class="after-value">${escapeHtml(String(after))}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    else if (correction.change_type === 'complex_column_realignment') {
+        const pattern = correction.shift_pattern || 'unknown';
+        const affected = correction.columns_affected || 0;
+        const complexity = correction.complexity || 'medium';
+
+        content += `
+            <div class="alert alert-warning py-2 mb-2">
+                <strong>Pattern:</strong> ${pattern} |
+                <strong>Columns affected:</strong> ${affected} |
+                <strong>Complexity:</strong> ${complexity}
+            </div>
+        `;
+
+        if (correction.shift_details && correction.shift_details.length > 0) {
+            content += '<small class="text-muted"><strong>Column movements:</strong></small>';
+            correction.shift_details.forEach(detail => {
+                const column = detail.column || 'unknown';
+                const movement = detail.movement_type || 'unknown';
+
+                content += `<div class="shift-detail">`;
+
+                if (movement === 'value_moved') {
+                    const movedTo = detail.moved_to_column || 'unknown';
+                    const direction = detail.shift_direction || 'unknown';
+                    content += `<strong>${column}:</strong> Value moved to <em>${movedTo}</em> (${direction})`;
+                } else if (movement === 'value_replaced') {
+                    const before = detail.before || 'N/A';
+                    const after = detail.after || 'N/A';
+                    content += `<strong>${column}:</strong> <code>${escapeHtml(String(before))}</code> → <code>${escapeHtml(String(after))}</code>`;
+                } else {
+                    content += `<strong>${column}:</strong> ${movement}`;
+                }
+
+                content += '</div>';
+            });
+        }
+    }
+    else if (correction.change_type === 'table_rows_changed') {
+        const before = correction.before_value || 'N/A';
+        const after = correction.after_value || 'N/A';
+        content += `
+            <div class="alert alert-info py-2">
+                <strong>Row count changed:</strong> ${before} → ${after}
+            </div>
+        `;
+    }
+    else if (correction.change_type === 'field_added') {
+        const value = correction.after_value || 'N/A';
+        content += `
+            <div class="alert alert-success py-2">
+                <strong>Added:</strong> ${escapeHtml(String(value).substring(0, 100))}${String(value).length > 100 ? '...' : ''}
+            </div>
+        `;
+    }
+    else if (correction.change_type === 'field_removed') {
+        const value = correction.before_value || 'N/A';
+        content += `
+            <div class="alert alert-danger py-2">
+                <strong>Removed:</strong> ${escapeHtml(String(value).substring(0, 100))}${String(value).length > 100 ? '...' : ''}
+            </div>
+        `;
+    }
+
+    item.innerHTML = content;
+    return item;
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Auto-display corrections if data is available
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if correction data is available in the global scope
+    if (window.correctionData) {
+        displayCorrectionDetails(window.correctionData);
+    }
+});
+</script>

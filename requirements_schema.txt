@@ -1,0 +1,15 @@
+# Requirements for schema-based PDF extraction with vision validation
+# Add these to your existing requirements.txt
+
+# Core dependencies (likely already installed)
+PyMuPDF==1.23.14
+openai>=1.3.0
+streamlit>=1.28.0
+flask>=2.3.0
+
+# Additional dependencies for enhanced functionality
+python-dotenv>=1.0.0
+Pillow>=10.0.0
+
+# Optional: For better JSON handling
+jsonschema>=4.19.0

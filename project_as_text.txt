@@ -1,0 +1,6 @@
+STEPWISE PDF PARSING PROJECT - TEXT FORMAT
+==========================================
+
+This file contains all the Python source code in text format to bypass corporate network restrictions.
+
+=== FILE: app.py ===

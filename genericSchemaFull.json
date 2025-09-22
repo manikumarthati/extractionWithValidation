@@ -1,0 +1,2965 @@
+{
+    "name": "projects/391678291927/locations/us/processors/1bd35e86b474c617/dataset/datasetSchema",
+    "documentSchema": {
+        "entityTypes": [
+            {
+                "name": "custom_extraction_document_type",
+                "baseTypes": [
+                    "document"
+                ],
+                "properties": [
+                    {
+                        "name": "Employee_Master",
+                        "valueType": "Employee_Master",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "description": "You are an expert data extraction system for Payroll documents. A payroll document consists of employee and paycheck information. Identify and extract sections information such as Demographics, Deductions, Earnings,Taxes,Rate and Salary, Salary Details,401k details, Direct Deposit, Auto Pay, Fringe Benefits, Benefits Accruals, Emergency Contact, Labor Allocation and Review information.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Balances",
+                        "valueType": "Employee_Balances",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "description": "You are an expert data extraction system for payroll register documents. This document consists of historical pay information of given company employees for a given pay period. Identify and extract all pay data related to employee earnings, taxes, deductions, check date and totals.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Company_Name",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Company_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "description": "Company Identification number in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Totals",
+                        "valueType": "Totals",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Period",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {}
+            },
+            {
+                "name": "Employee_Master",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Employee_Name",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Last Name, First Name Middle Name fo the Employee",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Identification_Number",
+                        "valueType": "number",
+                        "occurrenceType": "REQUIRED_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines the Employee ID or Employee File Number in Vendors system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deductions",
+                        "valueType": "Deductions",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "description": "Defines Federal Tax Deductions amount in vendor system for Federal W4",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Emergency_Contact",
+                        "valueType": "Emergency_Contact",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit",
+                        "valueType": "Direct_Deposit",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Labor_Allocation",
+                        "valueType": "Labor_Allocation",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Fringe_Benefit",
+                        "valueType": "Fringe_Benefit",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual",
+                        "valueType": "Benefit_Accrual",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Detail_401K",
+                        "valueType": "Detail_401K",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Info",
+                        "valueType": "Employee_Info",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "description": "Last Name, First Name Middle Name fo the EMployee",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Review",
+                        "valueType": "Review",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Social_security_number",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employees Social Security Number",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Taxes",
+                        "valueType": "Taxes",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employer_Tax",
+                        "valueType": "Employer_Tax",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "description": "Defines the Employer Tax Type in Vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Rate_and_Salary_Details",
+                        "valueType": "Rate_and_Salary_Details",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Rate_and_Salary",
+                        "valueType": "Rate_and_Salary",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "description": "Defines rate of an employee in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Earnings",
+                        "valueType": "Earnings",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Defines Employees Additional Earning Code and Memo Code in Vendor system ( Like Phone Allow, Car Allow etc.,)",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "AutoPay",
+                        "valueType": "AutoPay",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Employee_Master",
+                "description": "You are an expert data extraction system for Payroll documents. A payroll document consists of employee and paycheck information. Identify and extract sections information such as Demographics, Deductions, Earnings,Taxes,Rate and Salary, Salary Details,401k details, Direct Deposit, Auto Pay, Fringe Benefits, Benefits Accruals, Emergency Contact, Labor Allocation and Review information."
+            },
+            {
+                "name": "Deductions",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Deduction_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines the Employee Per Pay Deduction Code in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Deduction Description/Earnings Description",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Calculation_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines calculation type of Deduction (is Deduction amount $ or Deduction Factor % )",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Frequency",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "it will show if deduction is One time deduction in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Goal_Data",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Arrears",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "In the event that the employee lacks the funds to make the full deduction amount, the amount of money that the employee did not deduct is recorded here. When the employee has more funds, this amount is deducted first.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Agency",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines the 3rd Party agency to which the deduction should be paid. For example, 401(k) may display on an agency check. The agency is created on the Agencies screen.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Start_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Indicate from which date the Deductin is started",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_End_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Indicate on which date the Deductin is end",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Indicate amount is Fixed",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Percentage",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Indicate amount is Percentage",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Target",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Indicate how much the particular description should be deducted",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Balance",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Indicate how much deduction is left for deducted",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Target_Action",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Taget action of the Deduction",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Week_Block_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Last_Taken_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "it will show employee last taken date",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Miscellaneous",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Paid_Data",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Min",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Max",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Annual_Max",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Amount_Indicator",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Min_Max_Annaul_Max",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Goal_Paid",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "defines Goals data for an employee in vendors system (like 401K Loan, Child Support)",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Deductions",
+                "description": "Defines Federal Tax Deductions amount in vendor system for Federal W4"
+            },
+            {
+                "name": "Direct_Deposit",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Direct_Deposit_Transit_ABA_Number",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines EMployees Bank Tansit/ABA number in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Account_Number",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines EMployees Bank Account number in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Account_Type",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employees Bank Deposit code in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Account_Name",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Amount_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines EMployees Bank Deposit Amount is $ or % in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employees Bank Deposit Amount in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Prenote_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines EMployees Bank PreNote Date in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Effective_Start_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Effective_End_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Exclude_Indicator",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Priority_Number",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employees Direct Deposit Sequence number in Vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Bank_Name",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Defines Employeess Direct Deposit Bank Name in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Department",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Defines Employees department in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Class",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Defines Employees class in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Cat",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Defines Employees Cat in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Cat_Totals",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Defines Total count of EE under Cat in Vendor system.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Class_Totals",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Defines Total count of EE under Class in Vendor system.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Department_Totals",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Defines Total count of EE under Department in Vendor system.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_GL",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Defines Employees GL in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Direct_Deposit_Net_Check",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Indicates Full amount going to Deposit account or Partial Amount",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Direct_Deposit"
+            },
+            {
+                "name": "Emergency_Contact",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Employees_Emergency_Contact_Name",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employees Emergency Contact person name in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Emergency_Contact_Relationship",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Relationship between the employee and the emergency contact.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Emergency_Contact_Home_Phone_Number",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Home or primary phone number of the emergency contact.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Emergency_Contact_Work_Phone_Number",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Work or secondary phone number of the emergency contact.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Emergency_Contact_Address",
+                        "valueType": "address",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employees Emergency Contact's address in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Emergency_Contact_City",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employees Emergency Contact's Cityin vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Emergency_Contact_State",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employees Emergency Contact's State in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Emergency_Contact_Zip",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employees Emergency Contact's Zip in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Emergency_Contact_Country",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employees Emergency Contact's Country in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Emergency_Contact_Email",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Defines Employees Emergency Contact's Email in vendor system",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Emergency_Contact"
+            },
+            {
+                "name": "Labor_Allocation",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Labor_Allocation_Percentage",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employees LAbor Allocation percentage based on Department or Cost Number in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Labor_Allocation_Department_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employees Labor Allocation department or cost number description in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Labor_Allocation_Start_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Labor_Allocation_ECode",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Labor_Allocation_Job_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Labor_Allocation_Job_Number",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "No of Jobs Employee in the organisation",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Labor_Allocation_End_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Labor_Allocation"
+            },
+            {
+                "name": "Fringe_Benefit",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Fringe_Benefit_Earnings_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employees Additional Earnings Code in Vendor system ( Like Phone Allow, Car Allow)",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Fringe_Benefit_Earnings_Amount",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employees Additional Earnings Amount",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Fringe_Benefit_Earnings_Start_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Fringe_Benefit_Earnings_Calculation_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines calculation type of Deduction (is Deduction amount $ or Deduction Factor % )",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Fringe_Benefit_Earnings_Rate_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Code used to identify the rate applied to the employee. ",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Fringe_Benefit_Earnings_Unit",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Value that the rate is multiplied by to determine the employee's fringe benefit amount. ",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Fringe_Benefit_Earnings_Tabled_Indicator",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Fringe_Benefit_Earnings_Rate_Per",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Fringe_Benefit_Earnings_Rate",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Amount of money that the employee earns per unit.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Fringe_Benefit_Earnings_Min-Max-Ann-Max",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Fringe_Benefit_Earnings_Goal-Paid-Goal-Bal",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Fringe_Benefit_Earnings_Frequency",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Fringe_Benefit_Earnings_Agency",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Third party that the fringe benefits are paid to, ",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Fringe_Benefit_Earnings_End_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Fringe_Benefit"
+            },
+            {
+                "name": "Benefit_Accrual",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Benefit_Accrual_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employees Allowed and Taken Code in vendor System (like SIC, PTO)",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Hours-Used-Avail-Total-Prob",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employees Accrual data in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Rate",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Hours",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Max-Carryover-Max",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Length_Of_Service",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Dollars-Used-Avail-Total-Prob",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Effective_Start_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Indicate the accrual Effective date",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Effective_End_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Description of the Accrual Plan",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Override_Rate",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Override rate of Accrual",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Time_Accrude",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Indicate Hours Accrued till date",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Balance",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Balance Hours remaining",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Dollars_Used",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Dollars_Avail",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Dollars_Total",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Dollars_Prob",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Hours_Used",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Indicate Hours used till date",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Hours_Avail",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Hours_Total",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Benefit_Accrual_Hours_Prob",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Benefit_Accrual"
+            },
+            {
+                "name": "Review",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Review_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Review_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "The date the employee will beginning receive an increased salary.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Review_Reviewer",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "The person reviewed the employee.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Review_Rating",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "The grade that the employee receives for their performance.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Review_Rise_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "The amount by which the person's salary will increase",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Review_New_Pay_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Review_New_Pay_Per",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "The employee's new pay rate if they received a raise.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Review_New_Position",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Review_Effective_Start_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Review_Effective_End_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Review_Next_Review",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "The date that the next review will take place.",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Review"
+            },
+            {
+                "name": "Detail_401K",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Detail_401k_info",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {
+                    "inactive": true
+                },
+                "displayName": "Detail_401K"
+            },
+            {
+                "name": "Employee_Info",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Employee_Status",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Employees Hire Status in Vendor System (Active, Terminated, Inactive, Leave)",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Department",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "description": "defines home department of an employee in vendor system in which department he works",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Birth_date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Birth date of an employee in vendors system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Clock",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Defines Clock number maintained for an employee in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deceased",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "if \"Y\" or \"Yes\" load Employee Status to \"D\"",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Delivery_point",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Address",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "AddressofEmployeeincludingStreetname,city,stateandzipcode",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_CItizenship",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Theemployee’scountryofcitizenship.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Collect_Dues_Indicator",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "employee’sunionduesaretobecollected",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Deferred_Compensation_Indicator",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "todetermineifemployeehasdeferredcompensationornot",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Disability_Status",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "todetermineifanemployeesdisability",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Division",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "definesthedivisionofanemployeeinvendorsysteminwhichdivisionheworks",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Domestic_Indicator",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "DefinesiftheemployeeisDomesticornor",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Email_Address",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "emailaddressofanemployeeinvendorsystemfornotification",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Employment_Equal_Opportunity_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "itdefinesEEOJobCategoryofanemployee",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Ethnicity",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "DefinesEMployeesEthnicCodeinvendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Gender",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "DefinestheGenderoftheEmployeelikeMale,Femaleinvendorssystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Hire_date",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "OriginalHiredateofemployeeinvendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Item_ID",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Job_Class",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Job_code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Job_Title",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "DefinestheJobTitleoftheemployeeinvendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Job_Type",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "DefinesEMployeetypeofanemployeeinvendorsystem(FullTime,PartTime,Temporary,Seasonal)",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Legal_Rep_Indicator",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Location",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "defineslocationcodeofanemployeeinvendorsysteminwhichlocationheworks",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Maiden_Name",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "EMployeesMaidennamemaintainedinvendorssystem(Priortomarriage)",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Marital_Status",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "DefinestheActualMaritalStatusoftheEmployeelikeMarried,Singleinvendorssystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_New_Hire_Reporting_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Nick_Name",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Nicknameforanemployeeusedinvendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Paid_Init_Fees_Indicator",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "theemployee’sunioninitiationfees",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Pay_Group",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Thepaygroupthattheemployeebelongsto.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Pension_Indicator",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Position",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "DefinestheJobTitleoftheemployeeinvendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Positions",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Practices",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Probation",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "DefinestheProbationperiodoftheemployee",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Projects",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Rehire_date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Rehiredateofanemployeeinvendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Seasonal",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "DefinesiftheemployeeisSeasonalemployeeornot",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Seniority_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Senioritydatemaintainedinvendorsystemforanemployee",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Smoker_Indicator",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "definesifanemployeeissmokerornot",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_State",
+                        "valueType": "address",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "StateCodeoftheEmployeeworkingorLiving",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Statutory",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Definesiftheemployeeisstatutoryemployeeornot",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Supervisor_Name",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "todeterminesupervisorsname(whoisthesupervisorforanemployee)",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Surname",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Tax_Form",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "todetermineEmployeeTaxformtypeW2or1099Contractors",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Termination_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Terminationdateforterminatedemployeeinvendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Termination_Reason",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Terminationreasonofanemployeeinvendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_type",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "DefinesEMployeetypeofanemployeeinvendorsystem(FullTime,PartTime,Temporary,Seasonal)",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Union_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Union_Indicator",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "todetermineifanemployeeispartofanyunion",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Veteran_Status",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "todetermineifanemployeeservedintheactivemilitary,naval,orairservice,and whowasdischargedorreleased",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Visa_Expiration_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Thedateonwhichtheemployee’svisaexpires.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Visa_Type",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Thetypeofvisathisemployeehas.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employment_Authorization",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Checkboxtoindicatethattheemployee’sFormI-9hasbeenverified.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employment_Reauthorization",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Thedateonwhichtheemployee’sFormI-9shouldbeverifiedagain.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Home_phone_number",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "HomePhonenumberofemployeeinvendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Supervisor_ID",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "todeterminesupervisoremployeeid(whoisthesupervisorforanemployee)",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Work_Extension_number",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Businessextensionisvendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Work_phone_number",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "BusinessPhonenumberofemployeeinvendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Workers_Compensation_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "definesworkerscompcodemaintainedinvendorsystemthatidentifiesJobType.(8810-usedforClercialemployeesjob)",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Hire_Status",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "EmployeesHireStatusinVendorSystem(Active,Terminated,Inactive,Leave)",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employees_Hire_Status",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "EmployeesHireStatusinVendorSystem(Active,Terminated,Inactive,Leave)",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Union_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Union",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "todetermineifanemployeeispartofanyunion",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Employee_Info",
+                "description": "LastName,FirstNameMiddleNamefotheEMployee"
+            },
+            {
+                "name": "Taxes",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Employee_Tax_Additional_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "DefinesExtraTax$or%basedonTaxtypeforState,Federal,Local",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Tax_Always_Deduct_Indicator",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "TaxtobeDeductedalways,neverdeduct",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Tax_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "DefinestheTaxTypeinVendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Tax_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Tax_End_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Tax_Filing_Status",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Tax Filing status and Exemptions based on Tax Type",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Tax_Start_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Tax_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Defines the Tax Type in Vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Tax_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Tax_Filinig_Status",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Taxable_Amount",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Taxed_Amount",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Taxable_Amount",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Taxed_Amount",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Taxes"
+            },
+            {
+                "name": "Employer_Tax",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Employer_Tax_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "DefinestheEmployerTaxTypeinVendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employer_Tax_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employer_Tax_End_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employer_Tax_Start_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employer_Tax_Default",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Employer_Tax"
+            },
+            {
+                "name": "Rate_and_Salary_Details",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Auto_Pay",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Thisutilizestheautomationinthevendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Default_Hours",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "DefinesStandardHoursforanemployeeinvendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Over_Time",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "DefinesifanemployeeisexemptornotexemptunderFLSAActinvendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Pay_Frequency",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "EmployeePayFrequencycodeinvendorsystemforPay",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Rate_and_Salary_Details"
+            },
+            {
+                "name": "Rate_and_Salary",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Rate_and_Salary_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "DefinesRatedescriptionlikeBase,Rate2,Rate3invendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Rate_and_Salary_End_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Rate_and_Salary_Hourly_Rate",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "EmployeeHourlyrateamount",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Rate_and_Salary_Rate_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "DefinesRatedescriptioncodelikeBase,Rate2,Rate3invendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Rate_and_Salary_Start_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Salary",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "DefinesSalaryrateofanemployeeinvendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Rate",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Rate_and_Salary"
+            },
+            {
+                "name": "Earnings",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Earning_Yearly_Hours",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {
+                    "inactive": true
+                }
+            },
+            {
+                "name": "Employee_Balances",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Paycheck_Earning",
+                        "valueType": "Paycheck_Earning",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "description": "Earning details include Earning code,description,rate,hours and Amount for an employee.\nIt can also include yearly/quarterly/Monthly data about hours and amounts.\nThink step by step and extract the values appropriately . Identify the values based on the headers. ",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Tax",
+                        "valueType": "Paycheck_Tax",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Employer_Tax",
+                        "valueType": "Paycheck_Employer_Tax",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Deduction",
+                        "valueType": "Paycheck_Deduction",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Pay_Information",
+                        "valueType": "Pay_Information",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Identification_Number",
+                        "valueType": "number",
+                        "occurrenceType": "REQUIRED_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Name",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Social_Security_Number",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "description": "You are an expert data extraction system for payroll register documents. This document consists of historical pay information of given company employees for a given pay period. Identify and extract all pay data related to employee earnings, taxes, deductions, check date and totals."
+            },
+            {
+                "name": "Paycheck_Tax",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Tax_Code",
+                        "valueType": "string",
+                        "occurrenceType": "REQUIRED_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "EmployeesCodeforTaxbalancesinvendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Tax_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "DefinestheTaxesdescriptionasitcomesundersectionofTaxes",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "DefinesEmployeesTaxAmountfortheresepectivetaxdescriptionforthedaterange",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Taxable_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Employeescurrentordaterangewisetaxableamountforrespectivedescription&codeinvendorsystem.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "EmployeesYTDTaxAmountforrespectivedescription&Code.EmployeesAmountbalancesinvendorsystem.whichincludesTaxesAMountsforCurrentYTD(Yeartodate)-DependsonYTDDescriptioninsource",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Monthly_Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "EmployeesAmountbalancesinvendorsystem.whichincludesTaxesAMountsforCurrentMonth-DependsonMonthDescriptioninsource",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Quarterly_Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "EmployeesAmountbalancesinvendorsystem.whichincludesTaxesAMountsforCurrentMonth-DependsonQuarterDescriptioninsource.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Taxable_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "EmployeesYTDTaxableforrespectivedescription&Code.EmployeesTaxablebalancesinvendorsystem.whichincludesTaxableAMountsforCurrentYTD(yeartodate)-DependsontheYTDdescriptioninsource.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Monthly_Taxable_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "EmployeesTaxablebalancesinvendorsystem.whichincludesTaxableAMountsforCurrentMonth",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Quarterly_Taxable_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "EmployeesTaxablebalancesinvendorsystem.whichincludesTaxableAMountsforCurrentQuarter-Dependsonthequarterdescriptioninsource",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Tax_Filing_Status",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "DefinesTaxFilingstatus,ExemotionsforFederalandState(forNewHirepurpose)",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {
+                    "inactive": true
+                },
+                "displayName": "Paycheck_Tax"
+            },
+            {
+                "name": "Paycheck_Employer_Tax",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Tax_Code",
+                        "valueType": "string",
+                        "occurrenceType": "REQUIRED_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "EmployerCodeforTaxbalancesinvendorsystem",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Tax_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "DefinestheTaxesdescriptionasitcomesundersectionofTaxes",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "DefinesEmployerTaxAmountfortheresepectivetaxdescriptionforthedaterange",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Taxable_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "Employercurrentordaterangewisetaxableamountforrespectivedescription&codeinvendorsystem.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "EmployerYTDTaxAmountforrespectivedescription&Code.EmployerAmountbalancesinvendorsystem.whichincludesTaxesAMountsforCurrentYTD(Yeartodate)-DependsonYTDDescriptioninsource",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Monthly_Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "EmployerAmountbalancesinvendorsystem.whichincludesTaxesAmountsforCurrentMonth-DependsonMonthDescriptioninsource",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Quarterly_Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "EmployerAmountbalancesinvendorsystem.whichincludesTaxesAmountsforCurrentMonth-DependsonQuarterDescriptioninsource.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Taxable_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "EmployerYTDTaxableforrespectivedescription&Code.EmployerTaxablebalancesinvendorsystem.whichincludesTaxableAmountsforCurrentYTD(yeartodate)-DependsontheYTDdescriptioninsource.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Monthly_Taxable_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "EmployersTaxablebalancesinvendorsystem.whichincludesTaxableAmountsforCurrentMonth",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Quarterly_Taxable_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {
+                            "inactive": true
+                        },
+                        "description": "EmployerTaxablebalancesinvendorsystem.whichincludesTaxableAmountsforCurrentQuarter-Dependsonthequarterdescriptioninsource",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {
+                    "inactive": true
+                },
+                "displayName": "Paycheck_Employer_Tax"
+            },
+            {
+                "name": "Paycheck_Earning",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Rate",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "RateforHourlyEarning",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Earning_Code",
+                        "valueType": "string",
+                        "occurrenceType": "REQUIRED_ONCE",
+                        "propertyMetadata": {},
+                        "description": "It represents the earning code example codes are Regular,Overtime",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Earning_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "It describes the nature of earning example : Reg,Overtime,Vacation,Phone Reimbursement,Exp Reimbursement.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Earning_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Amount needs to be properly extracted based on the earning code/desc\nexample for earning description reg, the amount needs to be extracted from column header Regular Amount\nfor earning Description Overtime, the amount needs to be extracted from column header overtime amount.\nif earning description is related to any reimbursements, extract the amount from Reimb & other payments header\nif earning description doesn't match any ohter rules, extract the amount from regular amount header",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Earning_Hours",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "It captures the hours values for that earning description\n",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Monthly_Earning_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Monthly_Earning_Hours",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Quarterly_Earning_Hours",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Quarterly_Earning_Amount",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Yearly_Earning_Hours",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Yearly_Earning_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Paycheck_Earning",
+                "description": "Earning details include Earning code,description,rate,hours and Amount for an employee.\nIt can also include yearly/quarterly/Monthly data about hours and amounts.\nThink step by step and extract the values appropriately . Identify the values based on the headers. "
+            },
+            {
+                "name": "Paycheck_Deduction",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Deduction_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "The monetary figure specifying the paycheck deduction.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Code",
+                        "valueType": "string",
+                        "occurrenceType": "REQUIRED_ONCE",
+                        "propertyMetadata": {},
+                        "description": "The deduction code of the deduction. The code can be user defined or a statutory deduction.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "The text that specifies a detailed description about the deduction.",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Deduction_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Monthly_Deduction_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Quaterly_Deduction_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Paycheck_Deduction"
+            },
+            {
+                "name": "Pay_Information",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Check_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Net_Pay",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Check_Number",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Direct_Deposit",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Pay_Information"
+            },
+            {
+                "name": "Totals",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Total_Earnings",
+                        "valueType": "Total_Earnings",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Total_Deductions",
+                        "valueType": "Total_Deductions",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Total_Taxes",
+                        "valueType": "Total_Taxes",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Identification_Number",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Name",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Check_Number",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Social_Security_Number",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Check_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Totals_By_Earning_Code",
+                        "valueType": "Totals_By_Earning_Code",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Totals_By_Deduction_Code",
+                        "valueType": "Totals_By_Deduction_Code",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Totals_By_Tax_Code",
+                        "valueType": "Totals_By_Tax_Code",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Total_Net_Pay",
+                        "valueType": "Total_Net_Pay",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Totals"
+            },
+            {
+                "name": "Total_Earnings",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Earning_Hours",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Earning_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Earning_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Monthly_Earning_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Quarterly_Earning_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Earning_Hours",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Monthly_Earning_Hours",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Quarterly_Earning_Hours",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Total_Earnings"
+            },
+            {
+                "name": "Total_Deductions",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Deduction_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Yearly_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Monthly_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Quarterly_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Total_Deductions"
+            },
+            {
+                "name": "Total_Taxes",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Defines Employer Tax Amount for the respective tax description for the date range",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Tax_Yearly_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Tax_Monthly_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Tax_Quarterly_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Total_Taxes"
+            },
+            {
+                "name": "Totals_By_Earning_Code",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Earning_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Earning_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Earning_Hours",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Totals_By_Earning_Code"
+            },
+            {
+                "name": "AutoPay",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "AutoPay_Deduction_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "AutoPay_Deduction_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "AutoPay_Effective_End_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "AutoPay_Frequency",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "AutoPay_Goals_Date",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "AutoPay_Hours",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "AutoPay_Rate",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "AuotPay_Effective_Start_Date",
+                        "valueType": "datetime",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "AutoPay_Rate_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "AutoPay"
+            },
+            {
+                "name": "Totals_By_Deduction_Code",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Deduction_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Totals_By_Deduction_Code"
+            },
+            {
+                "name": "Totals_By_Tax_Code",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Tax_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Tax_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Totals_By_Tax_Code"
+            },
+            {
+                "name": "Total_Net_Pay",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Monthly_Net_Pay",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Net_Pay",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Quarterly_Net_Pay",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Net_Pay",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Total_Net_Pay"
+            }
+        ]
+    }
+}
