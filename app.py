@@ -4,10 +4,10 @@ import os,time
 import json
 from datetime import datetime
 
-from config import Config, GPTConfig
+from config import Config, ClaudeConfig
 from storage import Document, storage
 from services.pdf_processor import PDFProcessor
-from services.openai_service import OpenAIService
+from services.claude_service import ClaudeService
 from services.cost_tracker import CostTracker
 from services.spatial_preprocessor import SpatialPreprocessor
 from services.schema_text_extractor import SchemaTextExtractor
@@ -29,7 +29,7 @@ def init_openai_service():
         if not api_key or api_key == 'your_openai_api_key_here':
             return None
         try:
-            openai_service = OpenAIService(api_key)
+            openai_service = ClaudeService(api_key)
             # Temporarily commenting out to fix Step 3 error
             # multipage_processor = MultiPageProcessor(openai_service)
             return openai_service

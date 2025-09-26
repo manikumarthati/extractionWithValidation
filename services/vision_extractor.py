@@ -1,6 +1,6 @@
 """
-Vision-based PDF extraction using GPT-4o's vision capabilities
-Converts PDF pages to images and uses AI vision for accurate extraction
+Vision-based PDF extraction using Claude's vision capabilities
+Converts PDF pages to images and uses Claude vision for accurate extraction
 """
 
 import fitz  # PyMuPDF
@@ -8,16 +8,17 @@ import base64
 import io
 from typing import Dict, List, Any, Optional, Tuple
 from PIL import Image
-from openai import OpenAI
+from anthropic import Anthropic
 import json
 import time
 import os
+import base64
 
 class VisionBasedExtractor:
     def __init__(self, api_key: str):
-        """Initialize the vision-based extractor with OpenAI API key"""
-        self.client = OpenAI(api_key=api_key)
-        self.model = "gpt-5"  # GPT-5 with superior vision capabilities and JSON handling
+        """Initialize the vision-based extractor with Claude API key"""
+        self.client = Anthropic(api_key=api_key)
+        self.model = "claude-3-5-sonnet-20241022"  # Claude 3.5 Sonnet with superior vision capabilities
         
     def convert_pdf_to_image(self, pdf_path: str, page_num: int = 0, dpi: int = 600) -> bytes:
         """
@@ -106,27 +107,28 @@ class VisionBasedExtractor:
             }
             """
             
-            response = self.client.chat.completions.create(
+            response = self.client.messages.create(
                 model=self.model,
+                max_tokens=4000,
                 messages=[
                     {
                         "role": "user",
                         "content": [
                             {"type": "text", "text": prompt},
                             {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": f"data:image/png;base64,{image_base64}",
-                                    "detail": "high"
+                                "type": "image",
+                                "source": {
+                                    "type": "base64",
+                                    "media_type": "image/png",
+                                    "data": image_base64
                                 }
                             }
                         ]
                     }
-                ],
-                max_completion_tokens=15000,
+                ]
             )
             
-            content = response.choices[0].message.content.strip()
+            content = response.content[0].text.strip()
             
             # Save debug information first
             self._save_debug_response(content, "vision_classification", page_num)
@@ -232,27 +234,28 @@ class VisionBasedExtractor:
             }}
             """
             
-            response = self.client.chat.completions.create(
+            response = self.client.messages.create(
                 model=self.model,
+                max_tokens=4000,
                 messages=[
                     {
                         "role": "user",
                         "content": [
                             {"type": "text", "text": prompt},
                             {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": f"data:image/png;base64,{image_base64}",
-                                    "detail": "high"
+                                "type": "image",
+                                "source": {
+                                    "type": "base64",
+                                    "media_type": "image/png",
+                                    "data": image_base64
                                 }
                             }
                         ]
                     }
-                ],
-                max_completion_tokens=15000,
+                ]
             )
             
-            content = response.choices[0].message.content.strip()
+            content = response.content[0].text.strip()
             
             # Save debug information first
             self._save_debug_response(content, "vision_field_identification", page_num)
@@ -362,27 +365,28 @@ class VisionBasedExtractor:
             }}
             """
             
-            response = self.client.chat.completions.create(
+            response = self.client.messages.create(
                 model=self.model,
+                max_tokens=4000,
                 messages=[
                     {
                         "role": "user",
                         "content": [
                             {"type": "text", "text": prompt},
                             {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": f"data:image/png;base64,{image_base64}",
-                                    "detail": "high"
+                                "type": "image",
+                                "source": {
+                                    "type": "base64",
+                                    "media_type": "image/png",
+                                    "data": image_base64
                                 }
                             }
                         ]
                     }
-                ],
-                max_completion_tokens=15000,
+                ]
             )
             
-            content = response.choices[0].message.content.strip()
+            content = response.content[0].text.strip()
             
             # Save debug information first
             self._save_debug_response(content, "vision_data_extraction", page_num)
@@ -565,24 +569,27 @@ class VisionBasedExtractor:
                     "content": [
                         {"type": "text", "text": enhanced_prompt},
                         {
-                            "type": "image_url",
-                            "image_url": {"url": f"data:image/png;base64,{base64_image}"}
+                            "type": "image",
+                            "source": {
+                                "type": "base64",
+                                "media_type": "image/png",
+                                "data": base64_image
+                            }
                         }
                     ]
                 }
             ]
 
             # Make API request
-            response = self.client.chat.completions.create(
+            response = self.client.messages.create(
                 model=self.model,
-                messages=messages,
-                max_completion_tokens=15000,  # Sufficient for complex extractions
+                max_tokens=4000,  # Sufficient for complex extractions
                 temperature=0.0,  # Deterministic for data extraction
-                timeout=120
+                messages=messages
             )
 
             # Extract and parse response
-            content = response.choices[0].message.content.strip()
+            content = response.content[0].text.strip()
 
             # Try to parse JSON response
             try:

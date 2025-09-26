@@ -1,0 +1,1037 @@
+{
+  "success": true,
+  "pipeline_steps": {
+    "step1_preprocess": {
+      "success": true,
+      "processed_image_path": "temp_600dpi_0_1758821376.png",
+      "image_size": [
+        1800,
+        2329
+      ],
+      "file_size_mb": 0.6312427520751953,
+      "processing_time": 2.4746525287628174
+    },
+    "step2_upload": {
+      "success": true,
+      "vision_image_file_id": "file_011CTVWqBb3CuFwN4W3y8S2V",
+      "upload_time": 5.269299745559692,
+      "file_type": "vision_only",
+      "tokens_saved": "PDF upload removed to save tokens"
+    },
+    "step3_text_extraction": {
+      "success": true,
+      "extracted_data": {
+        "employee_profile_document": {
+          "Document_Header": {
+            "Company_Name": "Velorynt Labs",
+            "Company_Code": "37546",
+            "Period_From": "12/17/2024",
+            "Period_To": "12/26/2024",
+            "Page_Number": "69"
+          },
+          "Employee_Profile": {
+            "Basic_Information": {
+              "Employee_Name": "Jocelyn Taylor",
+              "Address": {
+                "Street_Address": "1006 Shery St",
+                "City": "Shaontown",
+                "State": "WY",
+                "Zip_Code": "93506-7144"
+              },
+              "Employment_Details": {
+                "Employee_ID": 5532,
+                "Status": "A",
+                "Employee_Type": "RFT",
+                "Position": "",
+                "Title": "",
+                "Pay_Group": "",
+                "Job_Code": "",
+                "Hire_Date": "01/04/2016",
+                "Rehire_Date": "",
+                "Term_Date": "",
+                "Term_Reason": "",
+                "Tax_Form": "W2",
+                "WCC": "8810",
+                "Locations": "606",
+                "Positions": "700"
+              },
+              "Personal_Details": {
+                "SSN": "609-85-2596",
+                "DOB": "12/28/1961",
+                "Gender": "M",
+                "Marital_Status": "M",
+                "Visa_Type": "",
+                "Visa_Expiration": "",
+                "Citizen": "",
+                "I9_Verified": "Yes",
+                "I9_Reverify": ""
+              },
+              "Contact_Information": {
+                "Home_Phone": "",
+                "Work_Phone": "",
+                "Extension": "",
+                "Email": "",
+                "Mail_Stop": ""
+              },
+              "Status_Indicators": {
+                "Statutory": "0.00",
+                "Seasonal": "0.00",
+                "Domestic_Emp": "No",
+                "Probation": 0.0,
+                "Union_Status": "",
+                "Union_Date": "",
+                "Collect_Dues": "No",
+                "Paid_Init_Fees": "No",
+                "Supervisor_ID": "",
+                "Supervisor_Name": "",
+                "Veteran": "",
+                "Disability": "",
+                "Smoker": "No",
+                "Pension": "No",
+                "Deceased": "No",
+                "Def_Comp": "No",
+                "Legal_Rep": "No"
+              }
+            },
+            "Rate_Salary_Information": {
+              "AutoPay_Status": "",
+              "Pay_Frequency": "B",
+              "OT_Exempt": "No",
+              "Default_Hours": 0.0,
+              "Rate_Records": [
+                {
+                  "Rate_Code": "Base",
+                  "Description": "Base Rate",
+                  "Rate": 20.95,
+                  "Salary": 0,
+                  "Effective_Start_Date": "01/03/2024",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Rate_Code": "Base",
+                  "Description": "Base Rate",
+                  "Rate": 20.3,
+                  "Salary": 0,
+                  "Effective_Start_Date": "01/03/2023",
+                  "Effective_End_Date": "01/02/2024"
+                },
+                {
+                  "Rate_Code": "Base",
+                  "Description": "Base Rate",
+                  "Rate": 19.75,
+                  "Salary": 0,
+                  "Effective_Start_Date": "05/08/2022",
+                  "Effective_End_Date": "01/02/2023"
+                }
+              ]
+            },
+            "Tax_Information": {
+              "Employee_Taxes": [
+                {
+                  "Tax_Code": "MED",
+                  "Tax_Description": "Medicare",
+                  "Filing_Status": "",
+                  "Additional_Amount": 0.0,
+                  "Effective_Start_Date": "01/15/2016",
+                  "Effective_End_Date": "12/31/2100",
+                  "Default_Indicator": "Yes"
+                },
+                {
+                  "Tax_Code": "SS",
+                  "Tax_Description": "OASDI",
+                  "Filing_Status": "",
+                  "Additional_Amount": 0.0,
+                  "Effective_Start_Date": "01/15/2016",
+                  "Effective_End_Date": "12/31/2100",
+                  "Default_Indicator": "Yes"
+                },
+                {
+                  "Tax_Code": "FITW",
+                  "Tax_Description": "Federal Income Tax",
+                  "Filing_Status": "M-1",
+                  "Additional_Amount": 20.0,
+                  "Effective_Start_Date": "01/04/2016",
+                  "Effective_End_Date": "12/31/2100",
+                  "Default_Indicator": "Yes"
+                },
+                {
+                  "Tax_Code": "MN",
+                  "Tax_Description": "Minnesota SITW",
+                  "Filing_Status": "M-1",
+                  "Additional_Amount": 0.0,
+                  "Effective_Start_Date": "01/04/2016",
+                  "Effective_End_Date": "12/31/2100",
+                  "Default_Indicator": "Yes"
+                }
+              ],
+              "Employer_Taxes": [
+                {
+                  "Tax_Code": "MED-R",
+                  "Tax_Description": "Medicare - Employer",
+                  "Effective_Start_Date": "01/15/2016",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Tax_Code": "SS-R",
+                  "Tax_Description": "OASDI - Employer",
+                  "Effective_Start_Date": "01/15/2016",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Tax_Code": "FUTA",
+                  "Tax_Description": "Fed Unemployment",
+                  "Effective_Start_Date": "01/15/2016",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Tax_Code": "MNAST",
+                  "Tax_Description": "Minnesota Federal Loan Assessment",
+                  "Effective_Start_Date": "01/15/2016",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Tax_Code": "MNDW",
+                  "Tax_Description": "Workforce Enhancement Fee",
+                  "Effective_Start_Date": "01/15/2016",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Tax_Code": "MNSUI",
+                  "Tax_Description": "Minnesota SUI",
+                  "Effective_Start_Date": "01/15/2016",
+                  "Effective_End_Date": "12/31/2100"
+                }
+              ]
+            },
+            "Deduction_Information": {
+              "Deduction_Records": [
+                {
+                  "Code": "401KC",
+                  "Description": "401K Contribution",
+                  "Rate": 6.0,
+                  "Calc_Code": "%401K",
+                  "Frequency": "",
+                  "Goal_Paid": "0.00/0.00",
+                  "Min_Max_Annual_Max": "0.00/0.00/0.00",
+                  "Arrears": 0.0,
+                  "Agency": "",
+                  "Effective_Start_Date": "04/01/2016",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Code": "401kUM",
+                  "Description": "401kUnmatch",
+                  "Rate": 14.0,
+                  "Calc_Code": "%401K",
+                  "Frequency": "",
+                  "Goal_Paid": "0.00/0.00",
+                  "Min_Max_Annual_Max": "0.00/0.00/0.00",
+                  "Arrears": 0.0,
+                  "Agency": "",
+                  "Effective_Start_Date": "08/01/2022",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Code": "DNTL",
+                  "Description": "Dental Insurance S125",
+                  "Rate": 18.32,
+                  "Calc_Code": "B5",
+                  "Frequency": "",
+                  "Goal_Paid": "0.00/0.00",
+                  "Min_Max_Annual_Max": "0.00/0.00/0.00",
+                  "Arrears": 0.0,
+                  "Agency": "",
+                  "Effective_Start_Date": "09/01/2019",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Code": "FH125",
+                  "Description": "Health Insurance S125",
+                  "Rate": 158.14,
+                  "Calc_Code": "B5",
+                  "Frequency": "",
+                  "Goal_Paid": "0.00/0.00",
+                  "Min_Max_Annual_Max": "0.00/0.00/0.00",
+                  "Arrears": 0.0,
+                  "Agency": "",
+                  "Effective_Start_Date": "09/01/2019",
+                  "Effective_End_Date": "12/31/2100"
+                }
+              ]
+            },
+            "Direct_Deposit_Information": {
+              "Direct_Deposit_Records": [
+                {
+                  "Sequence_Number": 99,
+                  "Transit_Number": "296076262",
+                  "Account_Number": "2743046665",
+                  "Account_Type": "Yes",
+                  "Account_Name": "Jocelyn, Taylor",
+                  "Amount_Code": "%",
+                  "Amount": 100.0,
+                  "Prenote_Date": "02/12/2016",
+                  "Effective_Start_Date": "02/12/2016",
+                  "Effective_End_Date": "12/31/2100",
+                  "Exclude_Indicator": "No",
+                  "Special_Indicator": ""
+                }
+              ]
+            },
+            "Fringe_Benefit_Information": {
+              "Fringe_Benefit_Records": [
+                {
+                  "Earnings_Code": "STD",
+                  "Calc_Code": "",
+                  "Rate_Code": "",
+                  "Rate": 0.0,
+                  "Rate_Per": "",
+                  "Amount": 11.07,
+                  "Tabled_Indicator": "No",
+                  "Units": 0.0,
+                  "Frequency": "ML",
+                  "Goal_Paid_Goal_Balance": "0.00/0.00/0.00",
+                  "Min_Max_Annual_Max": "0.00/0.00/0.00",
+                  "Effective_Start_Date": "03/17/2019",
+                  "Effective_End_Date": "12/31/2100"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "extraction_time": 38.48257088661194,
+      "extraction_method": "claude_text_with_schema"
+    },
+    "step4_validation": {
+      "success": true,
+      "final_data": {
+        "employee_profile_document": {
+          "Document_Header": {
+            "Company_Name": "Velorynt Labs",
+            "Company_Code": "37546",
+            "Period_From": "12/17/2024",
+            "Period_To": "12/26/2024",
+            "Page_Number": "69"
+          },
+          "Employee_Profile": {
+            "Basic_Information": {
+              "Employee_Name": "Jocelyn Taylor",
+              "Address": {
+                "Street_Address": "1006 Shery St",
+                "City": "Shaontown",
+                "State": "WY",
+                "Zip_Code": "93506-7144"
+              },
+              "Employment_Details": {
+                "Employee_ID": 5532,
+                "Status": "A",
+                "Employee_Type": "RFT",
+                "Position": "",
+                "Title": "",
+                "Pay_Group": "",
+                "Job_Code": "",
+                "Hire_Date": "01/04/2016",
+                "Rehire_Date": "",
+                "Term_Date": "",
+                "Term_Reason": "",
+                "Tax_Form": "W2",
+                "WCC": "8810",
+                "Locations": "606",
+                "Positions": "700"
+              },
+              "Personal_Details": {
+                "SSN": "609-85-2596",
+                "DOB": "12/28/1961",
+                "Gender": "M",
+                "Marital_Status": "M",
+                "Visa_Type": "",
+                "Visa_Expiration": "",
+                "Citizen": "",
+                "I9_Verified": "Yes",
+                "I9_Reverify": "",
+                "Def_Comp": "No"
+              },
+              "Contact_Information": {
+                "Home_Phone": "",
+                "Work_Phone": "",
+                "Extension": "",
+                "Email": "",
+                "Mail_Stop": ""
+              },
+              "Status_Indicators": {
+                "Statutory": "0.00",
+                "Seasonal": "0.00",
+                "Domestic_Emp": "No",
+                "Probation": 0.0,
+                "Union_Status": "",
+                "Union_Date": "",
+                "Collect_Dues": "No",
+                "Paid_Init_Fees": "No",
+                "Supervisor_ID": "",
+                "Supervisor_Name": "",
+                "Veteran": "",
+                "Disability": "",
+                "Smoker": "No",
+                "Pension": "No",
+                "Deceased": "No",
+                "Legal_Rep": "No"
+              }
+            },
+            "Rate_Salary_Information": {
+              "AutoPay_Status": "",
+              "Pay_Frequency": "B",
+              "OT_Exempt": "No",
+              "Default_Hours": 0.0,
+              "Rate_Records": [
+                {
+                  "Rate_Code": "Base",
+                  "Description": "Base Rate",
+                  "Rate": 20.95,
+                  "Salary": 0,
+                  "Effective_Start_Date": "01/03/2024",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Rate_Code": "Base",
+                  "Description": "Base Rate",
+                  "Rate": 20.3,
+                  "Salary": 0,
+                  "Effective_Start_Date": "01/03/2023",
+                  "Effective_End_Date": "01/02/2024"
+                },
+                {
+                  "Rate_Code": "Base",
+                  "Description": "Base Rate",
+                  "Rate": 19.75,
+                  "Salary": 0,
+                  "Effective_Start_Date": "05/08/2022",
+                  "Effective_End_Date": "01/02/2023"
+                },
+                {
+                  "Rate_Code": "Base",
+                  "Description": "Base Rate",
+                  "Rate": 16.75,
+                  "Salary": 0,
+                  "Effective_Start_Date": "01/03/2022",
+                  "Effective_End_Date": "05/07/2022"
+                },
+                {
+                  "Rate_Code": "Base",
+                  "Description": "Base Rate",
+                  "Rate": 16.0,
+                  "Salary": 0,
+                  "Effective_Start_Date": "01/05/2021",
+                  "Effective_End_Date": "01/02/2022"
+                },
+                {
+                  "Rate_Code": "Base",
+                  "Description": "Base Rate",
+                  "Rate": 14.6,
+                  "Salary": 0,
+                  "Effective_Start_Date": "01/04/2020",
+                  "Effective_End_Date": "01/04/2021"
+                },
+                {
+                  "Rate_Code": "Base",
+                  "Description": "Base Rate",
+                  "Rate": 14.05,
+                  "Salary": 0,
+                  "Effective_Start_Date": "01/04/2019",
+                  "Effective_End_Date": "01/03/2020"
+                },
+                {
+                  "Rate_Code": "Base",
+                  "Description": "Base Rate",
+                  "Rate": 13.75,
+                  "Salary": 0,
+                  "Effective_Start_Date": "01/04/2018",
+                  "Effective_End_Date": "01/03/2019"
+                },
+                {
+                  "Rate_Code": "Base",
+                  "Description": "Base Rate",
+                  "Rate": 13.4,
+                  "Salary": 0,
+                  "Effective_Start_Date": "01/04/2017",
+                  "Effective_End_Date": "01/03/2018"
+                },
+                {
+                  "Rate_Code": "Base",
+                  "Description": "Base Rate",
+                  "Rate": 13.0,
+                  "Salary": 0,
+                  "Effective_Start_Date": "04/04/2016",
+                  "Effective_End_Date": "01/03/2017"
+                },
+                {
+                  "Rate_Code": "Base",
+                  "Description": "Base Rate",
+                  "Rate": 12.0,
+                  "Salary": 0,
+                  "Effective_Start_Date": "01/04/2016",
+                  "Effective_End_Date": "04/03/2016"
+                }
+              ]
+            },
+            "Tax_Information": {
+              "Employee_Taxes": [
+                {
+                  "Tax_Code": "MED",
+                  "Tax_Description": "Medicare",
+                  "Filing_Status": "",
+                  "Additional_Amount": 0.0,
+                  "Effective_Start_Date": "01/15/2016",
+                  "Effective_End_Date": "12/31/2100",
+                  "Default_Indicator": "Yes"
+                },
+                {
+                  "Tax_Code": "SS",
+                  "Tax_Description": "OASDI",
+                  "Filing_Status": "",
+                  "Additional_Amount": 0.0,
+                  "Effective_Start_Date": "01/15/2016",
+                  "Effective_End_Date": "12/31/2100",
+                  "Default_Indicator": "Yes"
+                },
+                {
+                  "Tax_Code": "FITW",
+                  "Tax_Description": "Federal Income Tax",
+                  "Filing_Status": "M-1",
+                  "Additional_Amount": 20.0,
+                  "Effective_Start_Date": "01/04/2016",
+                  "Effective_End_Date": "12/31/2100",
+                  "Default_Indicator": "Yes"
+                },
+                {
+                  "Tax_Code": "MN",
+                  "Tax_Description": "Minnesota SITW",
+                  "Filing_Status": "M-1",
+                  "Additional_Amount": 0.0,
+                  "Effective_Start_Date": "01/04/2016",
+                  "Effective_End_Date": "12/31/2100",
+                  "Default_Indicator": "Yes"
+                }
+              ],
+              "Employer_Taxes": [
+                {
+                  "Tax_Code": "MED-R",
+                  "Tax_Description": "Medicare - Employer",
+                  "Effective_Start_Date": "01/15/2016",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Tax_Code": "SS-R",
+                  "Tax_Description": "OASDI - Employer",
+                  "Effective_Start_Date": "01/15/2016",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Tax_Code": "FUTA",
+                  "Tax_Description": "Fed Unemployment",
+                  "Effective_Start_Date": "01/15/2016",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Tax_Code": "MNAST",
+                  "Tax_Description": "Minnesota Federal Lo",
+                  "Effective_Start_Date": "01/15/2016",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Tax_Code": "MNDW",
+                  "Tax_Description": "Workforce Enhancem",
+                  "Effective_Start_Date": "01/15/2016",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Tax_Code": "MNSUI",
+                  "Tax_Description": "Minnesota SUI",
+                  "Effective_Start_Date": "01/15/2016",
+                  "Effective_End_Date": "12/31/2100"
+                }
+              ]
+            },
+            "Deduction_Information": {
+              "Deduction_Records": [
+                {
+                  "Code": "401KC",
+                  "Description": "401K Contributio",
+                  "Rate": 6.0,
+                  "Calc_Code": "%401K",
+                  "Frequency": "",
+                  "Goal_Paid": "0.00/0.00",
+                  "Min_Max_Annual_Max": "0.00/0.00/0.00",
+                  "Arrears": 0.0,
+                  "Agency": "",
+                  "Effective_Start_Date": "04/01/2016",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Code": "401kUM",
+                  "Description": "401k Unmatch",
+                  "Rate": 12.0,
+                  "Calc_Code": "%401K",
+                  "Frequency": "",
+                  "Goal_Paid": "0.00/0.00",
+                  "Min_Max_Annual_Max": "0.00/0.00/0.00",
+                  "Arrears": 0.0,
+                  "Agency": "",
+                  "Effective_Start_Date": "03/31/2019",
+                  "Effective_End_Date": "08/01/2022"
+                },
+                {
+                  "Code": "DNTL",
+                  "Description": "Dental Insurance",
+                  "Rate": 18.32,
+                  "Calc_Code": "B5",
+                  "Frequency": "",
+                  "Goal_Paid": "0.00/0.00",
+                  "Min_Max_Annual_Max": "0.00/0.00/0.00",
+                  "Arrears": 0.0,
+                  "Agency": "",
+                  "Effective_Start_Date": "09/01/2019",
+                  "Effective_End_Date": "12/31/2100"
+                },
+                {
+                  "Code": "FH125",
+                  "Description": "Health Insurance",
+                  "Rate": 158.14,
+                  "Calc_Code": "B5",
+                  "Frequency": "",
+                  "Goal_Paid": "0.00/0.00",
+                  "Min_Max_Annual_Max": "0.00/0.00/0.00",
+                  "Arrears": 0.0,
+                  "Agency": "",
+                  "Effective_Start_Date": "09/01/2019",
+                  "Effective_End_Date": "12/31/2100"
+                }
+              ]
+            },
+            "Direct_Deposit_Information": {
+              "Direct_Deposit_Records": [
+                {
+                  "Sequence_Number": 99,
+                  "Transit_Number": "296076262",
+                  "Account_Number": "274304666",
+                  "Account_Type": "Yes",
+                  "Account_Name": "Jocelyn, Taylor",
+                  "Amount_Code": "%",
+                  "Amount": 100.0,
+                  "Prenote_Date": "02/12/2016",
+                  "Effective_Start_Date": "02/12/2016",
+                  "Effective_End_Date": "12/31/2100",
+                  "Exclude_Indicator": "No",
+                  "Special_Indicator": ""
+                }
+              ]
+            },
+            "Fringe_Benefit_Information": {
+              "Fringe_Benefit_Records": [
+                {
+                  "Earnings_Code": "STD",
+                  "Calc_Code": "",
+                  "Rate_Code": "",
+                  "Rate": 0.0,
+                  "Rate_Per": "",
+                  "Amount": 11.07,
+                  "Tabled_Indicator": "No",
+                  "Units": 0.0,
+                  "Frequency": "ML",
+                  "Goal_Paid_Goal_Balance": "0.00/0.00/0.00",
+                  "Min_Max_Annual_Max": "0.00/0.00/0.00",
+                  "Effective_Start_Date": "03/17/2019",
+                  "Effective_End_Date": "12/31/2100"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "validation_rounds": 0,
+      "accuracy_estimate": 0.9,
+      "validation_time": 76.95456552505493,
+      "token_efficient": true,
+      "corrections_applied": 0
+    }
+  },
+  "final_data": {
+    "employee_profile_document": {
+      "Document_Header": {
+        "Company_Name": "Velorynt Labs",
+        "Company_Code": "37546",
+        "Period_From": "12/17/2024",
+        "Period_To": "12/26/2024",
+        "Page_Number": "69"
+      },
+      "Employee_Profile": {
+        "Basic_Information": {
+          "Employee_Name": "Jocelyn Taylor",
+          "Address": {
+            "Street_Address": "1006 Shery St",
+            "City": "Shaontown",
+            "State": "WY",
+            "Zip_Code": "93506-7144"
+          },
+          "Employment_Details": {
+            "Employee_ID": 5532,
+            "Status": "A",
+            "Employee_Type": "RFT",
+            "Position": "",
+            "Title": "",
+            "Pay_Group": "",
+            "Job_Code": "",
+            "Hire_Date": "01/04/2016",
+            "Rehire_Date": "",
+            "Term_Date": "",
+            "Term_Reason": "",
+            "Tax_Form": "W2",
+            "WCC": "8810",
+            "Locations": "606",
+            "Positions": "700"
+          },
+          "Personal_Details": {
+            "SSN": "609-85-2596",
+            "DOB": "12/28/1961",
+            "Gender": "M",
+            "Marital_Status": "M",
+            "Visa_Type": "",
+            "Visa_Expiration": "",
+            "Citizen": "",
+            "I9_Verified": "Yes",
+            "I9_Reverify": "",
+            "Def_Comp": "No"
+          },
+          "Contact_Information": {
+            "Home_Phone": "",
+            "Work_Phone": "",
+            "Extension": "",
+            "Email": "",
+            "Mail_Stop": ""
+          },
+          "Status_Indicators": {
+            "Statutory": "0.00",
+            "Seasonal": "0.00",
+            "Domestic_Emp": "No",
+            "Probation": 0.0,
+            "Union_Status": "",
+            "Union_Date": "",
+            "Collect_Dues": "No",
+            "Paid_Init_Fees": "No",
+            "Supervisor_ID": "",
+            "Supervisor_Name": "",
+            "Veteran": "",
+            "Disability": "",
+            "Smoker": "No",
+            "Pension": "No",
+            "Deceased": "No",
+            "Legal_Rep": "No"
+          }
+        },
+        "Rate_Salary_Information": {
+          "AutoPay_Status": "",
+          "Pay_Frequency": "B",
+          "OT_Exempt": "No",
+          "Default_Hours": 0.0,
+          "Rate_Records": [
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 20.95,
+              "Salary": 0,
+              "Effective_Start_Date": "01/03/2024",
+              "Effective_End_Date": "12/31/2100"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 20.3,
+              "Salary": 0,
+              "Effective_Start_Date": "01/03/2023",
+              "Effective_End_Date": "01/02/2024"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 19.75,
+              "Salary": 0,
+              "Effective_Start_Date": "05/08/2022",
+              "Effective_End_Date": "01/02/2023"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 16.75,
+              "Salary": 0,
+              "Effective_Start_Date": "01/03/2022",
+              "Effective_End_Date": "05/07/2022"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 16.0,
+              "Salary": 0,
+              "Effective_Start_Date": "01/05/2021",
+              "Effective_End_Date": "01/02/2022"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 14.6,
+              "Salary": 0,
+              "Effective_Start_Date": "01/04/2020",
+              "Effective_End_Date": "01/04/2021"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 14.05,
+              "Salary": 0,
+              "Effective_Start_Date": "01/04/2019",
+              "Effective_End_Date": "01/03/2020"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 13.75,
+              "Salary": 0,
+              "Effective_Start_Date": "01/04/2018",
+              "Effective_End_Date": "01/03/2019"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 13.4,
+              "Salary": 0,
+              "Effective_Start_Date": "01/04/2017",
+              "Effective_End_Date": "01/03/2018"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 13.0,
+              "Salary": 0,
+              "Effective_Start_Date": "04/04/2016",
+              "Effective_End_Date": "01/03/2017"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 12.0,
+              "Salary": 0,
+              "Effective_Start_Date": "01/04/2016",
+              "Effective_End_Date": "04/03/2016"
+            }
+          ]
+        },
+        "Tax_Information": {
+          "Employee_Taxes": [
+            {
+              "Tax_Code": "MED",
+              "Tax_Description": "Medicare",
+              "Filing_Status": "",
+              "Additional_Amount": 0.0,
+              "Effective_Start_Date": "01/15/2016",
+              "Effective_End_Date": "12/31/2100",
+              "Default_Indicator": "Yes"
+            },
+            {
+              "Tax_Code": "SS",
+              "Tax_Description": "OASDI",
+              "Filing_Status": "",
+              "Additional_Amount": 0.0,
+              "Effective_Start_Date": "01/15/2016",
+              "Effective_End_Date": "12/31/2100",
+              "Default_Indicator": "Yes"
+            },
+            {
+              "Tax_Code": "FITW",
+              "Tax_Description": "Federal Income Tax",
+              "Filing_Status": "M-1",
+              "Additional_Amount": 20.0,
+              "Effective_Start_Date": "01/04/2016",
+              "Effective_End_Date": "12/31/2100",
+              "Default_Indicator": "Yes"
+            },
+            {
+              "Tax_Code": "MN",
+              "Tax_Description": "Minnesota SITW",
+              "Filing_Status": "M-1",
+              "Additional_Amount": 0.0,
+              "Effective_Start_Date": "01/04/2016",
+              "Effective_End_Date": "12/31/2100",
+              "Default_Indicator": "Yes"
+            }
+          ],
+          "Employer_Taxes": [
+            {
+              "Tax_Code": "MED-R",
+              "Tax_Description": "Medicare - Employer",
+              "Effective_Start_Date": "01/15/2016",
+              "Effective_End_Date": "12/31/2100"
+            },
+            {
+              "Tax_Code": "SS-R",
+              "Tax_Description": "OASDI - Employer",
+              "Effective_Start_Date": "01/15/2016",
+              "Effective_End_Date": "12/31/2100"
+            },
+            {
+              "Tax_Code": "FUTA",
+              "Tax_Description": "Fed Unemployment",
+              "Effective_Start_Date": "01/15/2016",
+              "Effective_End_Date": "12/31/2100"
+            },
+            {
+              "Tax_Code": "MNAST",
+              "Tax_Description": "Minnesota Federal Lo",
+              "Effective_Start_Date": "01/15/2016",
+              "Effective_End_Date": "12/31/2100"
+            },
+            {
+              "Tax_Code": "MNDW",
+              "Tax_Description": "Workforce Enhancem",
+              "Effective_Start_Date": "01/15/2016",
+              "Effective_End_Date": "12/31/2100"
+            },
+            {
+              "Tax_Code": "MNSUI",
+              "Tax_Description": "Minnesota SUI",
+              "Effective_Start_Date": "01/15/2016",
+              "Effective_End_Date": "12/31/2100"
+            }
+          ]
+        },
+        "Deduction_Information": {
+          "Deduction_Records": [
+            {
+              "Code": "401KC",
+              "Description": "401K Contributio",
+              "Rate": 6.0,
+              "Calc_Code": "%401K",
+              "Frequency": "",
+              "Goal_Paid": "0.00/0.00",
+              "Min_Max_Annual_Max": "0.00/0.00/0.00",
+              "Arrears": 0.0,
+              "Agency": "",
+              "Effective_Start_Date": "04/01/2016",
+              "Effective_End_Date": "12/31/2100"
+            },
+            {
+              "Code": "401kUM",
+              "Description": "401k Unmatch",
+              "Rate": 12.0,
+              "Calc_Code": "%401K",
+              "Frequency": "",
+              "Goal_Paid": "0.00/0.00",
+              "Min_Max_Annual_Max": "0.00/0.00/0.00",
+              "Arrears": 0.0,
+              "Agency": "",
+              "Effective_Start_Date": "03/31/2019",
+              "Effective_End_Date": "08/01/2022"
+            },
+            {
+              "Code": "DNTL",
+              "Description": "Dental Insurance",
+              "Rate": 18.32,
+              "Calc_Code": "B5",
+              "Frequency": "",
+              "Goal_Paid": "0.00/0.00",
+              "Min_Max_Annual_Max": "0.00/0.00/0.00",
+              "Arrears": 0.0,
+              "Agency": "",
+              "Effective_Start_Date": "09/01/2019",
+              "Effective_End_Date": "12/31/2100"
+            },
+            {
+              "Code": "FH125",
+              "Description": "Health Insurance",
+              "Rate": 158.14,
+              "Calc_Code": "B5",
+              "Frequency": "",
+              "Goal_Paid": "0.00/0.00",
+              "Min_Max_Annual_Max": "0.00/0.00/0.00",
+              "Arrears": 0.0,
+              "Agency": "",
+              "Effective_Start_Date": "09/01/2019",
+              "Effective_End_Date": "12/31/2100"
+            }
+          ]
+        },
+        "Direct_Deposit_Information": {
+          "Direct_Deposit_Records": [
+            {
+              "Sequence_Number": 99,
+              "Transit_Number": "296076262",
+              "Account_Number": "274304666",
+              "Account_Type": "Yes",
+              "Account_Name": "Jocelyn, Taylor",
+              "Amount_Code": "%",
+              "Amount": 100.0,
+              "Prenote_Date": "02/12/2016",
+              "Effective_Start_Date": "02/12/2016",
+              "Effective_End_Date": "12/31/2100",
+              "Exclude_Indicator": "No",
+              "Special_Indicator": ""
+            }
+          ]
+        },
+        "Fringe_Benefit_Information": {
+          "Fringe_Benefit_Records": [
+            {
+              "Earnings_Code": "STD",
+              "Calc_Code": "",
+              "Rate_Code": "",
+              "Rate": 0.0,
+              "Rate_Per": "",
+              "Amount": 11.07,
+              "Tabled_Indicator": "No",
+              "Units": 0.0,
+              "Frequency": "ML",
+              "Goal_Paid_Goal_Balance": "0.00/0.00/0.00",
+              "Min_Max_Annual_Max": "0.00/0.00/0.00",
+              "Effective_Start_Date": "03/17/2019",
+              "Effective_End_Date": "12/31/2100"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "workflow_summary": {
+    "preprocessing_success": true,
+    "upload_success": true,
+    "text_extraction_success": true,
+    "validation_success": true,
+    "final_accuracy": 0,
+    "validation_rounds_completed": 0,
+    "total_corrections_applied": 0,
+    "target_accuracy_achieved": false,
+    "processing_times": {
+      "preprocessing": 2.4746525287628174,
+      "upload": 5.269299745559692,
+      "text_extraction": 38.48257088661194,
+      "validation": 0
+    },
+    "total_processing_time": 123.1976466178894
+  },
+  "processing_log": [
+    "[0.0s] 🚀 Starting advanced PDF extraction pipeline",
+    "[0.0s] [STEP] Step 1: Preprocessing PDF to 600 DPI...",
+    "[2.5s] [OK] Preprocessing complete: (1800, 2329), 0.6MB",
+    "[2.5s] [UPLOAD] Step 2: Uploading vision image for validation (PDF upload removed to save tokens)...",
+    "[7.7s] [OK] Vision image uploaded: file_011CTVWqBb3CuFwN4W3y8S2V",
+    "[7.8s] [OK] Vision image uploaded (PDF upload skipped to save tokens): Vision=file_011CTVWqBb3CuFwN4W3y8S2V",
+    "[7.8s] 📝 Step 3: Schema-based text extraction...",
+    "[7.8s] [VALIDATE] Using Claude 3.5 Sonnet for data extraction...",
+    "[7.8s] [STEP] Extracting text from PDF...",
+    "[7.8s] 🤖 Extracting data from PDF text using Claude 3.5 Sonnet...",
+    "[46.2s] [OK] Claude text-based extraction complete",
+    "[46.2s] [VALIDATE] Step 4: Multi-round vision validation with uploaded image...",
+    "[46.2s] DEBUG: step2_result keys: ['success', 'vision_image_file_id', 'upload_time', 'file_type', 'tokens_saved']",
+    "[46.2s] DEBUG: vision_image_file_id extracted: file_011CTVWqBb3CuFwN4W3y8S2V",
+    "[46.2s] DEBUG: Received vision_image_file_id: file_011CTVWqBb3CuFwN4W3y8S2V",
+    "[46.2s] [VALIDATE] Using token-efficient validation with image file: file_011CTVWqBb3CuFwN4W3y8S2V",
+    "[123.2s] [OK] Token-efficient validation complete: 90% accuracy",
+    "[123.2s] [OK] Pipeline complete in 123.2s"
+  ]
+}

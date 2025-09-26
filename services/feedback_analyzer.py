@@ -5,11 +5,11 @@ import json
 from typing import Dict, Any, List, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .openai_service import OpenAIService
+    from .claude_service import ClaudeService
 
 class FeedbackAnalyzer:
-    def __init__(self, openai_service: "OpenAIService"):
-        self.openai_service = openai_service
+    def __init__(self, claude_service: "ClaudeService"):
+        self.claude_service = claude_service
 
     def analyze_user_feedback(self, user_feedback: str, original_result: Dict[str, Any],
                             document_structure: Dict[str, Any], feedback_history: List[Dict] = None) -> Dict[str, Any]:
@@ -23,7 +23,7 @@ class FeedbackAnalyzer:
 
         try:
             # Use GPT-4o for feedback analysis (high accuracy needed)
-            response = self.openai_service._make_gpt_request(
+            response = self.claude_service._make_gpt_request(
                 prompt=analysis_prompt,
                 task_type='feedback_analysis'
             )
@@ -157,7 +157,7 @@ class FeedbackAnalyzer:
         """
 
         try:
-            response = self.openai_service._make_gpt_request(
+            response = self.claude_service._make_gpt_request(
                 prompt=enhancement_prompt,
                 task_type='enhancement_generation'
             )

@@ -8,55 +8,76 @@ import json
 import time
 from typing import Dict, Any, List, Optional
 from .vision_extractor import VisionBasedExtractor
+from .claude_service import ClaudeService
 
 
 class VisualFieldInspector:
     def __init__(self, api_key: str):
         """Initialize visual field inspector with vision capabilities"""
         self.vision_extractor = VisionBasedExtractor(api_key)
+        self.claude_service = ClaudeService(api_key)
 
     def validate_all_fields_visually(self, pdf_path: str, extracted_data: Dict,
-                                   schema: Dict, page_num: int = 0) -> Dict:
+                                   schema: Dict, page_num: int = 0, file_id: str = None,
+                                   page_file_ids: Dict[int, str] = None) -> Dict:
         """
         Human-like visual inspection of all fields
         """
         try:
             # Build comprehensive validation prompt
             validation_prompt = self._build_comprehensive_visual_validation_prompt(
-                extracted_data, schema
+                extracted_data, schema, page_num
             )
 
-            # Convert PDF to image
-            image_data = self.vision_extractor.convert_pdf_to_image(pdf_path, page_num)
-            image_base64 = self.vision_extractor.encode_image_to_base64(image_data)
+            # Save validation prompt to debug folder
+            import time
+            timestamp = int(time.time())
+            debug_folder = "debug_pipeline"
+            import os
+            os.makedirs(debug_folder, exist_ok=True)
 
-            # Perform human-like visual inspection
-            response = self.vision_extractor.client.chat.completions.create(
-                model=self.vision_extractor.model,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": [
-                            {"type": "text", "text": validation_prompt},
-                            {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": f"data:image/png;base64,{image_base64}",
-                                    "detail": "high"
-                                }
-                            }
-                        ]
+            # Determine which file_id to use for this specific page
+            current_file_id = self._get_page_file_id(page_num, file_id, page_file_ids)
+
+            # Use current_file_id if available (token efficient) or fall back to base64 conversion
+            if current_file_id:
+                # Token-efficient approach: use pre-uploaded image file for this specific page
+                response = self.claude_service.validate_with_vision_file(current_file_id, validation_prompt)
+            else:
+                # Fallback approach: convert PDF to base64 image
+                image_data = self.vision_extractor.convert_pdf_to_image(pdf_path, page_num)
+                image_base64 = self.vision_extractor.encode_image_to_base64(image_data)
+                response = self.claude_service.validate_with_vision(image_base64, validation_prompt)
+
+            if not response["success"]:
+                # Save failed validation response
+                with open(f"{debug_folder}/validation_failed_{timestamp}.txt", "w", encoding='utf-8') as f:
+                    f.write(f"VALIDATION FAILED\n")
+                    f.write(f"Timestamp: {timestamp}\n")
+                    f.write(f"Error: {response.get('error', 'Unknown error')}\n")
+                    f.write(f"Raw Content: {response.get('raw_content', 'No raw content')}\n")
+
+                return {
+                    "success": False,
+                    "error": f"Vision validation failed: {response.get('error', 'Unknown error')}",
+                    "fields_with_issues": 0,
+                    "accuracy_score": 0.0
+                }
+
+            validation_result = response["data"]
+
+            # Save successful validation response
+            import json
+            with open(f"{debug_folder}/validation_response_{timestamp}.json", "w", encoding='utf-8') as f:
+                json.dump({
+                    "timestamp": timestamp,
+                    "validation_result": validation_result,
+                    "response_metadata": {
+                        "success": response.get("success"),
+                        "model_used": response.get("model_used"),
+                        "response_time": response.get("response_time")
                     }
-                ],
-                max_completion_tokens=15000
-            )
-
-            content = response.choices[0].message.content.strip()
-
-            try:
-                validation_result = json.loads(content)
-            except json.JSONDecodeError:
-                validation_result = self.vision_extractor._extract_json_from_vision_response(content)
+                }, f, indent=2, default=str)
 
             return {
                 "success": True,
@@ -71,45 +92,70 @@ class VisualFieldInspector:
 
     def correct_based_on_visual_inspection(self, pdf_path: str, extracted_data: Dict,
                                          validation_result: Dict, schema: Dict,
-                                         page_num: int = 0) -> Dict:
+                                         page_num: int = 0, file_id: str = None,
+                                         page_file_ids: Dict[int, str] = None) -> Dict:
         """Apply corrections based on visual inspection findings"""
         try:
             # Build correction prompt based on inspection results
             correction_prompt = self._build_visual_correction_prompt(
-                extracted_data, validation_result, schema
+                extracted_data, validation_result, schema, page_num
             )
 
-            # Convert PDF to image
-            image_data = self.vision_extractor.convert_pdf_to_image(pdf_path, page_num)
-            image_base64 = self.vision_extractor.encode_image_to_base64(image_data)
+            # Save correction prompt to debug folder
+            import time
+            timestamp = int(time.time())
+            debug_folder = "debug_pipeline"
+            import os
+            os.makedirs(debug_folder, exist_ok=True)
 
-            # Perform visual correction
-            response = self.vision_extractor.client.chat.completions.create(
-                model=self.vision_extractor.model,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": [
-                            {"type": "text", "text": correction_prompt},
-                            {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": f"data:image/png;base64,{image_base64}",
-                                    "detail": "high"
-                                }
-                            }
-                        ]
-                    }
-                ],
-                max_completion_tokens=15000
-            )
+            # Determine which file_id to use for this specific page
+            current_file_id = self._get_page_file_id(page_num, file_id, page_file_ids)
 
-            content = response.choices[0].message.content.strip()
+            # Use current_file_id if available (token efficient) or fall back to base64 conversion
+            if current_file_id:
+                # Token-efficient approach: use pre-uploaded image file for this specific page
+                response = self.claude_service.validate_with_vision_file(current_file_id, correction_prompt)
+            else:
+                # Fallback approach: convert PDF to base64 image
+                image_data = self.vision_extractor.convert_pdf_to_image(pdf_path, page_num)
+                image_base64 = self.vision_extractor.encode_image_to_base64(image_data)
+                response = self.claude_service.validate_with_vision(image_base64, correction_prompt)
+
+            if not response["success"]:
+                # Save failed correction response
+                with open(f"{debug_folder}/correction_failed_{timestamp}.txt", "w", encoding='utf-8') as f:
+                    f.write(f"CORRECTION FAILED\n")
+                    f.write(f"Timestamp: {timestamp}\n")
+                    f.write(f"Error: {response.get('error', 'Unknown error')}\n")
+                    f.write(f"Raw Content: {response.get('raw_content', 'No raw content')}\n")
+
+                return {
+                    "success": False,
+                    "error": f"Visual correction failed: {response.get('error', 'Unknown error')}",
+                    "corrected_data": extracted_data
+                }
+
+            content = json.dumps(response["data"])
 
             try:
                 corrected_data = json.loads(content)
             except json.JSONDecodeError:
                 corrected_data = self.vision_extractor._extract_json_from_vision_response(content)
+
+            # Save successful correction response
+            import json as json_lib
+            with open(f"{debug_folder}/correction_response_{timestamp}.json", "w", encoding='utf-8') as f:
+                json_lib.dump({
+                    "timestamp": timestamp,
+                    "original_data": extracted_data,
+                    "validation_findings": validation_result,
+                    "corrected_data": corrected_data,
+                    "response_metadata": {
+                        "success": response.get("success"),
+                        "model_used": response.get("model_used"),
+                        "response_time": response.get("response_time")
+                    }
+                }, f, indent=2, default=str)
 
             return {
                 "success": True,
@@ -123,14 +169,15 @@ class VisualFieldInspector:
             }
 
     def complete_visual_validation_workflow(self, pdf_path: str, extracted_data: Dict,
-                                          schema: Dict, page_num: int = 0) -> Dict:
+                                          schema: Dict, page_num: int = 0, file_id: str = None,
+                                          page_file_ids: Dict[int, str] = None) -> Dict:
         """Complete human-like visual validation and correction workflow"""
 
         try:
             # Step 1: Perform comprehensive visual inspection
-            print("🔍 Performing human-like visual inspection...")
+            print("[VALIDATE] Performing human-like visual inspection...")
             validation_result = self.validate_all_fields_visually(
-                pdf_path, extracted_data, schema, page_num
+                pdf_path, extracted_data, schema, page_num, file_id, page_file_ids
             )
 
             if not validation_result["success"]:
@@ -147,7 +194,7 @@ class VisualFieldInspector:
             fields_with_issues = overall_assessment.get("fields_with_issues", 0)
 
             if fields_with_issues == 0:
-                print("✅ No issues found during visual inspection")
+                print("[OK] No issues found during visual inspection")
                 return {
                     "success": True,
                     "extracted_data": extracted_data,
@@ -157,9 +204,9 @@ class VisualFieldInspector:
                 }
 
             # Step 3: Apply visual corrections
-            print(f"🔧 Applying visual corrections for {fields_with_issues} fields...")
+            print(f"[CORRECT] Applying visual corrections for {fields_with_issues} fields...")
             correction_result = self.correct_based_on_visual_inspection(
-                pdf_path, extracted_data, validation_data, schema, page_num
+                pdf_path, extracted_data, validation_data, schema, page_num, file_id, page_file_ids
             )
 
             if correction_result["success"]:
@@ -192,7 +239,8 @@ class VisualFieldInspector:
 
     def multi_round_visual_validation(self, pdf_path: str, extracted_data: Dict,
                                     schema: Dict, page_num: int = 0, max_rounds: int = 10,
-                                    target_accuracy: float = 1.0) -> Dict:
+                                    target_accuracy: float = 1.0, file_id: str = None,
+                                    page_file_ids: Dict[int, str] = None) -> Dict:
         """
         Perform multiple rounds of visual validation and correction for maximum accuracy
 
@@ -207,7 +255,7 @@ class VisualFieldInspector:
         Returns:
             Final validated data with detailed correction tracking
         """
-        print(f"🔍 Starting multi-round visual validation (up to {max_rounds} rounds, target: {target_accuracy:.1%})...")
+        print(f"[VALIDATE] Starting multi-round visual validation (up to {max_rounds} rounds, target: {target_accuracy:.1%})...")
 
         current_data = extracted_data.copy()
         correction_history = []
@@ -215,29 +263,34 @@ class VisualFieldInspector:
         accuracy_progression = []
 
         for round_num in range(1, max_rounds + 1):
-            print(f"\n📋 Validation Round {round_num}")
+            print(f"\n[ROUND] Validation Round {round_num}")
+
+            # Add brief delay before validation to reduce rate limit chance
+            if round_num > 1:
+                import time
+                time.sleep(1)  # 1 second delay before subsequent rounds
 
             # Perform validation for this round
             validation_result = self.validate_all_fields_visually(
-                pdf_path, current_data, schema, page_num
+                pdf_path, current_data, schema, page_num, file_id, page_file_ids
             )
 
             if not validation_result["success"]:
-                print(f"❌ Round {round_num} validation failed: {validation_result.get('error', 'Unknown error')}")
+                print(f"ERROR: Round {round_num} validation failed: {validation_result.get('error', 'Unknown error')}")
 
                 # If we've made good progress (>= 99% accuracy), consider this acceptable
                 if accuracy_progression and accuracy_progression[-1].get("accuracy", 0) >= 0.99:
-                    print(f"📊 Acceptable accuracy achieved ({accuracy_progression[-1].get('accuracy', 0):.1%}), stopping validation")
+                    print(f"DEBUG: Acceptable accuracy achieved ({accuracy_progression[-1].get('accuracy', 0):.1%}), stopping validation")
                     break
 
                 # If early rounds, try to continue with a delay
                 if round_num <= 3:
-                    print(f"🔄 Early round failure, attempting to continue after delay...")
+                    print(f"[RETRY] Early round failure, attempting to continue after delay...")
                     import time
                     time.sleep(2)  # Brief delay for rate limiting
                     continue
 
-                print(f"💥 Multiple validation failures, stopping process")
+                print(f"[ERROR] Multiple validation failures, stopping process")
                 break
 
             validation_data = validation_result["validation_result"]
@@ -251,22 +304,26 @@ class VisualFieldInspector:
                 "issues_found": fields_with_issues
             })
 
-            print(f"📊 Round {round_num}: Accuracy {current_accuracy:.1%}, Issues: {fields_with_issues}")
+            print(f"DEBUG: Round {round_num}: Accuracy {current_accuracy:.1%}, Issues: {fields_with_issues}")
 
-            # Check if we've reached target accuracy
-            if current_accuracy >= target_accuracy and fields_with_issues == 0:
-                print(f"🎯 Target accuracy {target_accuracy:.1%} achieved in round {round_num}!")
-                break
-
+            # Primary stopping criterion: No issues found (most important)
             if fields_with_issues == 0:
-                print(f"✅ Round {round_num}: No issues found - validation complete!")
+                print(f"SUCCESS: Round {round_num}: No issues found - validation complete!")
+                print(f"DEBUG: Final accuracy achieved: {current_accuracy:.1%}")
                 break
 
-            print(f"🔧 Round {round_num}: Found {fields_with_issues} issues, applying corrections...")
+            # Secondary stopping criterion: Target accuracy reached with minimal issues
+            if current_accuracy >= target_accuracy:
+                print(f"SUCCESS: Target accuracy {target_accuracy:.1%} achieved in round {round_num}!")
+                if fields_with_issues <= 1:  # Allow 1 minor issue at target accuracy
+                    print(f"DEBUG: Acceptable quality reached with {fields_with_issues} remaining minor issues")
+                    break
+
+            print(f"[CORRECT] Round {round_num}: Found {fields_with_issues} issues, applying corrections...")
 
             # Apply corrections
             correction_result = self.correct_based_on_visual_inspection(
-                pdf_path, current_data, validation_data, schema, page_num
+                pdf_path, current_data, validation_data, schema, page_num, file_id, page_file_ids
             )
 
             if correction_result["success"]:
@@ -279,15 +336,22 @@ class VisualFieldInspector:
                 total_corrections += len(round_corrections)
                 current_data = correction_result["corrected_data"]
 
-                print(f"✅ Round {round_num}: Applied {len(round_corrections)} corrections")
+                print(f"[OK] Round {round_num}: Applied {len(round_corrections)} corrections")
 
                 # Show what was corrected
                 for correction in round_corrections:
                     print(f"   - {correction['field']}: {correction['change_type']}")
 
             else:
-                print(f"❌ Round {round_num}: Correction failed")
+                print(f"[ERROR] Round {round_num}: Correction failed")
                 break
+
+            # Rate limiting: Add delay between rounds to avoid 429 errors
+            if round_num < max_rounds:  # Don't delay after the last round
+                import time
+                delay = 3  # 3 second delay between rounds
+                print(f"[WAIT] Waiting {delay}s before next round to avoid rate limits...")
+                time.sleep(delay)
 
         # Calculate final accuracy
         final_accuracy = self._calculate_enhanced_final_accuracy(
@@ -296,9 +360,9 @@ class VisualFieldInspector:
 
         achieved_target = final_accuracy >= target_accuracy
 
-        print(f"\n🏁 Validation complete after {round_num} rounds")
-        print(f"🎯 Final accuracy: {final_accuracy:.1%}")
-        print(f"{'✅' if achieved_target else '⚠️'} Target {target_accuracy:.1%} {'achieved' if achieved_target else 'not fully achieved'}")
+        print(f"\n[COMPLETE] Validation complete after {round_num} rounds")
+        print(f"[ACCURACY] Final accuracy: {final_accuracy:.1%}")
+        print(f"[{'SUCCESS' if achieved_target else 'WARNING'}] Target {target_accuracy:.1%} {'achieved' if achieved_target else 'not fully achieved'}")
 
         return {
             "success": True,
@@ -476,6 +540,30 @@ class VisualFieldInspector:
 
         return column_corrections
 
+    def _get_page_file_id(self, page_num: int, fallback_file_id: str = None,
+                         page_file_ids: Dict[int, str] = None) -> str:
+        """
+        Get the correct file ID for a specific page.
+
+        Args:
+            page_num: The page number being processed
+            fallback_file_id: Fallback file ID if page-specific mapping not available
+            page_file_ids: Dictionary mapping page numbers to file IDs
+
+        Returns:
+            The appropriate file ID for the page, or None if not available
+        """
+        if page_file_ids and page_num in page_file_ids:
+            file_id = page_file_ids[page_num]
+            print(f"[IMAGE-ID] Using page-specific file ID for page {page_num}: {file_id[:12]}...")
+            return file_id
+        elif fallback_file_id:
+            print(f"[IMAGE-ID] Using fallback file ID for page {page_num}: {fallback_file_id[:12]}...")
+            return fallback_file_id
+        else:
+            print(f"[IMAGE-ID] No file ID available for page {page_num}, will use base64 conversion")
+            return None
+
     def _analyze_value_movement(self, before_val, after_val, before_row: Dict, after_row: Dict, column: str) -> Dict:
         """Analyze how a specific value moved between columns"""
 
@@ -536,86 +624,193 @@ class VisualFieldInspector:
         except ValueError:
             return "unknown_shift"
 
-    def _build_comprehensive_visual_validation_prompt(self, extracted_data: Dict, schema: Dict) -> str:
-        """Build prompt that mimics human visual inspection"""
+    def _build_comprehensive_visual_validation_prompt(self, extracted_data: Dict, schema: Dict, page_num: int = 0) -> str:
+        """Build Chain of Thought prompt that mimics human visual inspection with step-by-step reasoning"""
 
-        prompt = """You are performing a detailed visual inspection of this document like a human data entry specialist would do.
+        prompt = f"""**CRITICAL: You are viewing the uploaded document image for PAGE {page_num}.** Use this specific page image to perform a detailed visual inspection like a human data entry specialist would do. Look directly at the uploaded page image to verify the extracted data below.
 
-CURRENT EXTRACTED DATA:
-""" + json.dumps(extracted_data, indent=2) + """
+**VISUAL INSPECTION TASK**: Compare the extracted data against what you can actually see in the uploaded page {page_num} image. Use Chain of Thought reasoning to systematically validate each field and value by looking at the visual document.
+
+CURRENT EXTRACTED DATA TO VERIFY AGAINST PAGE {page_num} IMAGE:
+{json.dumps(extracted_data, indent=2)}
 
 EXPECTED SCHEMA:
-""" + json.dumps(schema, indent=2) + """
+{json.dumps(schema, indent=2)}
 
-VISUAL INSPECTION TASKS:
+**IMPORTANT**: You are looking at page {page_num} of the document. Throughout this inspection, you must look at the uploaded page image to verify every field and value. Do not rely on assumptions - verify everything against what you can visually see in page {page_num}.""" + """
 
-1. **FIELD LOCATION & LABEL MATCHING:**
-   - Look at each form field in the document image
-   - Identify field labels (like "Name:", "Employee ID:", "Department:", etc.)
-   - Check if the extracted value actually corresponds to the correct field label
-   - Verify field positioning and alignment
+## CHAIN OF THOUGHT VALIDATION PROCESS:
 
-2. **EMPTY FIELD DETECTION:**
-   - For each field, visually check if there is actually a value written/typed
-   - Distinguish between:
-     * Truly empty fields (no value present)
-     * Fields with values that were missed during extraction
-     * Fields that appear empty but have faint/unclear text
+**STEP 1: DOCUMENT UNDERSTANDING & CONTEXT ANALYSIS**
+First, let me understand what I'm looking at:
+- What type of document is this? (employee profile, financial statement, etc.)
+- What are the main sections I can see?
+- How is the information organized visually (forms, tables, lists)?
+- What is the overall layout and structure?
 
-3. **TABLE COMPLETENESS & ADVANCED COLUMN ANALYSIS:**
-   - Count the TOTAL number of data rows visible in each table
-   - Compare with the number of rows in the extracted data
-   - Look at table headers and ALL data rows (not just the first few)
+Reasoning: Understanding the document context helps me set proper expectations for field locations and data relationships.
 
-   **COMPLEX COLUMN SHIFTING DETECTION:**
-   - Check EACH CELL individually against its expected column header
-   - Look for multiple column shifts within the same row (e.g., some data shifted left, some right)
-   - Identify cascading shifts where one misalignment affects multiple columns
-   - Detect partial shifts where only some rows in a table are misaligned
-   - Check for data type mismatches that indicate column confusion (numbers in name fields, text in amount fields)
-   - Look for missing column separators or merged cells causing shifts
-   - Verify each data value semantically matches its column header
-   - **CRITICAL:** If you see 5 rows in a table but only 1 row was extracted, this is a major issue
+**STEP 2: SYSTEMATIC FIELD-BY-FIELD ANALYSIS**
+For each extracted field, I will reason through:
 
-   **AGGRESSIVE ROW DETECTION REQUIREMENTS:**
-   - Count every single data row visually, including partial rows, faded rows, or rows at page boundaries
-   - Look for data that might be in different font sizes, colors, or formatting
-   - Check for rows that might be split across columns or wrapped
-   - Scan the ENTIRE table area from top to bottom, left to right
-   - Look for any data that could be part of additional rows, even if unclear
-   - **MANDATE:** If the document shows 6 rows, you MUST report 6 rows, not 5
-   - Include rows that are partially visible, have different formatting, or seem incomplete
+*For each field, think step by step:*
+1. "I'm looking for field [FIELD_NAME] with extracted value [VALUE]"
+2. "Let me scan the document for the field label..."
+3. "I found/didn't find the label at [LOCATION]"
+4. "The value near this label appears to be [ACTUAL_VALUE]"
+5. "Comparing extracted vs actual: [MATCH/MISMATCH/EMPTY]"
+6. "My confidence in this assessment: [CONFIDENCE_SCORE] because [REASONING]"
 
-   **ZERO TOLERANCE FOR MISSING ROWS:**
-   - Every single row must be accounted for
-   - If you count 6 rows visually, report exactly 6 rows in your validation
+**STEP 3: TABLE STRUCTURE ANALYSIS WITH EXPLICIT COUNTING**
+For each table, I will explicitly reason:
 
-   **SPECIFIC COLUMN SHIFT PATTERNS TO DETECT:**
-   - Right shift: All data moved 1+ columns to the right
-   - Left shift: All data moved 1+ columns to the left
-   - Mixed shifts: Some columns shifted right, others left in same row
-   - Partial row shifts: Only certain rows affected while others correct
-   - Cascade shifts: One wrong cell causes all subsequent cells to shift
-   - Header misalignment: Column headers not matching data positions
+*Table Analysis Process:*
+1. "I'm examining table: [TABLE_NAME]"
+2. "Let me identify the column headers: [LIST_HEADERS]"
+3. "Now I'll count the data rows systematically:"
+   - "Row 1: I can see data: [ROW_1_DATA]"
+   - "Row 2: I can see data: [ROW_2_DATA]"
+   - "Row 3: I can see data: [ROW_3_DATA]"
+   - "[Continue for all visible rows...]"
+4. "Total rows I counted visually: [VISUAL_COUNT]"
+5. "Total rows in extracted data: [EXTRACTED_COUNT]"
+6. "Comparison: [MATCH/MISMATCH] - [EXPLANATION]"
 
-4. **VALUE-FIELD MISMATCHES:**
-   - Check if extracted values make sense for their field labels
-   - Example: If "Employee Name" field contains "12345", that's likely wrong
-   - Example: If "Salary" field contains "John Doe", that's likely wrong
+**STEP 4: COLUMN ALIGNMENT VERIFICATION WITH DETAILED REASONING**
+For tables with potential alignment issues:
 
-5. **SPATIAL RELATIONSHIP ANALYSIS:**
-   - Look at the physical positioning of values relative to labels
-   - Check if values are properly aligned with their corresponding field names
-   - Identify cases where values might belong to adjacent fields
+*Column Alignment Analysis:*
+1. "Looking at row [N]: [ROW_DATA]"
+2. "For each column, let me verify the semantic match:"
+   - "Column [NAME]: Expected type [TYPE], actual value [VALUE]"
+   - "Does '[VALUE]' make sense for '[COLUMN_NAME]'? [YES/NO] because [REASONING]"
+3. "**CRITICAL: Empty Column Skip Analysis:**"
+   - "Are any columns that should be empty showing values?"
+   - "Are any columns that should have values showing as empty?"
+   - "Example check: If CalcCode contains 'B5' but should be empty, and Frequency is empty but should contain 'B5', this is a left-shift error"
+4. "If misaligned, let me trace where this value should actually go:"
+   - "Value '[VALUE]' looks like it belongs in column '[CORRECT_COLUMN]'"
+   - "This suggests a [LEFT_SHIFT/RIGHT_SHIFT/EMPTY_SKIP_SHIFT] pattern"
 
-INSPECTION INSTRUCTIONS:
-- Examine the document as carefully as a human would
-- Pay attention to visual cues like lines, boxes, spacing, alignment
-- Consider the semantic meaning of field names vs. extracted values
-- Look for patterns that indicate systematic extraction errors
+**STEP 5: CONFIDENCE ASSESSMENT AND SELF-VERIFICATION**
+Before finalizing my assessment:
 
-OUTPUT FORMAT:
+*Self-Check Process:*
+1. "Let me double-check my most critical findings..."
+2. "Are there any inconsistencies in my analysis?"
+3. "Did I miss any obvious visual cues?"
+4. "How confident am I in each major finding? Why?"
+5. "What would I do differently if I were to re-examine this?"
+
+**STEP 6: COMPREHENSIVE REASONING SYNTHESIS**
+Finally, I will synthesize my findings:
+1. "Based on my systematic analysis..."
+2. "The main issues I identified are..."
+3. "My confidence levels for different findings are..."
+4. "The recommended corrections are..."
+
+## ENHANCED VISUAL INSPECTION TASKS:
+
+1. **FIELD LOCATION & LABEL MATCHING WITH REASONING:**
+   - Think: "I'm looking for field X, let me scan methodically..."
+   - Reason: "The label appears to be at position Y, and the value I see is Z"
+   - Verify: "Does this match the extracted data? Let me compare..."
+
+2. **EMPTY FIELD DETECTION WITH EXPLICIT CHECKING:**
+   - Think: "For this field, is there actually any visible content?"
+   - Reason: "I can see the field label, but the value area appears [EMPTY/FILLED/UNCLEAR]"
+   - Distinguish: "This is [TRULY_EMPTY/MISSED_EXTRACTION/UNCLEAR_TEXT] because..."
+
+3. **TABLE COMPLETENESS WITH ZERO-TOLERANCE ROW COUNTING:**
+   - Think: "Let me count every single row I can see, including edge cases..."
+   - Reason: "I see rows at these locations: [LIST_ALL_VISIBLE_ROWS]"
+   - Verify: "Did I miss any rows? Let me scan again..."
+   - Account: "My final count is X rows because I can clearly see..."
+
+4. **COLUMN ALIGNMENT WITH SEMANTIC REASONING:**
+   - Think: "For each cell, does the content type match the column header?"
+   - Reason: "Cell contains [VALUE], column is [HEADER] - this [MAKES_SENSE/DOESN'T_MAKE_SENSE] because..."
+   - Trace: "If misaligned, this value likely belongs in [CORRECT_COLUMN] because..."
+
+5. **CRITICAL: EMPTY COLUMN SKIP DETECTION:**
+   - Think: "Are there empty columns that might cause values to shift into wrong positions?"
+   - Reason: "If column X is empty but has a value, and column X+1 is empty but should have that value, this suggests a left-shift pattern"
+   - Example: "CalcCode column shows 'B5' but should be empty, Frequency column is empty but should contain 'B5'"
+   - Analyze: "Does this value make more sense in the next column over?"
+   - **SPECIFIC PATTERN**: Value appears in column N when column N is empty in document, but column N+1 should contain that value
+
+6. **SPATIAL RELATIONSHIP ANALYSIS WITH PHYSICAL REASONING:**
+   - Think: "What are the visual cues (lines, spacing, alignment) telling me?"
+   - Reason: "The positioning suggests this value belongs to [FIELD] because..."
+   - Verify: "The physical layout confirms/contradicts the extraction because..."
+
+## SELF-EXPLANATION REQUIREMENTS:
+- Explain your reasoning process for each major finding
+- State your confidence level and justify it
+- Describe what visual cues led to your conclusions
+- Note any areas of uncertainty and why
+- Provide alternative interpretations when applicable
+
+## CHAIN OF THOUGHT REASONING OUTPUT:
+Before providing the final validation results, show your step-by-step reasoning process:
+
+### REASONING_TRACE:
 {
+  "document_analysis": {
+    "document_type": "[Your assessment of document type]",
+    "main_sections": "[List of main sections you identified]",
+    "layout_organization": "[How information is visually organized]",
+    "context_understanding": "[Your reasoning about document context]"
+  },
+  "field_by_field_reasoning": [
+    {
+      "field_name": "Employee_Name",
+      "reasoning_steps": [
+        "I'm looking for field Employee_Name with extracted value 'John Doe'",
+        "Scanning document for the field label...",
+        "Found label 'Employee Name:' at top left of document",
+        "Value near this label appears to be 'John Doe'",
+        "Comparing extracted vs actual: MATCH",
+        "Confidence: 0.95 because label and value alignment is clear"
+      ],
+      "visual_cues": "Clear field label, consistent spacing, proper alignment",
+      "confidence_justification": "High confidence due to unambiguous visual positioning"
+    }
+  ],
+  "table_analysis_reasoning": [
+    {
+      "table_name": "Employee_Benefits",
+      "counting_process": [
+        "Examining table: Employee_Benefits",
+        "Column headers identified: [Benefit Type, Cost, Frequency]",
+        "Row 1: I can see data: [Health Insurance, $200, Monthly]",
+        "Row 2: I can see data: [Dental, $50, Monthly]",
+        "Row 3: I can see data: [Vision, $25, Monthly]",
+        "Total rows counted visually: 3",
+        "Total rows in extracted data: 2",
+        "MISMATCH - Missing 1 row in extraction"
+      ],
+      "column_alignment_reasoning": [
+        "Looking at row 0: [Health Insurance, $200, Monthly]",
+        "Column Benefit Type: Expected text, actual 'Health Insurance' - YES, makes sense",
+        "Column Cost: Expected currency, actual '$200' - YES, makes sense",
+        "Column Frequency: Expected frequency text, actual 'Monthly' - YES, makes sense"
+      ]
+    }
+  ],
+  "self_verification": {
+    "double_check_results": "[Your self-verification process]",
+    "consistency_check": "[Any inconsistencies found]",
+    "missed_cues": "[Visual cues you might have missed]",
+    "confidence_assessment": "[Overall confidence in findings]",
+    "alternative_interpretations": "[Other possible interpretations]"
+  }
+}
+
+## FINAL VALIDATION RESULTS:
+
+{
+  "reasoning_trace": "[Include the reasoning trace from above]",
   "field_validation_results": [
     {
       "field_name": "Employee_Name",
@@ -627,7 +822,10 @@ OUTPUT FORMAT:
         "value_matches_extraction": true,
         "field_is_actually_empty": false,
         "correct_field_assignment": true,
-        "confidence": 0.95
+        "confidence": 0.95,
+        "reasoning": "Clear visual alignment between label and value",
+        "visual_cues": "Proper spacing and positioning",
+        "uncertainty_factors": "None identified"
       }
     },
     {
@@ -641,7 +839,10 @@ OUTPUT FORMAT:
         "field_is_actually_empty": false,
         "correct_field_assignment": false,
         "confidence": 0.90,
-        "issue": "Value present but not extracted"
+        "issue": "Value present but not extracted",
+        "reasoning": "Clear text visible next to Department label",
+        "visual_cues": "Consistent formatting with other fields",
+        "uncertainty_factors": "Text clarity is good, extraction should have caught this"
       }
     }
   ],
@@ -652,6 +853,8 @@ OUTPUT FORMAT:
       "rows_extracted": 5,
       "missing_rows": 1,
       "row_completeness_issue": true,
+      "counting_reasoning": "Systematic visual count identified 6 distinct data rows",
+      "visual_evidence": "All rows have clear boundaries and data content",
       "aggressive_recount_performed": true,
       "boundary_rows_checked": true,
       "formatting_variations_scanned": true,
@@ -662,31 +865,38 @@ OUTPUT FORMAT:
           "shift_pattern": "mixed_shifts",
           "affected_columns": ["Benefit Type", "Cost", "Frequency"],
           "issue": "Multiple column misalignments in single row",
+          "reasoning": "Semantic analysis shows data types don't match expected columns",
           "detailed_shifts": [
             {
               "column": "Benefit Type",
               "extracted_value": "$200",
               "correct_value": "Health Insurance",
               "shift_direction": "left_shift_2",
-              "confidence": 0.88
-            },
+              "confidence": 0.88,
+              "reasoning": "Currency value in text field indicates column misalignment"
+            }
+          ],
+          "empty_column_skip_issues": [
             {
-              "column": "Cost",
-              "extracted_value": "Monthly",
-              "correct_value": "$200",
-              "shift_direction": "right_shift_1",
+              "affected_columns": ["Calc_Code", "Frequency"],
+              "issue_type": "value_in_wrong_column_due_to_empty_skip",
+              "wrong_assignment": {
+                "column": "Calc_Code",
+                "extracted_value": "B5",
+                "should_be_value": ""
+              },
+              "correct_assignment": {
+                "column": "Frequency",
+                "extracted_value": "",
+                "should_be_value": "B5"
+              },
+              "reasoning": "B5 appears in CalcCode but that column should be empty, B5 should be in Frequency column",
               "confidence": 0.92
-            },
-            {
-              "column": "Frequency",
-              "extracted_value": null,
-              "correct_value": "Monthly",
-              "shift_direction": "missing_due_to_cascade",
-              "confidence": 0.85
             }
           ],
           "root_cause": "OCR missed column separator between Benefit Type and Cost",
-          "correction_complexity": "high"
+          "correction_complexity": "high",
+          "visual_evidence": "Column separators appear faded or unclear"
         }
       ],
       "missing_row_data": [
@@ -700,27 +910,72 @@ OUTPUT FORMAT:
     "fields_with_issues": 3,
     "accuracy_estimate": 0.92,
     "major_issues": ["Column shifting in benefits table", "Missing department value"],
-    "recommendation": "Needs correction for 3 fields and 1 table alignment"
+    "recommendation": "Needs correction for 3 fields and 1 table alignment",
+    "confidence_in_assessment": 0.88,
+    "reasoning_quality": "Systematic analysis with explicit verification steps",
+    "areas_of_uncertainty": ["Some visual elements could be clearer"],
+    "validation_thoroughness": "High - used exhaustive counting and semantic verification"
   }
 }
 
-Perform the visual inspection now:"""
+## REQUIRED JSON RESPONSE FORMAT:
+
+You MUST respond with valid JSON only, no additional text. Use this exact format:
+
+{
+  "field_validation_results": [
+    {
+      "field_name": "field_name_here",
+      "extracted_value": "value_or_null",
+      "visual_inspection": {
+        "field_label_found": true,
+        "actual_value_in_document": "actual_value_or_null",
+        "value_matches_extraction": true,
+        "field_is_actually_empty": false,
+        "confidence": 0.95,
+        "issue": "description_if_any_or_null"
+      }
+    }
+  ],
+  "table_validation_results": [
+    {
+      "table_name": "table_name_here",
+      "rows_visible_in_image": 0,
+      "rows_extracted": 0,
+      "row_completeness_issue": false,
+      "column_alignment_issues": []
+    }
+  ],
+  "overall_assessment": {
+    "total_fields_checked": 0,
+    "fields_with_issues": 0,
+    "accuracy_estimate": 0.95,
+    "major_issues": [],
+    "recommendation": "description_here"
+  }
+}
+
+Perform the visual inspection now and respond with valid JSON only:"""
 
         return prompt
 
-    def _build_visual_correction_prompt(self, extracted_data: Dict, validation_result: Dict, schema: Dict) -> str:
+    def _build_visual_correction_prompt(self, extracted_data: Dict, validation_result: Dict, schema: Dict, page_num: int = 0) -> str:
         """Build correction prompt based on visual inspection findings"""
 
-        prompt = """Based on the visual inspection findings, correct the extracted data by carefully examining this document image.
+        prompt = f"""**CRITICAL: You are viewing the uploaded document image for PAGE {page_num}.** Based on the visual inspection findings below, correct the extracted data by carefully examining this specific page image.
 
-ORIGINAL EXTRACTED DATA:
-""" + json.dumps(extracted_data, indent=2) + """
+**VISUAL CORRECTION TASK**: Use the uploaded page {page_num} image to correct the extracted data based on what you can actually see in the visual document.
 
-VISUAL INSPECTION FINDINGS:
-""" + json.dumps(validation_result, indent=2) + """
+ORIGINAL EXTRACTED DATA FROM PAGE {page_num}:
+{json.dumps(extracted_data, indent=2)}
+
+VISUAL INSPECTION FINDINGS FOR PAGE {page_num}:
+{json.dumps(validation_result, indent=2)}
 
 TARGET SCHEMA:
-""" + json.dumps(schema, indent=2) + """
+{json.dumps(schema, indent=2)}
+
+**IMPORTANT**: Look at the uploaded page {page_num} image to make these corrections. Verify each correction against what you can visually see in the document image.""" + """
 
 CORRECTION INSTRUCTIONS:
 
@@ -777,6 +1032,6 @@ CORRECTION INSTRUCTIONS:
    - Maintain the original schema structure
 
 Return the corrected data in the exact schema format.
-IMPORTANT: Return ONLY the corrected JSON data, no additional text or explanations."""
+IMPORTANT: Return ONLY the corrected JSON data, no additional text or explanations. ENSURE data is in valid JSON format."""
 
         return prompt

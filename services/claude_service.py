@@ -1,53 +1,60 @@
-from openai import OpenAI
+from anthropic import Anthropic
 import json,os
 from typing import Dict, Any, List
 import time
-from config import GPTConfig
+from config import ClaudeConfig
 from .prompts import PromptTemplates
 from .spatial_preprocessor import SpatialPreprocessor
 from .coordinate_table_extractor import CoordinateTableExtractor
 from .vision_extractor import VisionBasedExtractor
 from .feedback_analyzer import FeedbackAnalyzer
 
-class OpenAIService:
-    def __init__(self, api_key: str):
-        self.client = OpenAI(api_key=api_key)
-        self.config = GPTConfig()
+class ClaudeService:
+    def __init__(self, api_key: str, model_config_name: str = 'current'):
+        self.client = Anthropic(api_key=api_key)
+        self.config = ClaudeConfig()
+        self.model_config_name = model_config_name
         self.prompts = PromptTemplates()
         self.spatial_preprocessor = SpatialPreprocessor()
         self.vision_extractor = VisionBasedExtractor(api_key)
         self.feedback_analyzer = FeedbackAnalyzer(self)
+
+        # Import model config system
+        import sys
+        import os
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from model_configs import get_model_for_task
+        self.get_model_for_task = get_model_for_task
     
-    def _make_gpt_request(self, prompt: str, task_type: str) -> Dict[str, Any]:
-        """Make a GPT request with task-specific model selection and cost tracking"""
-        
-        # Get optimized config for this task
+    def _make_claude_request(self, prompt: str, task_type: str) -> Dict[str, Any]:
+        """Make a Claude request with task-specific model selection and cost tracking"""
+
+        # Get model from our new model config system
+        model_name = self.get_model_for_task(task_type, self.model_config_name)
+
+        # Get other settings from the original config
         task_config = self.config.get_model_config(task_type)
+
+        print(f"[DEBUG] Using model: {model_name} for task: {task_type} (config: {self.model_config_name})")
         
         request_start = time.time()
         
         for attempt in range(self.config.MAX_RETRIES):
             try:
-                # Build request parameters
-                request_params = {
-                    "model": task_config['model'],
-                    "messages": [{"role": "user", "content": prompt}],
-                    "max_completion_tokens": task_config['max_tokens'],
-                    "timeout": self.config.TIMEOUT
-                }
-
-                # GPT-5 doesn't support custom temperature, only use for other models
-                if not task_config['model'].startswith('gpt-5'):
-                    request_params["temperature"] = task_config['temperature']
-
-                response = self.client.chat.completions.create(**request_params)
+                # Build request parameters for Claude
+                response = self.client.messages.create(
+                    model=model_name,  # Use the model from our config system
+                    max_tokens=task_config['max_tokens'],
+                    temperature=task_config['temperature'],
+                    messages=[{"role": "user", "content": prompt}]
+                )
                 
                 # Track usage and cost if enabled
                 usage_info = {}
                 if self.config.ENABLE_COST_TRACKING:
-                    usage_info = self._track_usage(response, task_type, task_config['model'])
+                    usage_info = self._track_usage(response, task_type, model_name)
                 
-                content = response.choices[0].message.content.strip()
+                content = response.content[0].text.strip()
                 
                 # Save prompt and response for debugging
                 import os
@@ -95,7 +102,7 @@ class OpenAIService:
                 
             except json.JSONDecodeError as e:
                 # Try to extract JSON from the response
-                content = response.choices[0].message.content
+                content = response.content[0].text
                 return {
                     "success": False, 
                     "error": f"JSON parsing error: {str(e)}", 
@@ -142,6 +149,10 @@ class OpenAIService:
                 
                 # Try to clean up common JSON issues
                 cleaned_json = self._clean_json_string(json_str)
+
+                # Additional aggressive cleaning for vision correction responses
+                cleaned_json = self._aggressive_json_fix(cleaned_json)
+
                 result = json.loads(cleaned_json)
                 return {"success": True, "data": result}
             except json.JSONDecodeError as e:
@@ -253,30 +264,89 @@ class OpenAIService:
         cleaned = re.sub(r',(\s*[}\]])', r'\1', cleaned)
 
         return cleaned
-    
+
+    def _aggressive_json_fix(self, json_str: str) -> str:
+        """Apply aggressive fixes for malformed JSON from vision corrections"""
+        import re
+
+        # First, try to fix common delimiter issues
+        # Fix missing commas between objects in arrays
+        json_str = re.sub(r'}\s*{', r'}, {', json_str)
+
+        # Fix trailing commas before closing brackets/braces (more aggressive)
+        json_str = re.sub(r',(\s*[}\]])', r'\1', json_str)
+
+        # Fix cases where there's a missing comma after a value
+        json_str = re.sub(r'(["\d}])\s*\n\s*"', r'\1,\n  "', json_str)
+
+        # Handle cases where there might be malformed strings at the end
+        # If we have an incomplete string at the end, try to close it
+        if json_str.count('"') % 2 != 0:
+            # Find the last incomplete string and try to fix it
+            last_quote = json_str.rfind('"')
+            if last_quote != -1:
+                # Check if this is likely an incomplete string
+                after_quote = json_str[last_quote + 1:]
+                if not re.search(r'[}\]],?\s*$', after_quote):
+                    # Try to close the string before any structural elements
+                    match = re.search(r'([}\],])', after_quote)
+                    if match:
+                        pos = last_quote + 1 + match.start()
+                        json_str = json_str[:pos] + '"' + json_str[pos:]
+                    else:
+                        # Just add closing quote at the end
+                        json_str = json_str[:last_quote + 1] + '""'
+
+        # Handle incomplete JSON structures by finding the last valid closing
+        brace_depth = 0
+        bracket_depth = 0
+        last_valid_pos = 0
+
+        for i, char in enumerate(json_str):
+            if char == '{':
+                brace_depth += 1
+            elif char == '}':
+                brace_depth -= 1
+                if brace_depth >= 0:
+                    last_valid_pos = i
+            elif char == '[':
+                bracket_depth += 1
+            elif char == ']':
+                bracket_depth -= 1
+                if bracket_depth >= 0:
+                    last_valid_pos = i
+
+        # If we have incomplete structures, truncate to last valid position and close
+        if brace_depth > 0 or bracket_depth > 0:
+            json_str = json_str[:last_valid_pos + 1]
+            # Add missing closers
+            json_str += '}' * brace_depth
+            json_str += ']' * bracket_depth
+
+        return json_str
+
     def _track_usage(self, response, task_type: str, model: str) -> Dict[str, Any]:
-        """Track token usage and estimated costs"""
-        
-        # OpenAI pricing (as of 2024 - should be updated regularly)
+        """Track token usage and estimated costs for Claude"""
+
+        # Claude pricing (as of 2024 - should be updated regularly)
         pricing = {
-            'gpt-3.5-turbo': {'input': 0.0015, 'output': 0.002},  # per 1K tokens
-            'gpt-4o-mini': {'input': 0.00015, 'output': 0.0006},
-            'gpt-4o': {'input': 0.0025, 'output': 0.01},
-            'gpt-4': {'input': 0.03, 'output': 0.06}
+            'claude-3-5-sonnet-20241022': {'input': 0.003, 'output': 0.015},  # per 1K tokens
+            'claude-3-5-haiku-20241022': {'input': 0.001, 'output': 0.005},
+            'claude-3-opus-20240229': {'input': 0.015, 'output': 0.075}
         }
-        
+
         if hasattr(response, 'usage'):
             usage = response.usage
-            input_tokens = usage.prompt_tokens
-            output_tokens = usage.completion_tokens
-            total_tokens = usage.total_tokens
-            
+            input_tokens = usage.input_tokens
+            output_tokens = usage.output_tokens
+            total_tokens = input_tokens + output_tokens
+
             # Calculate cost
-            model_pricing = pricing.get(model, {'input': 0.01, 'output': 0.01})  # fallback
+            model_pricing = pricing.get(model, {'input': 0.003, 'output': 0.015})  # fallback to Sonnet pricing
             input_cost = (input_tokens / 1000) * model_pricing['input']
             output_cost = (output_tokens / 1000) * model_pricing['output']
             total_cost = input_cost + output_cost
-            
+
             return {
                 'input_tokens': input_tokens,
                 'output_tokens': output_tokens,
@@ -285,7 +355,7 @@ class OpenAIService:
                 'model': model,
                 'task_type': task_type
             }
-        
+
         return {'error': 'Usage information not available'}
     
     def classify_structure(self, text: str, text_blocks: list) -> Dict[str, Any]:
@@ -304,7 +374,7 @@ class OpenAIService:
             sample_text=doc_info['sample_text']
         )
         
-        result = self._make_gpt_request(prompt, 'classification')
+        result = self._make_claude_request(prompt, 'classification')
         
         if result["success"]:
             return result["data"]
@@ -347,7 +417,7 @@ class OpenAIService:
         )
         print(f"DEBUG - Comprehensive prompt length: {len(prompt)}")
         
-        result = self._make_gpt_request(prompt, 'field_identification')
+        result = self._make_claude_request(prompt, 'field_identification')
         print(f"DEBUG - Comprehensive extraction result: {result.get('success', False)}")
         
         if result["success"]:
@@ -527,7 +597,7 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
         prompt = self.prompts.FORM_FIELD_IDENTIFICATION.format(text=text)
         print(f"DEBUG - Form prompt length: {len(prompt)}")
         
-        result = self._make_gpt_request(prompt, 'field_identification')
+        result = self._make_claude_request(prompt, 'field_identification')
         print(f"DEBUG - Form field result: {result.get('success', False)}")
         
         if result["success"]:
@@ -542,7 +612,7 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
         prompt = self.prompts.TABLE_HEADER_IDENTIFICATION.format(text=text)
         print(f"DEBUG - Table prompt length: {len(prompt)}")
         
-        result = self._make_gpt_request(prompt, 'field_identification')
+        result = self._make_claude_request(prompt, 'field_identification')
         print(f"DEBUG - Table header result: {result.get('success', False)}")
         
         if result["success"]:
@@ -680,7 +750,7 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
         print(f"DEBUG Step3 - Unified prompt length: {len(prompt)}")
 
         # Make single LLM request for everything
-        result = self._make_gpt_request(prompt, 'data_extraction')
+        result = self._make_claude_request(prompt, 'data_extraction')
 
         if result["success"]:
             extracted_result = result["data"]
@@ -803,9 +873,9 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
             text=text
         )
         
-        print("=== CLAUDE DEBUG: About to call _make_gpt_request for data_extraction ===")
-        result = self._make_gpt_request(prompt, 'data_extraction')
-        print(f"=== CLAUDE DEBUG: _make_gpt_request returned: success={result.get('success')} ===")
+        print("=== CLAUDE DEBUG: About to call _make_claude_request for data_extraction ===")
+        result = self._make_claude_request(prompt, 'data_extraction')
+        print(f"=== CLAUDE DEBUG: _make_claude_request returned: success={result.get('success')} ===")
         
         if result["success"]:
             return result["data"]
@@ -823,9 +893,9 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
             text=text
         )
         
-        print("=== CLAUDE DEBUG: About to call _make_gpt_request for data_extraction ===")
-        result = self._make_gpt_request(prompt, 'data_extraction')
-        print(f"=== CLAUDE DEBUG: _make_gpt_request returned: success={result.get('success')} ===")
+        print("=== CLAUDE DEBUG: About to call _make_claude_request for data_extraction ===")
+        result = self._make_claude_request(prompt, 'data_extraction')
+        print(f"=== CLAUDE DEBUG: _make_claude_request returned: success={result.get('success')} ===")
         
         if result["success"]:
             return result["data"]
@@ -887,9 +957,9 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
             print(f"DEBUG - Failed to save context file: {debug_error}")
             # Continue execution even if debug file creation fails
 
-        print("=== CLAUDE DEBUG: About to call _make_gpt_request for data_extraction ===")
-        result = self._make_gpt_request(prompt, 'data_extraction')
-        print(f"=== CLAUDE DEBUG: _make_gpt_request returned: success={result.get('success')} ===")
+        print("=== CLAUDE DEBUG: About to call _make_claude_request for data_extraction ===")
+        result = self._make_claude_request(prompt, 'data_extraction')
+        print(f"=== CLAUDE DEBUG: _make_claude_request returned: success={result.get('success')} ===")
 
         if result["success"]:
             extracted = result["data"].get("extracted_data", {})
@@ -941,9 +1011,9 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
 
         print(f"DEBUG - Table extraction prompt length: {len(prompt)}")
 
-        print("=== CLAUDE DEBUG: About to call _make_gpt_request for data_extraction ===")
-        result = self._make_gpt_request(prompt, 'data_extraction')
-        print(f"=== CLAUDE DEBUG: _make_gpt_request returned: success={result.get('success')} ===")
+        print("=== CLAUDE DEBUG: About to call _make_claude_request for data_extraction ===")
+        result = self._make_claude_request(prompt, 'data_extraction')
+        print(f"=== CLAUDE DEBUG: _make_claude_request returned: success={result.get('success')} ===")
         
         if result["success"]:
             table_data = result["data"].get("table_data", [])
@@ -1282,3 +1352,166 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
             fallback_prompt += f"\n\n**USER FEEDBACK:** {user_feedback}\nApply this feedback to improve extraction accuracy.\n"
 
             return fallback_prompt
+
+    def validate_with_vision(self, image_base64: str, validation_prompt: str) -> Dict[str, Any]:
+        """Perform vision-based validation using Claude API"""
+        try:
+            # Get model config for vision tasks
+            task_config = self.config.get_model_config('field_identification')
+
+            request_start = time.time()
+
+            for attempt in range(self.config.MAX_RETRIES):
+                try:
+                    # Build message with image content for Claude
+                    response = self.client.messages.create(
+                        model=task_config['model'],
+                        max_tokens=task_config['max_tokens'],
+                        temperature=task_config['temperature'],
+                        messages=[
+                            {
+                                "role": "user",
+                                "content": [
+                                    {"type": "text", "text": validation_prompt},
+                                    {
+                                        "type": "image",
+                                        "source": {
+                                            "type": "base64",
+                                            "media_type": "image/png",
+                                            "data": image_base64
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    )
+
+                    # Track usage if enabled
+                    usage_info = {}
+                    if self.config.ENABLE_COST_TRACKING:
+                        usage_info = self._track_usage(response, 'vision_validation', task_config['model'])
+
+                    content = response.content[0].text.strip()
+
+                    # Try to parse JSON response
+                    try:
+                        result = json.loads(content)
+                    except json.JSONDecodeError:
+                        result = self._extract_json_from_response(content, task_config['model'], 'vision_validation')
+                        if not result["success"]:
+                            return result
+                        result = result["data"]
+
+                    return {
+                        "success": True,
+                        "data": result,
+                        "usage": usage_info,
+                        "model_used": task_config['model'],
+                        "response_time": time.time() - request_start
+                    }
+
+                except Exception as e:
+                    # Handle rate limiting (429) with longer backoff
+                    if "429" in str(e) or "Too Many Requests" in str(e):
+                        backoff_time = 10 + (2 ** attempt) * 5  # 15s, 25s, 45s...
+                        print(f"Rate limit hit (429), backing off for {backoff_time}s...")
+                        time.sleep(backoff_time)
+                    else:
+                        # Standard exponential backoff for other errors
+                        backoff_time = 2 ** attempt
+                        time.sleep(backoff_time)
+
+                    if attempt == self.config.MAX_RETRIES - 1:
+                        return {
+                            "success": False,
+                            "error": f"Vision validation failed after {self.config.MAX_RETRIES} attempts: {str(e)}",
+                            "response_time": time.time() - request_start
+                        }
+
+        except Exception as e:
+            return {
+                "success": False,
+                "error": f"Vision validation error: {str(e)}"
+            }
+
+    def validate_with_vision_file(self, file_id: str, validation_prompt: str) -> Dict[str, Any]:
+        """Perform vision-based validation using Claude Files API file_id (token efficient)"""
+        try:
+            # Get model config for vision tasks
+            task_config = self.config.get_model_config('field_identification')
+
+            request_start = time.time()
+
+            for attempt in range(self.config.MAX_RETRIES):
+                try:
+                    # Build message with file_id reference for Claude (requires Files API beta header)
+                    response = self.client.messages.create(
+                        model=task_config['model'],
+                        max_tokens=task_config['max_tokens'],
+                        temperature=task_config['temperature'],
+                        messages=[
+                            {
+                                "role": "user",
+                                "content": [
+                                    {"type": "text", "text": validation_prompt},
+                                    {
+                                        "type": "image",
+                                        "source": {
+                                            "type": "file",
+                                            "file_id": file_id
+                                        }
+                                    }
+                                ]
+                            }
+                        ],
+                        extra_headers={"anthropic-beta": "files-api-2025-04-14"}
+                    )
+
+                    # Track usage if enabled
+                    usage_info = {}
+                    if self.config.ENABLE_COST_TRACKING:
+                        usage_info = self._track_usage(response, 'vision_validation_file', task_config['model'])
+
+                    content = response.content[0].text.strip()
+
+                    # Try to parse JSON response
+                    try:
+                        result = json.loads(content)
+                    except json.JSONDecodeError:
+                        result = self._extract_json_from_response(content, task_config['model'], 'vision_validation_file')
+                        if not result["success"]:
+                            return result
+                        result = result["data"]
+
+                    return {
+                        "success": True,
+                        "data": result,
+                        "usage": usage_info,
+                        "model_used": task_config['model'],
+                        "response_time": time.time() - request_start,
+                        "token_efficient": True
+                    }
+
+                except Exception as e:
+                    # Handle rate limiting (429) with longer backoff
+                    if "429" in str(e) or "Too Many Requests" in str(e):
+                        backoff_time = 10 + (2 ** attempt) * 5  # 15s, 25s, 45s...
+                        print(f"Rate limit hit (429), backing off for {backoff_time}s...")
+                        time.sleep(backoff_time)
+                    else:
+                        # Standard exponential backoff for other errors
+                        backoff_time = 2 ** attempt
+                        time.sleep(backoff_time)
+
+                    if attempt == self.config.MAX_RETRIES - 1:
+                        return {
+                            "success": False,
+                            "error": f"Vision validation with file_id failed after {self.config.MAX_RETRIES} attempts: {str(e)}",
+                            "response_time": time.time() - request_start
+                        }
+
+        except Exception as e:
+            return {
+                "success": False,
+                "error": f"Vision validation with file_id error: {str(e)}"
+            }

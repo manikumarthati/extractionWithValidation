@@ -1,0 +1,93 @@
+{
+  "timestamp": 1758852937,
+  "validation_result": {
+    "field_validation_results": [
+      {
+        "field_name": "Company_Name",
+        "extracted_value": "Velorynt Labs",
+        "visual_inspection": {
+          "field_label_found": true,
+          "actual_value_in_document": "Velorynt Labs",
+          "value_matches_extraction": true,
+          "field_is_actually_empty": false,
+          "confidence": 0.99,
+          "issue": null
+        }
+      },
+      {
+        "field_name": "Company_Code",
+        "extracted_value": "37546",
+        "visual_inspection": {
+          "field_label_found": true,
+          "actual_value_in_document": "37546",
+          "value_matches_extraction": true,
+          "field_is_actually_empty": false,
+          "confidence": 0.99,
+          "issue": null
+        }
+      },
+      {
+        "field_name": "Employee_Name",
+        "extracted_value": "Jocelyn Taylor",
+        "visual_inspection": {
+          "field_label_found": true,
+          "actual_value_in_document": "Jocelyn Taylor",
+          "value_matches_extraction": true,
+          "field_is_actually_empty": false,
+          "confidence": 0.99,
+          "issue": null
+        }
+      },
+      {
+        "field_name": "Employee_ID",
+        "extracted_value": "5532",
+        "visual_inspection": {
+          "field_label_found": true,
+          "actual_value_in_document": "5532",
+          "value_matches_extraction": true,
+          "field_is_actually_empty": false,
+          "confidence": 0.99,
+          "issue": null
+        }
+      }
+    ],
+    "table_validation_results": [
+      {
+        "table_name": "Rate_Records",
+        "rows_visible_in_image": 11,
+        "rows_extracted": 3,
+        "row_completeness_issue": true,
+        "column_alignment_issues": []
+      },
+      {
+        "table_name": "Employee_Taxes",
+        "rows_visible_in_image": 4,
+        "rows_extracted": 4,
+        "row_completeness_issue": false,
+        "column_alignment_issues": []
+      },
+      {
+        "table_name": "Employer_Taxes",
+        "rows_visible_in_image": 6,
+        "rows_extracted": 6,
+        "row_completeness_issue": false,
+        "column_alignment_issues": []
+      }
+    ],
+    "overall_assessment": {
+      "total_fields_checked": 25,
+      "fields_with_issues": 1,
+      "accuracy_estimate": 0.96,
+      "major_issues": [
+        "Rate/Salary Information table has 8 missing rows",
+        "Some historical rate records not captured"
+      ],
+      "recommendation": "Extract all visible rate history rows from Rate/Salary Information section. Current extraction only includes most recent 3 rates but document shows 11 historical rates."
+    }
+  },
+  "response_metadata": {
+    "success": true,
+    "model_used": "claude-3-5-sonnet-20241022",
+    "response_time": 13.879058361053467
+  }
+}

@@ -1,0 +1,930 @@
+=== CLAUDE ENHANCED DEBUG SESSION ===
+UPDATED CODE VERSION: 2025-09-13 NEW FORMAT
+Task Type: data_extraction
+Model: claude-3-5-sonnet-20241022
+Temperature: 0.0
+Max Tokens: 8192
+Timestamp: 1758820546.640086
+Request Time: 2025-09-25 22:45:46
+================================================================================
+PROMPT SENT TO LLM:
+--------------------------------------------------------------------------------
+Extract structured data from the following text according to the provided schema.
+
+SCHEMA TO FOLLOW:
+{
+  "employee_profile_document": {
+    "Document_Header": "object",
+    "Employee_Profile": "object"
+  },
+  "Document_Header": {
+    "Company_Name": "string",
+    "Company_Code": "string",
+    "Period_From": "object",
+    "Period_To": "object",
+    "Page_Number": "string"
+  },
+  "Employee_Profile": {
+    "Basic_Information": "object",
+    "Rate_Salary_Information": "object",
+    "Tax_Information": "object",
+    "Deduction_Information": "object",
+    "AutoPay_Information": "object",
+    "Direct_Deposit_Information": "object",
+    "Labor_Allocation_Information": "object",
+    "Fringe_Benefit_Information": "object",
+    "Benefit_Accrual_Information": "object",
+    "Detail_401k_Information": "object",
+    "Review_Information": "object",
+    "Emergency_Contact_Information": "object"
+  },
+  "Basic_Information": {
+    "Employee_Name": "string",
+    "Address": "object",
+    "Employment_Details": "object",
+    "Personal_Details": "object",
+    "Contact_Information": "object",
+    "Status_Indicators": "object"
+  },
+  "Address": {
+    "Street_Address": "string",
+    "City": "string",
+    "State": "string",
+    "Zip_Code": "string"
+  },
+  "Employment_Details": {
+    "Employee_ID": "number",
+    "Status": "string",
+    "Employee_Type": "string",
+    "Position": "string",
+    "Title": "string",
+    "Pay_Group": "string",
+    "Job_Code": "string",
+    "Hire_Date": "object",
+    "Rehire_Date": "object",
+    "Term_Date": "object",
+    "Term_Reason": "string",
+    "Tax_Form": "string",
+    "WCC": "string",
+    "Locations": "string",
+    "Positions": "string"
+  },
+  "Personal_Details": {
+    "SSN": "string",
+    "DOB": "object",
+    "Gender": "string",
+    "Marital_Status": "string",
+    "Visa_Type": "string",
+    "Visa_Expiration": "object",
+    "Citizen": "string",
+    "I9_Verified": "string",
+    "I9_Reverify": "string"
+  },
+  "Contact_Information": {
+    "Home_Phone": "string",
+    "Work_Phone": "string",
+    "Extension": "string",
+    "Email": "string",
+    "Mail_Stop": "string"
+  },
+  "Status_Indicators": {
+    "Statutory": "string",
+    "Seasonal": "string",
+    "Domestic_Emp": "string",
+    "Probation": "number",
+    "Union_Status": "string",
+    "Union_Date": "object",
+    "Collect_Dues": "string",
+    "Paid_Init_Fees": "string",
+    "Supervisor_ID": "string",
+    "Supervisor_Name": "string",
+    "Veteran": "string",
+    "Disability": "string",
+    "Smoker": "string",
+    "Pension": "string",
+    "Deceased": "string",
+    "Def_Comp": "string",
+    "Legal_Rep": "string"
+  },
+  "Rate_Salary_Information": {
+    "AutoPay_Status": "string",
+    "Pay_Frequency": "string",
+    "OT_Exempt": "string",
+    "Default_Hours": "number",
+    "Rate_Records": "object"
+  },
+  "Rate_Record": [
+    {
+      "Rate_Code": "string",
+      "Description": "string",
+      "Rate": "number",
+      "Salary": "number",
+      "Effective_Start_Date": "datetime",
+      "Effective_End_Date": "datetime"
+    }
+  ],
+  "Tax_Information": {
+    "Employee_Taxes": "object",
+    "Employer_Taxes": "object"
+  },
+  "Employee_Tax_Record": [
+    {
+      "Tax_Code": "string",
+      "Tax_Description": "string",
+      "Filing_Status": "string",
+      "Additional_Amount": "number",
+      "Effective_Start_Date": "datetime",
+      "Effective_End_Date": "datetime",
+      "Default_Indicator": "string"
+    }
+  ],
+  "Employer_Tax_Record": [
+    {
+      "Tax_Code": "string",
+      "Tax_Description": "string",
+      "Effective_Start_Date": "datetime",
+      "Effective_End_Date": "datetime"
+    }
+  ],
+  "Deduction_Information": {
+    "Deduction_Records": "object"
+  },
+  "Deduction_Record": [
+    {
+      "Code": "string",
+      "Description": "string",
+      "Rate": "number",
+      "Calc_Code": "string",
+      "Frequency": "string",
+      "Goal_Paid": "string",
+      "Min_Max_Annual_Max": "string",
+      "Arrears": "number",
+      "Agency": "string",
+      "Effective_Start_Date": "datetime",
+      "Effective_End_Date": "datetime"
+    }
+  ],
+  "AutoPay_Information": {
+    "AutoPay_Records": "object"
+  },
+  "AutoPay_Record": [
+    {
+      "Status": "string"
+    }
+  ],
+  "Direct_Deposit_Information": {
+    "Direct_Deposit_Records": "object"
+  },
+  "Direct_Deposit_Record": [
+    {
+      "Sequence_Number": "number",
+      "Transit_Number": "string",
+      "Account_Number": "string",
+      "Account_Type": "string",
+      "Account_Name": "string",
+      "Amount_Code": "string",
+      "Amount": "number",
+      "Prenote_Date": "datetime",
+      "Effective_Start_Date": "datetime",
+      "Effective_End_Date": "datetime",
+      "Exclude_Indicator": "string",
+      "Special_Indicator": "string"
+    }
+  ],
+  "Labor_Allocation_Information": {
+    "Labor_Allocation_Records": "object"
+  },
+  "Labor_Allocation_Record": [
+    {
+      "Status": "string"
+    }
+  ],
+  "Fringe_Benefit_Information": {
+    "Fringe_Benefit_Records": "object"
+  },
+  "Fringe_Benefit_Record": [
+    {
+      "Earnings_Code": "string",
+      "Calc_Code": "string",
+      "Rate_Code": "string",
+      "Rate": "number",
+      "Rate_Per": "string",
+      "Amount": "number",
+      "Tabled_Indicator": "string",
+      "Units": "number",
+      "Frequency": "string",
+      "Goal_Paid_Goal_Balance": "string",
+      "Min_Max_Annual_Max": "string",
+      "Effective_Start_Date": "datetime",
+      "Effective_End_Date": "datetime"
+    }
+  ],
+  "Benefit_Accrual_Information": {
+    "Benefit_Accrual_Records": "object"
+  },
+  "Benefit_Accrual_Record": [
+    {
+      "Benefit_Code": "string",
+      "Rate": "number",
+      "Amount": "number",
+      "Hours": "number",
+      "Max_Carryover_Max": "string",
+      "Length_Of_Service": "string",
+      "Hours_Used_Avail_Total_Prob": "string",
+      "Dollars_Used_Avail_Total_Prob": "string",
+      "Effective_Start_Date": "datetime",
+      "Effective_End_Date": "datetime"
+    }
+  ],
+  "Detail_401k_Information": {
+    "Detail_401k_Records": "object"
+  },
+  "Detail_401k_Record": [
+    {
+      "Status": "string"
+    }
+  ],
+  "Review_Information": {
+    "Review_Records": "object"
+  },
+  "Review_Record": [
+    {
+      "Status": "string"
+    }
+  ],
+  "Emergency_Contact_Information": {
+    "Emergency_Contact_Records": "object"
+  },
+  "Emergency_Contact_Record": [
+    {
+      "Status": "string"
+    }
+  ]
+}
+
+RAW TEXT:
+Employee Profile
+    Velorynt Labs
+Company (37546)
+Period:
+12/17/2024 to 12/26/2024
+Page
+69
+RateCode
+Description
+Rate
+Salary
+Effective
+Dates
+Jocelyn Taylor
+1006 Shery St   
+ Emp Id
+ 5532
+ Status
+A
+ Emp Type
+RFT
+ Home #
+Shaontown, WY 
+ SSN
+609-85-2596
+ Position
+ Statutory
+0.00
+ Work #
+93506-7144
+ DOB
+12/28/1961(62)
+ Title
+ Seasonal
+0.00
+ Ext.
+ Gender
+M
+ Pay Group
+ Domestic Emp
+No
+ Email
+ Marital Status
+M
+ Job Code
+ Probation
+0.00
+ Mail Stop
+ Hire Date
+01/04/2016
+ Visa Type
+ Tax Form
+W2
+ Union
+ Nickname
+ Rehire Date
+ Exp
+ WCC
+8810
+ Union Date
+ surname
+ Term Date
+ Citizen
+ EEOC
+ Collect Dues
+No
+ Prior Last
+ Term Reason
+ I9 Verified
+Yes
+ Supervisor ID
+ Paid Init. Fees
+No
+ Disability
+ Adj Sen Date
+ I9 Reverify
+ Name
+ Veteran
+ Smoker
+No
+ Pension
+No
+ Deceased
+No
+ Def Comp
+No
+ Legal Rep
+No
+Rate/Salary Information
+ AutoPay
+Locations
+606
+ Pay Frequency
+B
+Positions
+700
+ OT Exempt
+No
+ Default Hours
+0.00
+Base
+Base Rate
+20.95
+01/03/2024 to 12/31/2100
+Base
+Base Rate
+20.30
+01/03/2023 to 01/02/2024
+Base
+Base Rate
+19.75
+05/08/2022 to 01/02/2023
+Base
+Base Rate
+16.75
+01/03/2022 to 05/07/2022
+Base
+Base Rate
+16.00
+01/05/2021 to 01/02/2022
+Base
+Base Rate
+14.60
+01/04/2020 to 01/04/2021
+Base
+Base Rate
+14.05
+01/04/2019 to 01/03/2020
+Base
+Base Rate
+13.75
+01/04/2018 to 01/03/2019
+Base
+Base Rate
+13.40
+01/04/2017 to 01/03/2018
+Base
+Base Rate
+13.00
+04/04/2016 to 01/03/2017
+Base
+Base Rate
+12.00
+01/04/2016 to 04/03/2016
+Tax Information
+Employee Tax
+Status
+Add'l Amount 
+Effective Dates
+Default
+MED
+Medicare
+0.00
+01/15/2016 to 12/31/2100
+Yes
+SS
+OASDI
+0.00
+01/15/2016 to 12/31/2100
+Yes
+FITW
+Federal Income Tax
+M-1
+20.00
+01/04/2016 to 12/31/2100
+Yes
+MN
+Minnesota SITW
+M-1
+0.00
+01/04/2016 to 12/31/2100
+Yes
+EmployerTax
+Effective
+Dates
+Default
+MED-R
+Medicare - Employer 01/15/2016 to 12/31/2100
+SS-R
+OASDI - Employer
+01/15/2016 to 12/31/2100
+FUTA
+Fed Unemployment
+01/15/2016 to 12/31/2100
+MNAST Minnesota Federal Loan Assessment
+01/15/2016 to 12/31/2100
+MNDW Workforce Enhancement Fee
+01/15/2016 to 12/31/2100
+MNSUI Minnesota SUI
+01/15/2016 to 12/31/2100
+Deduction Information
+Code
+Deduction
+Rate
+CalcCode
+Frequency
+Goal/Paid
+Min/Max/Annual Max
+Arrears
+Agency
+Effective
+Dates
+401KC
+401K Contribution6.00
+%401K
+0.00/0.00
+0.00/0.00/0.00
+0.00
+04/01/2016 to 12/31/2100
+401kUM 401kUnmatch
+14.00
+%401K
+0.00/0.00
+0.00/0.00/0.00
+0.00
+08/01/2022 to 12/31/2100
+401kUnmatc
+401K Unmatch
+12.00
+%401K
+0.00/0.00
+0.00/0.00/0.00
+0.00
+03/31/2019 to 08/01/2022
+DNTL
+Dental Insurance S125
+18.32
+B5
+0.00/0.00
+0.00/0.00/0.00
+0.00
+09/01/2019 to 12/31/2100
+FH125
+Health Insurance S125
+158.14
+B5
+0.00/0.00
+0.00/0.00/0.00
+0.00
+09/01/2019 to 12/31/2100
+AutoPay Information
+No AutoPay Information
+Direct Deposit Information
+Sequence No. Transit No. Account No.
+Checking? Account Name
+Amount Code
+Amount Prenote Date
+Effective
+Dates
+Exclude Special
+99.00
+296076262 2743046665
+Yes
+Jocelyn, Taylor 
+%
+100.00 02/12/2016
+02/12/2016 to 12/31/2100 No
+Labor Allocation Information
+No Labor Allocation Information
+Fringe Benefit Information
+ECode
+CalcCode Rate Code
+Rate
+Rate Per
+Amount Tabled?  Units
+Frequency Goal/Paid/Goal Bal.
+Min/Max/Ann. Max
+Effective
+Dates
+STD
+0.00
+11.07 No
+0.00
+ML
+0.00/0.00/0.00
+0.00/0.00/0.00
+03/17/2019 to 12/31/2100
+Benefit Accrual Information
+CBIZ HCM
+Phone: (800) 815-3023  Fax: (877) 282-3016
+Run Date:
+Run Time:
+12/26/24
+11:06 AM
+Locations
+Positions
+Profile © 1995-2024 MPAY
+Employee
+Taylor
+
+
+EXTRACTION INSTRUCTIONS:
+1. Extract data exactly as specified in the schema structure
+2. Use the exact field names and structure from the schema
+3. Find values corresponding to each field/column specified in the schema
+4. **BLANK FIELD HANDLING:** If a field exists in the schema but appears blank/empty in the document (not missing), extract it as empty string "" - DO NOT use null
+5. **COMPLETE TEXT EXTRACTION:** Always use the complete, untruncated text from the raw text - if you see partial text, find the complete version in the raw text
+6. Maintain proper data types as indicated in the schema
+7. IMPORTANT: Return ONLY the essential data values, no metadata, descriptions, or additional details
+8. Keep the response concise and focused only on the actual data values
+
+**CRITICAL BLANK FIELD RULES:**
+9. **BLANK vs NULL:** If a field label exists but has no value (blank), use empty string "". Only use null if the field is completely absent from the document
+10. **EMPTY FIELDS MATTER:** Fields like "Position:", "Emp Type:", "Title:" may be blank in documents but should be extracted as "" not omitted
+11. **VISUAL BLANKS:** If you see a field label followed by blank space, extract as empty string ""
+
+**CRITICAL TEXT COMPLETENESS RULES:**
+12. **PARTIAL TEXT MATCHING:** If you encounter truncated/partial text, search the raw text for the complete version
+13. **TRUNCATION EXAMPLES:** "Workforce Enhanc..." should become "Workforce Enhancement Fee" by finding complete text in raw
+14. **ABBREVIATION EXPANSION:** Use the most complete form available in the raw text
+15. **TEXT PRIORITY:** Raw text completeness takes priority over partial visual representations
+
+CRITICAL TABLE EXTRACTION RULES:
+16. **FOR TABLES/ARRAYS:** Extract ALL rows visible in the document, not just the first one
+17. **TABLE COMPLETENESS:** If schema shows an array/list, extract every single row from the table
+18. **ROW COUNT:** Never limit to one row - extract all data rows present in tables
+19. **MULTIPLE ENTRIES:** When multiple similar entries exist (like employees, benefits, transactions), capture them all
+20. **FULL TABLE DATA:** Scan the entire table from top to bottom and include every row with data - scan the entire table top to bottom
+
+**AGGRESSIVE TABLE ROW EXTRACTION - MANDATORY:**
+21. **EXHAUSTIVE SCANNING:** Look for data in ALL possible formats - different fonts, sizes, colors, alignments
+22. **BOUNDARY CHECKING:** Check for rows near page boundaries, margins, or at the very bottom of tables
+23. **FORMATTING VARIATIONS:** Include rows that might have different formatting, spacing, or appear faded
+24. **PARTIAL ROWS:** Include any row that has even partial data visible
+25. **HIDDEN PATTERNS:** Look for data patterns that might indicate additional rows (sequences, numbering, etc.)
+26. **ZERO TOLERANCE:** If you suspect there might be more rows, extract them - better to include questionable rows than miss real data
+27. **VALIDATION REQUIREMENT:** After extraction, count your rows and ensure you haven't missed any by scanning the text again
+
+CRITICAL JSON REQUIREMENTS:
+- Return ONLY valid JSON, no additional text or explanations
+- Use double quotes for all strings
+- Escape special characters properly: \" for quotes, \\ for backslashes, \n for newlines
+- No trailing commas anywhere
+- No comments in JSON
+- Ensure all brackets and braces are properly closed
+- If a string value contains quotes, escape them with backslash
+- Keep values concise - extract only the essential information without verbose descriptions
+
+EXAMPLE OF ENHANCED OUTPUT WITH BLANK FIELDS AND COMPLETE TEXT:
+{
+  "Employee_Name": "Caroline Jones",
+  "Position": "",
+  "Emp_Type": "",
+  "Title": "",
+  "Department": "Finance",
+  "employer_taxes": [
+    {
+      "tax_code": "MED-R",
+      "description": "Medicare - Employer",
+      "effective_dates": "04/28/2023 to 12/31/2100"
+    },
+    {
+      "tax_code": "MNDW",
+      "description": "Workforce Enhancement Fee",
+      "effective_dates": "04/28/2023 to 12/31/2100"
+    },
+    {
+      "tax_code": "MNSUI",
+      "description": "Minnesota SUI",
+      "effective_dates": "04/28/2023 to 12/31/2100"
+    }
+  ],
+  "deductions": [
+    {
+      "code": "401KC",
+      "description": "401K Contribution",
+      "rate": 100.00,
+      "effective_dates": "07/01/2023 to 12/31/2100"
+    },
+     {
+      "code": "DNTL",
+      "description": "Dental Insurance",
+      "rate": 100.00,
+      "effective_dates": "07/01/2023 to 12/31/2100"
+    }
+  ]
+}
+
+OUTPUT FORMAT:
+Return valid JSON that matches the exact structure of the provided schema with concise data values only.
+
+Extract the data now and return ONLY the JSON:
+================================================================================
+RAW RESPONSE FROM LLM:
+--------------------------------------------------------------------------------
+{
+  "employee_profile_document": {
+    "Document_Header": {
+      "Company_Name": "Velorynt Labs",
+      "Company_Code": "37546",
+      "Period_From": "12/17/2024",
+      "Period_To": "12/26/2024",
+      "Page_Number": "69"
+    },
+    "Employee_Profile": {
+      "Basic_Information": {
+        "Employee_Name": "Jocelyn Taylor",
+        "Address": {
+          "Street_Address": "1006 Shery St",
+          "City": "Shaontown",
+          "State": "WY",
+          "Zip_Code": "93506-7144"
+        },
+        "Employment_Details": {
+          "Employee_ID": 5532,
+          "Status": "A",
+          "Employee_Type": "RFT",
+          "Position": "",
+          "Title": "",
+          "Pay_Group": "",
+          "Job_Code": "",
+          "Hire_Date": "01/04/2016",
+          "Rehire_Date": "",
+          "Term_Date": "",
+          "Term_Reason": "",
+          "Tax_Form": "W2",
+          "WCC": "8810",
+          "Locations": "606",
+          "Positions": "700"
+        },
+        "Personal_Details": {
+          "SSN": "609-85-2596",
+          "DOB": "12/28/1961",
+          "Gender": "M",
+          "Marital_Status": "M",
+          "Visa_Type": "",
+          "Visa_Expiration": "",
+          "Citizen": "",
+          "I9_Verified": "Yes",
+          "I9_Reverify": ""
+        },
+        "Contact_Information": {
+          "Home_Phone": "",
+          "Work_Phone": "",
+          "Extension": "",
+          "Email": "",
+          "Mail_Stop": ""
+        },
+        "Status_Indicators": {
+          "Statutory": "0.00",
+          "Seasonal": "0.00",
+          "Domestic_Emp": "No",
+          "Probation": 0.00,
+          "Union_Status": "",
+          "Union_Date": "",
+          "Collect_Dues": "No",
+          "Paid_Init_Fees": "No",
+          "Supervisor_ID": "",
+          "Supervisor_Name": "",
+          "Veteran": "",
+          "Disability": "",
+          "Smoker": "No",
+          "Pension": "No",
+          "Deceased": "No",
+          "Def_Comp": "No",
+          "Legal_Rep": "No"
+        }
+      },
+      "Rate_Salary_Information": {
+        "AutoPay_Status": "",
+        "Pay_Frequency": "B",
+        "OT_Exempt": "No",
+        "Default_Hours": 0.00,
+        "Rate_Records": [
+          {
+            "Rate_Code": "Base",
+            "Description": "Base Rate",
+            "Rate": 20.95,
+            "Salary": 0,
+            "Effective_Start_Date": "01/03/2024",
+            "Effective_End_Date": "12/31/2100"
+          },
+          {
+            "Rate_Code": "Base",
+            "Description": "Base Rate",
+            "Rate": 20.30,
+            "Salary": 0,
+            "Effective_Start_Date": "01/03/2023",
+            "Effective_End_Date": "01/02/2024"
+          },
+          {
+            "Rate_Code": "Base",
+            "Description": "Base Rate",
+            "Rate": 19.75,
+            "Salary": 0,
+            "Effective_Start_Date": "05/08/2022",
+            "Effective_End_Date": "01/02/2023"
+          }
+        ]
+      },
+      "Tax_Information": {
+        "Employee_Taxes": [
+          {
+            "Tax_Code": "MED",
+            "Tax_Description": "Medicare",
+            "Filing_Status": "",
+            "Additional_Amount": 0.00,
+            "Effective_Start_Date": "01/15/2016",
+            "Effective_End_Date": "12/31/2100",
+            "Default_Indicator": "Yes"
+          },
+          {
+            "Tax_Code": "SS",
+            "Tax_Description": "OASDI",
+            "Filing_Status": "",
+            "Additional_Amount": 0.00,
+            "Effective_Start_Date": "01/15/2016",
+            "Effective_End_Date": "12/31/2100",
+            "Default_Indicator": "Yes"
+          },
+          {
+            "Tax_Code": "FITW",
+            "Tax_Description": "Federal Income Tax",
+            "Filing_Status": "M-1",
+            "Additional_Amount": 20.00,
+            "Effective_Start_Date": "01/04/2016",
+            "Effective_End_Date": "12/31/2100",
+            "Default_Indicator": "Yes"
+          },
+          {
+            "Tax_Code": "MN",
+            "Tax_Description": "Minnesota SITW",
+            "Filing_Status": "M-1",
+            "Additional_Amount": 0.00,
+            "Effective_Start_Date": "01/04/2016",
+            "Effective_End_Date": "12/31/2100",
+            "Default_Indicator": "Yes"
+          }
+        ],
+        "Employer_Taxes": [
+          {
+            "Tax_Code": "MED-R",
+            "Tax_Description": "Medicare - Employer",
+            "Effective_Start_Date": "01/15/2016",
+            "Effective_End_Date": "12/31/2100"
+          },
+          {
+            "Tax_Code": "SS-R",
+            "Tax_Description": "OASDI - Employer",
+            "Effective_Start_Date": "01/15/2016",
+            "Effective_End_Date": "12/31/2100"
+          },
+          {
+            "Tax_Code": "FUTA",
+            "Tax_Description": "Fed Unemployment",
+            "Effective_Start_Date": "01/15/2016",
+            "Effective_End_Date": "12/31/2100"
+          },
+          {
+            "Tax_Code": "MNAST",
+            "Tax_Description": "Minnesota Federal Loan Assessment",
+            "Effective_Start_Date": "01/15/2016",
+            "Effective_End_Date": "12/31/2100"
+          },
+          {
+            "Tax_Code": "MNDW",
+            "Tax_Description": "Workforce Enhancement Fee",
+            "Effective_Start_Date": "01/15/2016",
+            "Effective_End_Date": "12/31/2100"
+          },
+          {
+            "Tax_Code": "MNSUI",
+            "Tax_Description": "Minnesota SUI",
+            "Effective_Start_Date": "01/15/2016",
+            "Effective_End_Date": "12/31/2100"
+          }
+        ]
+      },
+      "Deduction_Information": {
+        "Deduction_Records": [
+          {
+            "Code": "401KC",
+            "Description": "401K Contribution",
+            "Rate": 6.00,
+            "Calc_Code": "%401K",
+            "Frequency": "",
+            "Goal_Paid": "0.00/0.00",
+            "Min_Max_Annual_Max": "0.00/0.00/0.00",
+            "Arrears": 0.00,
+            "Agency": "",
+            "Effective_Start_Date": "04/01/2016",
+            "Effective_End_Date": "12/31/2100"
+          },
+          {
+            "Code": "401kUM",
+            "Description": "401kUnmatch",
+            "Rate": 14.00,
+            "Calc_Code": "%401K",
+            "Frequency": "",
+            "Goal_Paid": "0.00/0.00",
+            "Min_Max_Annual_Max": "0.00/0.00/0.00",
+            "Arrears": 0.00,
+            "Agency": "",
+            "Effective_Start_Date": "08/01/2022",
+            "Effective_End_Date": "12/31/2100"
+          },
+          {
+            "Code": "DNTL",
+            "Description": "Dental Insurance S125",
+            "Rate": 18.32,
+            "Calc_Code": "B5",
+            "Frequency": "",
+            "Goal_Paid": "0.00/0.00",
+            "Min_Max_Annual_Max": "0.00/0.00/0.00",
+            "Arrears": 0.00,
+            "Agency": "",
+            "Effective_Start_Date": "09/01/2019",
+            "Effective_End_Date": "12/31/2100"
+          },
+          {
+            "Code": "FH125",
+            "Description": "Health Insurance S125",
+            "Rate": 158.14,
+            "Calc_Code": "B5",
+            "Frequency": "",
+            "Goal_Paid": "0.00/0.00",
+            "Min_Max_Annual_Max": "0.00/0.00/0.00",
+            "Arrears": 0.00,
+            "Agency": "",
+            "Effective_Start_Date": "09/01/2019",
+            "Effective_End_Date": "12/31/2100"
+          }
+        ]
+      },
+      "Direct_Deposit_Information": {
+        "Direct_Deposit_Records": [
+          {
+            "Sequence_Number": 99,
+            "Transit_Number": "296076262",
+            "Account_Number": "2743046665",
+            "Account_Type": "Yes",
+            "Account_Name": "Jocelyn, Taylor",
+            "Amount_Code": "%",
+            "Amount": 100.00,
+            "Prenote_Date": "02/12/2016",
+            "Effective_Start_Date": "02/12/2016",
+            "Effective_End_Date": "12/31/2100",
+            "Exclude_Indicator": "No",
+            "Special_Indicator": ""
+          }
+        ]
+      },
+      "Fringe_Benefit_Information": {
+        "Fringe_Benefit_Records": [
+          {
+            "Earnings_Code": "STD",
+            "Calc_Code": "",
+            "Rate_Code": "",
+            "Rate": 0.00,
+            "Rate_Per": "",
+            "Amount": 11.07,
+            "Tabled_Indicator": "No",
+            "Units": 0.00,
+            "Frequency": "ML",
+            "Goal_Paid_Goal_Balance": "0.00/0.00/0.00",
+            "Min_Max_Annual_Max": "0.00/0.00/0.00",
+            "Effective_Start_Date": "03/17/2019",
+            "Effective_End_Date": "12/31/2100"
+          }
+        ]
+      }
+    }
+  }
+}
+================================================================================

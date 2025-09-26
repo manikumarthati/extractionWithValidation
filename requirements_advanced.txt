@@ -1,0 +1,19 @@
+# Advanced Pipeline Requirements
+Flask==2.3.3
+PyMuPDF==1.26.4
+openai==1.50.2
+python-dotenv==1.0.0
+Werkzeug==2.3.7
+
+# Streamlit UI
+streamlit==1.28.0
+plotly==5.17.0
+pandas==2.1.0
+
+# Image processing
+opencv-python==4.8.0.76
+Pillow==10.0.0
+numpy==1.24.3
+
+# Additional utilities
+requests==2.31.0

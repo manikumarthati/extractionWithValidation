@@ -5,28 +5,35 @@ load_dotenv()
 
 class Config:
     SECRET_KEY = os.environ.get('FLASK_SECRET_KEY') or 'dev-secret-key'
-    OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
+    # OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')  # Removed - Claude only
+    ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER') or 'uploads'
     RESULTS_FOLDER = os.environ.get('RESULTS_FOLDER') or 'results'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///pdf_processing.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
 
-class GPTConfig:
-    """Configuration for GPT models and prompts with cost optimization"""
-    
-    # Task-specific model selection - using GPT-5 for best performance and JSON handling
-    # Structure Classification: Use GPT-5 for superior reasoning
-    CLASSIFICATION_MODEL = os.environ.get('CLASSIFICATION_MODEL') or 'gpt-5'
+    # Model configuration selector - use 'current' for stability, 'claude' for best accuracy
+    MODEL_CONFIG = os.environ.get('MODEL_CONFIG') or 'current'
 
-    # Field Identification: Use GPT-5 for better accuracy and JSON handling
-    FIELD_IDENTIFICATION_MODEL = os.environ.get('FIELD_IDENTIFICATION_MODEL') or 'gpt-5'
+class ClaudeConfig:
+    """Configuration for Claude models and prompts with cost optimization"""
 
-    # Data Extraction: Most critical for accuracy, use GPT-5
-    DATA_EXTRACTION_MODEL = os.environ.get('DATA_EXTRACTION_MODEL') or 'gpt-5'
+    # Task-specific model selection - using Claude 3.5 Sonnet for best performance
+    # Structure Classification: Claude 3.5 Haiku for cost efficiency on simple tasks
+    CLASSIFICATION_MODEL = os.environ.get('CLASSIFICATION_MODEL') or 'claude-3-5-haiku-20241022'
+
+    # Field Identification: Claude 3.5 Sonnet for better accuracy
+    FIELD_IDENTIFICATION_MODEL = os.environ.get('FIELD_IDENTIFICATION_MODEL') or 'claude-3-5-sonnet-20241022'
+
+    # Data Extraction: Claude 3.5 Sonnet for best extraction accuracy
+    DATA_EXTRACTION_MODEL = os.environ.get('DATA_EXTRACTION_MODEL') or 'claude-3-5-sonnet-20241022'
+
+    # Vision Validation: Claude 3.5 Sonnet has excellent vision capabilities
+    VISION_VALIDATION_MODEL = os.environ.get('VISION_VALIDATION_MODEL') or 'claude-3-5-sonnet-20241022'
 
     # Fallback model for any task
-    DEFAULT_MODEL = os.environ.get('GPT_DEFAULT_MODEL') or 'gpt-5'
+    DEFAULT_MODEL = os.environ.get('CLAUDE_DEFAULT_MODEL') or 'claude-3-5-sonnet-20241022'
     
     # Temperature settings per task
     CLASSIFICATION_TEMPERATURE = float(os.environ.get('CLASSIFICATION_TEMPERATURE', '0.0'))
@@ -34,13 +41,13 @@ class GPTConfig:
     DATA_EXTRACTION_TEMPERATURE = float(os.environ.get('DATA_EXTRACTION_TEMPERATURE', '0.0'))
     
     # Timeout and retry settings
-    TIMEOUT = int(os.environ.get('GPT_TIMEOUT', '90'))
-    MAX_RETRIES = int(os.environ.get('GPT_MAX_RETRIES', '3'))
-    
-    # Token limits for different operations (updated for GPT-5)
-    CLASSIFICATION_MAX_TOKENS = int(os.environ.get('CLASSIFICATION_MAX_TOKENS', '15000'))
-    FIELD_IDENTIFICATION_MAX_TOKENS = int(os.environ.get('FIELD_IDENTIFICATION_MAX_TOKENS', '15000'))
-    DATA_EXTRACTION_MAX_TOKENS = int(os.environ.get('DATA_EXTRACTION_MAX_TOKENS', '15000'))
+    TIMEOUT = int(os.environ.get('CLAUDE_TIMEOUT', '90'))
+    MAX_RETRIES = int(os.environ.get('CLAUDE_MAX_RETRIES', '3'))
+
+    # Token limits for different operations (Claude has 4096 max output tokens)
+    CLASSIFICATION_MAX_TOKENS = int(os.environ.get('CLASSIFICATION_MAX_TOKENS', '2000'))
+    FIELD_IDENTIFICATION_MAX_TOKENS = int(os.environ.get('FIELD_IDENTIFICATION_MAX_TOKENS', '3000'))
+    DATA_EXTRACTION_MAX_TOKENS = int(os.environ.get('DATA_EXTRACTION_MAX_TOKENS', '4000'))
     
     # Cost tracking
     ENABLE_COST_TRACKING = os.environ.get('ENABLE_COST_TRACKING', 'true').lower() == 'true'
@@ -53,19 +60,19 @@ class GPTConfig:
                 'model': cls.CLASSIFICATION_MODEL,
                 'temperature': cls.CLASSIFICATION_TEMPERATURE,
                 'max_tokens': cls.CLASSIFICATION_MAX_TOKENS,
-                'reasoning': 'Simple classification task - cheaper model sufficient'
+                'reasoning': 'Simple classification task - Haiku model sufficient'
             },
             'field_identification': {
                 'model': cls.FIELD_IDENTIFICATION_MODEL,
                 'temperature': cls.FIELD_IDENTIFICATION_TEMPERATURE,
                 'max_tokens': cls.FIELD_IDENTIFICATION_MAX_TOKENS,
-                'reasoning': 'Medium complexity - balance cost and accuracy'
+                'reasoning': 'Medium complexity - Sonnet for better accuracy'
             },
             'data_extraction': {
                 'model': cls.DATA_EXTRACTION_MODEL,
                 'temperature': cls.DATA_EXTRACTION_TEMPERATURE,
                 'max_tokens': cls.DATA_EXTRACTION_MAX_TOKENS,
-                'reasoning': 'Critical accuracy task - use best model'
+                'reasoning': 'Critical accuracy task - use Sonnet model'
             },
             'feedback_analysis': {
                 'model': cls.DATA_EXTRACTION_MODEL,  # Use best model for feedback analysis

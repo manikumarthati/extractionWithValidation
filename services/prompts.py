@@ -409,7 +409,7 @@ class PromptTemplates:
 
     **EXTRACTION RULES:**
     1. **Form Fields**: Extract exact values for each field name. Use null if field exists but has no value.
-    2. **Tables**: For each table, extract ALL rows with data for the specified headers.
+    2. **Tables**: For each table, extract ALL rows with data for the specified headers. SCAN ENTIRE DOCUMENT for multiple rows - do not stop at first row!
     3. **Precision**: Preserve original formatting, dates, numbers, and compound values exactly.
     4. **Completeness**: Extract everything in one pass - do not separate forms and tables.
 
@@ -451,7 +451,7 @@ class PromptTemplates:
 
     **CORE EXTRACTION RULES:**
     1. **Form Fields**: Extract exact values for each field name. Use null if field exists but has no value.
-    2. **Tables**: For each table, extract ALL rows with data for the specified headers.
+    2. **Tables**: For each table, extract ALL rows with data for the specified headers. SCAN ENTIRE DOCUMENT for multiple rows - do not stop at first row!
     3. **Precision**: Preserve original formatting, dates, numbers, and compound values exactly.
     4. **Completeness**: Extract everything in one pass - do not separate forms and tables.
 
@@ -508,12 +508,16 @@ class PromptTemplates:
     Text content:
     {text}
 
-    IMPORTANT:
-    - Extract ALL rows of data for these columns
+    CRITICAL INSTRUCTIONS FOR MULTIPLE ROWS:
+    - Extract EVERY SINGLE ROW of data you can find in the table
+    - DO NOT stop after the first row - scan the entire document for ALL table rows
+    - Tables often have multiple rows of data - extract ALL of them
     - If a cell is empty or has no value, use null
     - Preserve data types (numbers as numbers, dates as strings)
     - Look for aligned data under each header
     - Include rows even if some cells are empty
+    - Count carefully: if you see 5 rows of data, extract all 5 rows
+    - Look for patterns like repeated data under the same headers
 
     Respond with JSON:
     {{
