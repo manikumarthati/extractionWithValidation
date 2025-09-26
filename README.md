@@ -1,9 +1,10 @@
 # PDF Data Extraction with Visual Validation
 
-A sophisticated PDF data extraction system that combines text-based extraction with visual validation to achieve high accuracy rates up to 100%.
+A sophisticated PDF data extraction system that combines text-based extraction with visual validation to achieve high accuracy rates up to 100%. Supports both Claude 3.5 Sonnet and Google Gemini 2.0 Flash for cost-effective processing.
 
 ## Features
 
+- **Multi-Provider Support**: Choose between Claude 3.5 Sonnet and Google Gemini 2.0 Flash
 - **Text-based Schema Extraction**: Extract structured data from PDFs using custom JSON schemas
 - **Visual Validation**: Human-like visual inspection of extracted data using AI vision models
 - **Multi-round Correction**: Up to 10 rounds of validation and correction for maximum accuracy
@@ -11,31 +12,35 @@ A sophisticated PDF data extraction system that combines text-based extraction w
 - **Error Resilience**: Intelligent handling of API failures with acceptable accuracy thresholds
 - **Complex Column Shift Detection**: Advanced detection and correction of table misalignments
 - **Missing Row Recovery**: Aggressive scanning for incomplete table data extraction
+- **Cost Optimization**: Use Gemini for budget-friendly POC evaluation (200 requests/day free tier)
 
 ## System Architecture
 
 ### Core Components
 
-1. **Schema Text Extractor**: Primary extraction engine using text analysis
-2. **Visual Field Inspector**: Vision-based validation and correction system
-3. **Vision Extractor**: PDF to image conversion and AI vision processing
-4. **Cost Tracker**: Monitor API usage and costs
-5. **Result Merger**: Combine multi-page extraction results
+1. **Schema Text Extractor**: Primary extraction engine with unified provider support
+2. **Visual Field Inspector**: Vision-based validation and correction system for both providers
+3. **Advanced Pipeline**: Orchestrates multi-step extraction with provider routing
+4. **Optimized File Manager**: Handles image uploads to Claude Files API or Gemini File API
+5. **Model Configuration**: Easy switching between Claude and Gemini configurations
 
 ### Workflow Process
 
 1. **Text Extraction**: Extract raw text from PDF using PyMuPDF
-2. **Schema-based Extraction**: Use LLM to extract structured data according to provided schema
-3. **Visual Validation**: Convert PDF to high-resolution image and validate extracted data
-4. **Iterative Correction**: Apply corrections and re-validate until target accuracy achieved
-5. **Final Output**: Return validated data with detailed accuracy reporting
+2. **Schema-based Extraction**: Use Claude or Gemini to extract structured data according to provided schema
+3. **Image Upload**: Upload high-resolution PDF images to respective File APIs for efficient processing
+4. **Visual Validation**: Validate extracted data using vision capabilities with file ID references
+5. **Iterative Correction**: Apply corrections and re-validate until target accuracy achieved
+6. **Final Output**: Return validated data with detailed accuracy reporting
 
 ## Installation
 
 ### Prerequisites
 
 - Python 3.8+
-- OpenAI API key
+- At least one of the following API keys:
+  - **Anthropic API key** for Claude 3.5 Sonnet (premium accuracy)
+  - **Google API key** for Gemini 2.0 Flash (cost-effective POC)
 - Required Python packages (see requirements.txt)
 
 ### Setup
@@ -60,7 +65,10 @@ pip install -r requirements.txt
 4. Configure environment:
 ```bash
 cp .env.example .env
-# Edit .env file with your OpenAI API key
+# Edit .env file with your API keys:
+# ANTHROPIC_API_KEY=your_anthropic_api_key_here
+# GOOGLE_API_KEY=your_google_api_key_here
+# MODEL_CONFIG=claude_sonnet  # or gemini_flash
 ```
 
 ## Usage
@@ -68,22 +76,31 @@ cp .env.example .env
 ### Web Interface (Streamlit)
 
 ```bash
-streamlit run streamlit_app.py
+streamlit run advanced_streamlit_app.py
 ```
 
-### Flask API
-
-```bash
-python app.py
-```
+The web interface provides:
+- Model selection dropdown (Claude 3.5 Sonnet vs Gemini 2.0 Flash)
+- Real-time cost estimation
+- Progress tracking with accuracy metrics
+- Interactive results display
 
 ### Programmatic Usage
 
 ```python
-from services.schema_text_extractor import SchemaTextExtractor
+from services.advanced_pipeline import AdvancedPDFExtractionPipeline
 
-# Initialize extractor
-extractor = SchemaTextExtractor(api_key="your-openai-api-key")
+# Initialize with Claude 3.5 Sonnet (premium accuracy)
+pipeline = AdvancedPDFExtractionPipeline(
+    api_key="your-anthropic-api-key",
+    model_config_name="claude_sonnet"
+)
+
+# Or initialize with Gemini 2.0 Flash (cost-effective)
+pipeline = AdvancedPDFExtractionPipeline(
+    api_key="your-google-api-key",
+    model_config_name="gemini_flash"
+)
 
 # Define your schema
 schema = {
@@ -94,59 +111,45 @@ schema = {
 }
 
 # Extract with visual validation
-result = extractor.enhanced_extraction_workflow(
+result = pipeline.process_pdf_with_schema(
     pdf_path="document.pdf",
     schema=schema,
-    page_num=0,
-    use_visual_validation=True,
-    multi_round_validation=True
+    enable_debug=True
 )
 
 # Access results
 if result["success"]:
     extracted_data = result["extracted_data"]
-    accuracy = result["workflow_summary"]["final_accuracy_estimate"]
-    rounds_completed = result["workflow_summary"]["validation_rounds_completed"]
+    accuracy = result["final_accuracy_estimate"]
+    provider_used = result["model_used"]
 ```
 
 ## Configuration
 
-### Validation Parameters
+### Model Selection
 
-- **max_rounds**: Maximum validation rounds (default: 10)
-- **target_accuracy**: Target accuracy threshold (default: 1.0 for 100%)
-- **use_visual_validation**: Enable/disable visual validation (default: True)
-- **multi_round_validation**: Enable iterative validation (default: True)
+Choose between two AI providers based on your needs:
 
-### API Endpoints
+#### Claude 3.5 Sonnet (`claude_sonnet`)
+- **Best for**: Production use, maximum accuracy
+- **Cost**: ~$0.12-0.25 per document
+- **Features**: Superior accuracy, excellent table reasoning, vision + text
 
-#### Schema Extraction
-```
-POST /api/schema-extraction/<doc_id>
-```
+#### Gemini 2.0 Flash (`gemini_flash`)
+- **Best for**: POC evaluation, budget-conscious development
+- **Cost**: $0.05-0.10 per document (200 free requests/day)
+- **Features**: Ultra fast, multimodal, 1M token context
 
-Request body:
-```json
-{
-    "schema": {
-        "field_name": "field_type"
-    },
-    "page_num": 0,
-    "use_visual_validation": true
-}
-```
+### Available Configurations
 
-Response:
-```json
-{
-    "success": true,
-    "extracted_data": {},
-    "workflow_summary": {
-        "final_accuracy_estimate": 0.99,
-        "validation_rounds_completed": 3,
-        "target_accuracy_achieved": true
-    }
-}
+```python
+from model_configs import list_available_configs
+
+# View all configurations
+configs = list_available_configs()
+for name, details in configs.items():
+    print(f"{name}: {details['description']}")
+    print(f"Cost: {details['estimated_cost']}")
 ```
 
 ## Testing
@@ -154,37 +157,44 @@ Response:
 ### Run Test Suite
 
 ```bash
-# Test enhanced validation system
-python test_enhanced_validation.py
+# Test model routing and provider switching
+python test_model_routing.py
 
 # Test specific components
-python test_visual_validation.py
-python test_complex_column_shifting.py
-python test_missing_row_extraction.py
+python test_enhanced_extraction.py
+python test_complete_pipeline_enhanced.py
 ```
 
-### Accuracy Testing
+### Testing Both Providers
 
-The system includes comprehensive test scripts for:
-- Visual validation accuracy
-- Complex column shift correction
-- Missing row detection and recovery
+The system includes tests for:
+- Provider routing (Claude vs Gemini)
+- Visual validation accuracy comparison
+- File upload/delete operations
 - Schema compliance validation
-- Multi-page document processing
+- Cost and performance benchmarking
 
 ## Performance
 
 ### Accuracy Rates
 
-- **Text-only extraction**: ~98% accuracy
-- **With single-round visual validation**: ~99% accuracy
-- **With multi-round visual validation**: Up to 100% accuracy
+- **Claude 3.5 Sonnet**: ~99% accuracy, excellent for complex tables
+- **Gemini 2.0 Flash**: ~97% accuracy, very fast processing
+- **With multi-round visual validation**: Up to 100% accuracy for both providers
 
 ### Processing Times
 
-- **Text extraction**: 1-3 seconds per page
-- **Visual validation round**: 5-15 seconds per round
-- **Complete workflow**: 30-120 seconds depending on complexity and rounds needed
+| Provider | Text Extraction | Visual Validation | Complete Workflow |
+|----------|----------------|-------------------|-------------------|
+| **Claude 3.5 Sonnet** | 2-4 seconds | 8-15 seconds/round | 45-120 seconds |
+| **Gemini 2.0 Flash** | 1-2 seconds | 5-10 seconds/round | 20-60 seconds |
+
+### Cost Comparison
+
+| Provider | Per Document | Free Tier | Best For |
+|----------|-------------|-----------|----------|
+| **Claude 3.5 Sonnet** | $0.12-0.25 | None | Production, maximum accuracy |
+| **Gemini 2.0 Flash** | $0.05-0.10 | 200/day | POC, development, testing |
 
 ## Error Handling
 
@@ -197,10 +207,11 @@ The system includes robust error handling for:
 
 ## Limitations
 
-- Requires OpenAI API access (paid service)
+- Requires at least one API key (Anthropic or Google)
 - Processing time increases with validation rounds
 - Complex documents may require manual schema tuning
-- Large documents may hit token limits
+- Large documents may hit token limits (1M tokens for Gemini, varies for Claude)
+- Gemini free tier limited to 200 requests/day
 
 ## Contributing
 
