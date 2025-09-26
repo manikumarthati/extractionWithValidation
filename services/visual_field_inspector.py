@@ -627,9 +627,31 @@ class VisualFieldInspector:
     def _build_comprehensive_visual_validation_prompt(self, extracted_data: Dict, schema: Dict, page_num: int = 0) -> str:
         """Build Chain of Thought prompt that mimics human visual inspection with step-by-step reasoning"""
 
-        prompt = f"""**CRITICAL: You are viewing the uploaded document image for PAGE {page_num}.** Use this specific page image to perform a detailed visual inspection like a human data entry specialist would do. Look directly at the uploaded page image to verify the extracted data below.
+        prompt = f"""**CRITICAL: You are viewing the uploaded document image for PAGE {page_num}.** Perform TRUE VISUAL INSPECTION by examining the actual document layout and spatial positioning in the image.
 
-**VISUAL INSPECTION TASK**: Compare the extracted data against what you can actually see in the uploaded page {page_num} image. Use Chain of Thought reasoning to systematically validate each field and value by looking at the visual document.
+**VISUAL LAYOUT INSPECTION APPROACH**:
+1. **IGNORE semantic assumptions** - don't guess based on what values "should" go where
+2. **LOOK at actual visual positioning** - examine where text appears in the document image
+3. **IDENTIFY layout type** - distinguish between tabular data vs form fields
+4. **APPLY appropriate spatial validation** based on layout type
+
+**FOR TABULAR DATA (tables with columns and rows):**
+- Look at column headers and trace vertically down to see which values align under each header
+- Check for column misalignment where values appear shifted left/right from intended columns
+- Identify empty cells that should contain data vs cells incorrectly containing shifted data
+- Pay attention to visual grid lines, borders, and column spacing
+
+**FOR FORM FIELDS (label-value pairs):**
+- Look at spatial relationships between labels and their associated values
+- Check horizontal positioning - values should be near their corresponding labels
+- Verify labels are correctly matched to nearby values (not distant ones)
+- Look for visual cues like colons, spacing, and alignment that indicate field relationships
+
+**EXAMPLE MISALIGNMENT DETECTION:**
+For deduction table with columns [DeductionCode, CalCode, Frequency]:
+- If you see "DNTL" under DeductionCode, look directly right to see what's under CalCode
+- If CalCode column appears empty but contains "B5", and Frequency column is empty but should contain "B5"
+- This indicates a LEFT-SHIFT: "B5" moved one column left from Frequency to CalCode
 
 CURRENT EXTRACTED DATA TO VERIFY AGAINST PAGE {page_num} IMAGE:
 {json.dumps(extracted_data, indent=2)}
@@ -637,7 +659,12 @@ CURRENT EXTRACTED DATA TO VERIFY AGAINST PAGE {page_num} IMAGE:
 EXPECTED SCHEMA:
 {json.dumps(schema, indent=2)}
 
-**IMPORTANT**: You are looking at page {page_num} of the document. Throughout this inspection, you must look at the uploaded page image to verify every field and value. Do not rely on assumptions - verify everything against what you can visually see in page {page_num}.""" + """
+**CRITICAL VISUAL INSPECTION INSTRUCTIONS:**
+You are looking at page {page_num}. USE THE ACTUAL VISUAL LAYOUT to verify data:
+- Where is each value positioned in the image relative to its intended field/column?
+- Are there empty spaces where values should be?
+- Are values positioned under wrong columns or next to wrong labels?
+- What do the visual alignment cues (lines, spacing, borders) tell you?""" + """
 
 ## CHAIN OF THOUGHT VALIDATION PROCESS:
 
@@ -962,9 +989,32 @@ Perform the visual inspection now and respond with valid JSON only:"""
     def _build_visual_correction_prompt(self, extracted_data: Dict, validation_result: Dict, schema: Dict, page_num: int = 0) -> str:
         """Build correction prompt based on visual inspection findings"""
 
-        prompt = f"""**CRITICAL: You are viewing the uploaded document image for PAGE {page_num}.** Based on the visual inspection findings below, correct the extracted data by carefully examining this specific page image.
+        prompt = f"""**CRITICAL: You are viewing the uploaded document image for PAGE {page_num}.** Use VISUAL LAYOUT ANALYSIS to correct the extracted data based on actual document positioning.
 
-**VISUAL CORRECTION TASK**: Use the uploaded page {page_num} image to correct the extracted data based on what you can actually see in the visual document.
+**LAYOUT-AWARE CORRECTION APPROACH:**
+1. **EXAMINE the visual layout** - identify whether data is in tables or form fields
+2. **APPLY layout-specific correction methods** based on document structure
+3. **USE spatial positioning** to determine correct field/column assignments
+4. **IGNORE semantic guessing** - rely only on visual positioning cues
+
+**FOR TABULAR DATA CORRECTIONS:**
+- Look at column headers and trace down to see actual data positioning
+- For column misalignment: move values to the column they visually align with
+- For empty cells: check if values shifted from neighboring columns
+- Use grid lines, borders, and spacing as alignment guides
+
+**FOR FORM FIELD CORRECTIONS:**
+- Follow spatial relationships between labels and values
+- Match values to the nearest appropriate labels based on visual proximity
+- Use visual cues (colons, indentation, spacing) to determine field associations
+- Consider horizontal and vertical positioning relative to field labels
+
+**SPECIFIC CORRECTION EXAMPLE:**
+If validation found B5 in CalCode but it should be in Frequency:
+- Look at the deduction table in the image
+- Find where "B5" actually appears visually
+- Check which column header it aligns under
+- Move it to the correct column based on visual alignment
 
 ORIGINAL EXTRACTED DATA FROM PAGE {page_num}:
 {json.dumps(extracted_data, indent=2)}
@@ -975,7 +1025,11 @@ VISUAL INSPECTION FINDINGS FOR PAGE {page_num}:
 TARGET SCHEMA:
 {json.dumps(schema, indent=2)}
 
-**IMPORTANT**: Look at the uploaded page {page_num} image to make these corrections. Verify each correction against what you can visually see in the document image.""" + """
+**CORRECTION INSTRUCTIONS:**
+Look at page {page_num} image and make corrections based on ACTUAL VISUAL POSITIONING:
+- Where do you see each value positioned relative to headers/labels?
+- What does the visual layout tell you about correct field/column assignments?
+- Use spacing, alignment, and visual structure to guide corrections.""" + """
 
 CORRECTION INSTRUCTIONS:
 

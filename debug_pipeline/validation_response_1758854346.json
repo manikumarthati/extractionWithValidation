@@ -1,0 +1,78 @@
+{
+  "timestamp": 1758854346,
+  "validation_result": {
+    "field_validation_results": [
+      {
+        "field_name": "Company_Name",
+        "extracted_value": "Velorynt Labs",
+        "visual_inspection": {
+          "field_label_found": true,
+          "actual_value_in_document": "Velorynt Labs",
+          "value_matches_extraction": true,
+          "field_is_actually_empty": false,
+          "confidence": 0.99,
+          "issue": null
+        }
+      },
+      {
+        "field_name": "Employee_Name",
+        "extracted_value": "Jocelyn Taylor",
+        "visual_inspection": {
+          "field_label_found": true,
+          "actual_value_in_document": "Jocelyn Taylor",
+          "value_matches_extraction": true,
+          "field_is_actually_empty": false,
+          "confidence": 0.99,
+          "issue": null
+        }
+      },
+      {
+        "field_name": "Employee_ID",
+        "extracted_value": "5532",
+        "visual_inspection": {
+          "field_label_found": true,
+          "actual_value_in_document": "5532",
+          "value_matches_extraction": true,
+          "field_is_actually_empty": false,
+          "confidence": 0.99,
+          "issue": null
+        }
+      }
+    ],
+    "table_validation_results": [
+      {
+        "table_name": "Deduction_Information",
+        "rows_visible_in_image": 4,
+        "rows_extracted": 4,
+        "row_completeness_issue": false,
+        "column_alignment_issues": [
+          {
+            "row_index": 2,
+            "issue": "CalcCode and Frequency columns appear to have alignment issues - B5 values may be shifted"
+          }
+        ]
+      },
+      {
+        "table_name": "Rate_Salary_Information",
+        "rows_visible_in_image": 11,
+        "rows_extracted": 11,
+        "row_completeness_issue": false,
+        "column_alignment_issues": []
+      }
+    ],
+    "overall_assessment": {
+      "total_fields_checked": 45,
+      "fields_with_issues": 2,
+      "accuracy_estimate": 0.95,
+      "major_issues": [
+        "Potential column alignment issues in Deduction Information table"
+      ],
+      "recommendation": "Review and verify the CalcCode and Frequency column values in the Deduction Information table, particularly for rows with B5 values"
+    }
+  },
+  "response_metadata": {
+    "success": true,
+    "model_used": "claude-3-5-sonnet-20241022",
+    "response_time": 12.193495750427246
+  }
+}
