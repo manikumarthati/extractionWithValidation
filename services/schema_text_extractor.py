@@ -9,6 +9,7 @@ Schema-based PDF text extraction with vision validation
 import json
 import time
 import re
+import os
 import fitz  # PyMuPDF
 from typing import Dict, Any, List, Optional, Tuple
 from .vision_extractor import VisionBasedExtractor
@@ -22,15 +23,43 @@ class SchemaTextExtractor:
         self.api_key = api_key
         self.model_config_name = model_config_name
         self.vision_extractor = VisionBasedExtractor(api_key)
-        self.claude_service = ClaudeService(api_key, model_config_name)
-        self.visual_inspector = VisualFieldInspector(api_key)
+        self.visual_inspector = VisualFieldInspector(api_key, model_config_name)
 
         # Import here to avoid circular imports
         import sys
         import os
         sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        from model_configs import get_model_for_task
+        from model_configs import get_model_for_task, get_provider
         self.get_model_for_task = get_model_for_task
+        self.provider = get_provider(model_config_name)
+
+        # Initialize appropriate service based on provider
+        if self.provider == 'google':
+            from .gemini_service import GeminiService
+            from model_configs import GOOGLE_API_KEY
+            self.ai_service = GeminiService(GOOGLE_API_KEY, model_config_name)
+        else:
+            self.claude_service = ClaudeService(api_key, model_config_name)
+            self.ai_service = self.claude_service
+
+    def _make_unified_request(self, prompt: str, task_type: str) -> Dict[str, Any]:
+        """Unified request method that handles both Claude and Gemini with same prompts"""
+        if self.provider == 'google':
+            # For Gemini, use the prompt directly
+            result = self.ai_service._make_gemini_request(prompt, task_type)
+            # Normalize response format to match Claude
+            if result.get('success'):
+                return {
+                    'success': True,
+                    'data': json.loads(result['content'].strip().replace('```json', '').replace('```', '').strip()),
+                    'model_used': result.get('model_used'),
+                    'usage': result.get('usage', {})
+                }
+            else:
+                return result
+        else:
+            # For Claude, use existing method
+            return self.ai_service._make_claude_request(prompt, task_type)
 
     def extract_raw_text(self, pdf_path: str, page_num: int = 0) -> Dict[str, Any]:
         """Extract raw text from PDF using enhanced PyMuPDF methods"""
@@ -171,7 +200,9 @@ class SchemaTextExtractor:
         """Extract structured data from raw text using provided schema and LLM"""
         try:
             extraction_prompt = self._build_text_schema_prompt(raw_text, schema)
-            result = self.claude_service._make_claude_request(extraction_prompt, 'data_extraction')
+
+            # Use unified AI service call for all providers
+            result = self._make_unified_request(extraction_prompt, 'data_extraction')
 
             if result["success"]:
                 # Additional JSON validation and cleaning
@@ -184,7 +215,7 @@ class SchemaTextExtractor:
                         validated_data = json.loads(json_str)
 
                         # Perform aggressive row count validation
-                        validated_data = self._validate_and_enhance_table_rows(validated_data, raw_text, schema)
+                        #validated_data = self._validate_and_enhance_table_rows(validated_data, raw_text, schema)
 
                         return self._create_clean_output_format(
                             validated_data, schema, "text_based_schema"
@@ -236,16 +267,39 @@ class SchemaTextExtractor:
             }
 
     def validate_with_vision(self, pdf_path: str, extracted_json: Dict[str, Any],
-                           schema: Dict[str, Any], page_num: int = 0) -> Dict[str, Any]:
+                           schema: Dict[str, Any], page_num: int = 0, file_id: str = None) -> Dict[str, Any]:
         """Validate extracted JSON data using vision capabilities"""
         try:
             validation_prompt = self._build_vision_validation_prompt(extracted_json, schema)
 
-            image_data = self.vision_extractor.convert_pdf_to_image(pdf_path, page_num)
-            image_base64 = self.vision_extractor.encode_image_to_base64(image_data)
+            # Use file_id approach for both providers
+            if file_id:
+                # Use existing file_id for both Claude and Gemini
+                response = self.ai_service.validate_with_vision_file(file_id, validation_prompt)
+            else:
+                # Upload image and get file_id for both providers
+                image_data = self.vision_extractor.convert_pdf_to_image(pdf_path, page_num)
+                temp_image_path = f"temp_validation_{int(time.time())}.png"
+                image_data.save(temp_image_path)
 
-            # Use Claude API for vision validation
-            response = self.claude_service.validate_with_vision(image_base64, validation_prompt)
+                try:
+                    # Upload to respective service
+                    if hasattr(self.ai_service, 'upload_image'):
+                        upload_result = self.ai_service.upload_image(temp_image_path)
+                    else:
+                        # Fallback for services without upload_image method
+                        upload_result = {'success': False, 'error': 'Upload not supported'}
+
+                    if upload_result['success']:
+                        response = self.ai_service.validate_with_vision_file(upload_result['file_id'], validation_prompt)
+                    else:
+                        # Fallback to base64 if upload fails
+                        image_base64 = self.vision_extractor.encode_image_to_base64(image_data)
+                        response = self.ai_service.validate_with_vision(image_base64, validation_prompt)
+                finally:
+                    # Clean up temp file
+                    if os.path.exists(temp_image_path):
+                        os.remove(temp_image_path)
 
             if not response["success"]:
                 return {
@@ -270,18 +324,41 @@ class SchemaTextExtractor:
 
     def correct_with_vision(self, pdf_path: str, original_json: Dict[str, Any],
                           validation_issues: Dict[str, Any], schema: Dict[str, Any],
-                          page_num: int = 0) -> Dict[str, Any]:
+                          page_num: int = 0, file_id: str = None) -> Dict[str, Any]:
         """Correct extracted JSON using vision analysis"""
         try:
             correction_prompt = self._build_vision_correction_prompt(
                 original_json, validation_issues, schema
             )
 
-            image_data = self.vision_extractor.convert_pdf_to_image(pdf_path, page_num)
-            image_base64 = self.vision_extractor.encode_image_to_base64(image_data)
+            # Use file_id approach for both providers
+            if file_id:
+                # Use existing file_id for both Claude and Gemini
+                response = self.ai_service.validate_with_vision_file(file_id, correction_prompt)
+            else:
+                # Upload image and get file_id for both providers
+                image_data = self.vision_extractor.convert_pdf_to_image(pdf_path, page_num)
+                temp_image_path = f"temp_correction_{int(time.time())}.png"
+                image_data.save(temp_image_path)
 
-            # Use Claude API for vision correction
-            response = self.claude_service.validate_with_vision(image_base64, correction_prompt)
+                try:
+                    # Upload to respective service
+                    if hasattr(self.ai_service, 'upload_image'):
+                        upload_result = self.ai_service.upload_image(temp_image_path)
+                    else:
+                        # Fallback for services without upload_image method
+                        upload_result = {'success': False, 'error': 'Upload not supported'}
+
+                    if upload_result['success']:
+                        response = self.ai_service.validate_with_vision_file(upload_result['file_id'], correction_prompt)
+                    else:
+                        # Fallback to base64 if upload fails
+                        image_base64 = self.vision_extractor.encode_image_to_base64(image_data)
+                        response = self.ai_service.validate_with_vision(image_base64, correction_prompt)
+                finally:
+                    # Clean up temp file
+                    if os.path.exists(temp_image_path):
+                        os.remove(temp_image_path)
 
             if not response["success"]:
                 return {
@@ -290,6 +367,7 @@ class SchemaTextExtractor:
                     "corrected_data": original_json
                 }
 
+            # Use unified response format (data field)
             corrected_data = response["data"]
 
             return {

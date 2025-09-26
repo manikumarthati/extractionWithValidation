@@ -23,6 +23,7 @@ load_dotenv()
 
 from .schema_text_extractor import SchemaTextExtractor
 from .claude_service import ClaudeService
+from .gemini_service import GeminiService
 from .table_alignment_fixer import EnhancedValidationEngine
 
 # Add parent directory to path for imports
@@ -272,18 +273,28 @@ class HighResImagePreprocessor:
         image.save(output_path, "PNG", optimize=True, dpi=(600, 600))
 
 class OptimizedFileManager:
-    """File upload manager for Claude Files API (beta) - Vision images only"""
+    """File upload manager for both Claude and Gemini APIs - Vision images only"""
 
-    def __init__(self, api_key: str):
-        from anthropic import Anthropic
-        self.client = Anthropic(api_key=api_key)
+    def __init__(self, api_key: str, provider: str = 'anthropic', model_config_name: str = 'claude_sonnet'):
+        self.provider = provider
+        self.model_config_name = model_config_name
         self.uploaded_files = {}
+
+        if provider == 'google':
+            # Initialize Gemini service
+            from services.gemini_service import GeminiService
+            from model_configs import GOOGLE_API_KEY
+            self.ai_service = GeminiService(GOOGLE_API_KEY, model_config_name)
+        else:
+            # Initialize Claude service
+            from services.claude_service import ClaudeService
+            self.ai_service = ClaudeService(api_key, model_config_name)
 
     # Removed upload_original_pdf method - PDF uploads to Claude were unnecessary
     # Pipeline now uses only vision images for validation, saving significant tokens
 
     def upload_processed_image(self, image_path: str) -> str:
-        """Upload preprocessed image to Claude Files API (beta)"""
+        """Upload preprocessed image to AI service (Claude or Gemini)"""
 
         # Check if already cached to avoid rate limits
         cached_file_id = self.get_cached_file_id(image_path)
@@ -291,30 +302,29 @@ class OptimizedFileManager:
             print(f"[OK] Using cached image file ID: {cached_file_id}")
             return cached_file_id
 
-        print(f"[UPLOAD] Uploading image to Claude Files API...")
+        provider_name = "Gemini" if self.provider == 'google' else "Claude"
+        print(f"[UPLOAD] Uploading image to {provider_name} Files API...")
 
         # Add small delay to help with rate limiting
         time.sleep(2)  # 2 second delay before upload
 
         try:
-            with open(image_path, "rb") as image_file:
-                # Claude Files API upload method with beta headers
-                file_response = self.client.beta.files.upload(
-                    file=image_file,
-                    extra_headers={
-                        "anthropic-beta": "files-api-2025-04-14"
-                    }
-                )
+            # Use unified AI service upload method
+            upload_result = self.ai_service.upload_image(image_path)
 
-            file_size_mb = os.path.getsize(image_path) / (1024 * 1024)
-            print(f"[OK] Upload complete: {file_size_mb:.1f}MB, File ID: {file_response.id}")
+            if upload_result['success']:
+                file_size_mb = os.path.getsize(image_path) / (1024 * 1024)
+                file_id = upload_result['file_id']
+                print(f"[OK] Upload complete: {file_size_mb:.1f}MB, File ID: {file_id}")
 
-            # Cache the file ID
-            self.uploaded_files[image_path] = file_response.id
-            return file_response.id
+                # Cache the file ID
+                self.uploaded_files[image_path] = file_id
+                return file_id
+            else:
+                raise Exception(upload_result.get('error', 'Upload failed'))
 
         except Exception as e:
-            print(f"ERROR: Claude Files API upload failed: {str(e)}")
+            print(f"ERROR: {provider_name} Files API upload failed: {str(e)}")
             raise e
 
     def get_cached_file_id(self, image_path: str) -> str:
@@ -322,88 +332,76 @@ class OptimizedFileManager:
         return self.uploaded_files.get(image_path)
 
     def list_uploaded_files(self):
-        """List all uploaded files from Claude Files API"""
+        """List all uploaded files from AI service (Claude or Gemini)"""
         try:
-            response = self.client.beta.files.list(
-                extra_headers={
-                    "anthropic-beta": "files-api-2025-04-14"
-                }
-            )
-            return response.data
+            if self.provider == 'google':
+                # For Gemini, use genai.list_files()
+                import google.generativeai as genai
+                files = list(genai.list_files())
+                return files
+            else:
+                # For Claude, use existing method
+                response = self.ai_service.client.beta.files.list(
+                    extra_headers={
+                        "anthropic-beta": "files-api-2025-04-14"
+                    }
+                )
+                return response.data
         except Exception as e:
             print(f"ERROR: Failed to list files: {str(e)}")
             return []
 
     def get_file_metadata(self, file_id: str):
-        """Get metadata for a specific file"""
+        """Get metadata for a specific file from AI service (Claude or Gemini)"""
         try:
-            metadata = self.client.beta.files.retrieve_metadata(
-                file_id=file_id,
-                extra_headers={
-                    "anthropic-beta": "files-api-2025-04-14"
-                }
-            )
-            return metadata
+            if self.provider == 'google':
+                # For Gemini, use genai.get_file()
+                import google.generativeai as genai
+                file_info = genai.get_file(file_id)
+                return file_info
+            else:
+                # For Claude, use existing method
+                metadata = self.ai_service.client.beta.files.retrieve_metadata(
+                    file_id=file_id,
+                    extra_headers={
+                        "anthropic-beta": "files-api-2025-04-14"
+                    }
+                )
+                return metadata
         except Exception as e:
             print(f"ERROR: Failed to get file metadata: {str(e)}")
             return None
 
     def delete_file(self, file_id: str):
-        """Delete a specific file from Claude Files API"""
+        """Delete a specific file from AI service (Claude or Gemini)"""
         try:
-            # Note: Using the correct delete method for Claude Files API
-            response = self.client.beta.files.delete(
-                file_id=file_id,
-                extra_headers={
-                    "anthropic-beta": "files-api-2025-04-14"
-                }
-            )
-            print(f"SUCCESS: Deleted file: {file_id}")
-            return True
+            if self.provider == 'google':
+                # Use Gemini service delete method
+                result = self.ai_service.delete_file(file_id)
+                return result['success']
+            else:
+                # Use Claude service delete method
+                result = self.ai_service.delete_file(file_id)
+                return result['success']
         except Exception as e:
-            # Check if it's a "not found" error (file already deleted)
-            if "not found" in str(e).lower() or "404" in str(e):
-                print(f"DEBUG: File {file_id} already deleted or not found")
-                return True  # Consider this a success
             print(f"ERROR: Failed to delete file {file_id}: {str(e)}")
             return False
 
     def delete_all_files(self):
-        """Delete all files from Claude Files API"""
+        """Delete all files from AI service (Claude or Gemini)"""
         try:
-            # Get list of all files
-            files = self.list_uploaded_files()
-            if not files:
-                print("DEBUG: No files to delete")
-                return {"success": True, "deleted_count": 0, "message": "No files found"}
+            if self.provider == 'google':
+                # Use Gemini service delete all method
+                result = self.ai_service.delete_all_files()
+            else:
+                # Use Claude service delete all method
+                result = self.ai_service.delete_all_files()
 
-            deleted_count = 0
-            failed_count = 0
+            # Clear local cache if available
+            if hasattr(self, 'uploaded_files'):
+                self.uploaded_files.clear()
 
-            print(f"DEBUG: Attempting to delete {len(files)} files...")
-
-            for file in files:
-                file_id = file.id if hasattr(file, 'id') else file.get('id')
-                if file_id:
-                    if self.delete_file(file_id):
-                        deleted_count += 1
-                    else:
-                        failed_count += 1
-
-            # Clear local cache
-            self.uploaded_files.clear()
-
-            message = f"Deleted {deleted_count} files"
-            if failed_count > 0:
-                message += f", {failed_count} failed to delete"
-
-            print(f"SUCCESS: {message}")
-            return {
-                "success": True,
-                "deleted_count": deleted_count,
-                "failed_count": failed_count,
-                "message": message
-            }
+            return result
 
         except Exception as e:
             print(f"ERROR: Failed to delete all files: {str(e)}")
@@ -416,16 +414,30 @@ class OptimizedFileManager:
 class ValidationCorrectionEngine:
     """Combined validation and correction engine with Claude and Claude support"""
 
-    def __init__(self, api_key: str, model_config_name: str = 'current'):
-        from anthropic import Anthropic
-        self.client = Anthropic(api_key=api_key or os.environ.get('ANTHROPIC_API_KEY'))
-        self.model_client_manager = ModelClientManager(
-            anthropic_api_key=api_key or os.environ.get('ANTHROPIC_API_KEY'),
-            config_name=model_config_name
-        )
+    def __init__(self, api_key: str, model_config_name: str = 'claude_sonnet'):
+        from model_configs import get_provider
+
+        self.config_name = model_config_name
+        self.provider = get_provider(model_config_name)
+
+        if self.provider == 'google':
+            # Initialize Gemini service
+            gemini_api_key = os.environ.get('GOOGLE_API_KEY')
+            if not gemini_api_key:
+                raise ValueError("GOOGLE_API_KEY environment variable is required for Gemini")
+            self.ai_service = GeminiService(gemini_api_key, model_config_name)
+        else:
+            # Initialize Claude service (default)
+            from anthropic import Anthropic
+            self.client = Anthropic(api_key=api_key or os.environ.get('ANTHROPIC_API_KEY'))
+            self.model_client_manager = ModelClientManager(
+                anthropic_api_key=api_key or os.environ.get('ANTHROPIC_API_KEY'),
+                config_name=model_config_name
+            )
+
         self.max_rounds = 10
         self.target_accuracy = 1.0
-        self.config_name = model_config_name
+
         # Set model config for validation
         from model_configs import get_model_for_task
         self.model_config = {
@@ -823,14 +835,30 @@ class ValidationCorrectionEngine:
 class AdvancedPDFExtractionPipeline:
     """Main pipeline controller with Claude and Claude support"""
 
-    def __init__(self, api_key: str, model_config_name: str = 'current', enable_debug: bool = True):
+    def __init__(self, api_key: str, model_config_name: str = 'claude_sonnet', enable_debug: bool = True):
         self.api_key = api_key
         self.model_config_name = model_config_name
-        from anthropic import Anthropic
-        self.client = Anthropic(api_key=api_key or os.environ.get('ANTHROPIC_API_KEY'))
-        self.preprocessor = HighResImagePreprocessor()
-        self.file_manager = OptimizedFileManager(api_key)
+
+        from model_configs import get_provider
+        self.provider = get_provider(model_config_name)
+
+        if self.provider == 'google':
+            # For Gemini, we need GOOGLE_API_KEY
+            from model_configs import GOOGLE_API_KEY
+            if not GOOGLE_API_KEY:
+                raise ValueError("GOOGLE_API_KEY environment variable is required for Gemini")
+            self.ai_service = GeminiService(GOOGLE_API_KEY, model_config_name)
+        else:
+            # For Claude (default)
+            from anthropic import Anthropic
+            self.client = Anthropic(api_key=api_key or os.environ.get('ANTHROPIC_API_KEY'))
+
+        # Always initialize text extractor for both providers
         self.text_extractor = SchemaTextExtractor(api_key, model_config_name)
+
+        self.preprocessor = HighResImagePreprocessor()
+        # Initialize file manager for both providers
+        self.file_manager = OptimizedFileManager(api_key, self.provider, model_config_name)
         self.validator_corrector = ValidationCorrectionEngine(api_key, model_config_name)
         self.enhanced_validator = EnhancedValidationEngine(api_key, model_config_name)
         self.model_client_manager = ModelClientManager(
@@ -1227,7 +1255,7 @@ class AdvancedPDFExtractionPipeline:
 
                 # DEBUG: Save raw extracted data
                 if self.debug_logger:
-                    self.debug_logger.save_step("04_raw_extracted_data", extracted_data, "json")
+                    self.debug_logger.save_step("04_raw_extracted_data_of_LLM_Response", extracted_data, "json")
 
                 # If the data is already a dict (successfully parsed), validate it
                 if isinstance(extracted_data, dict):
@@ -1238,7 +1266,7 @@ class AdvancedPDFExtractionPipeline:
 
                         # DEBUG: Save validated data
                         if self.debug_logger:
-                            self.debug_logger.save_step("05_validated_extracted_data", validated_data, "json")
+                            self.debug_logger.save_step("05_validated_json_extracted_data", validated_data, "json")
 
                         # Perform aggressive row count validation
                         #validated_data = self.text_extractor._validate_and_enhance_table_rows(validated_data, raw_text, schema)

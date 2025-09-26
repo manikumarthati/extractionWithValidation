@@ -67,8 +67,8 @@ def test_environment_detection():
     print(f"ANTHROPIC_API_KEY: {'✓ Set' if anthropic_key else '✗ Not set'}")
 
     # Simulate Streamlit logic
-    from config import Config
-    base_config = getattr(Config, 'MODEL_CONFIG', 'current')
+    from model_configs import MODEL_CONFIG
+    base_config = MODEL_CONFIG
     print(f"Base MODEL_CONFIG: {base_config}")
 
     # Check if Claude would be auto-selected

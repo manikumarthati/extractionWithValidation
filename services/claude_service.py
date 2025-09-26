@@ -2,7 +2,7 @@ from anthropic import Anthropic
 import json,os
 from typing import Dict, Any, List
 import time
-from config import ClaudeConfig
+from model_configs import get_model_for_task
 from .prompts import PromptTemplates
 from .spatial_preprocessor import SpatialPreprocessor
 from .coordinate_table_extractor import CoordinateTableExtractor
@@ -12,7 +12,9 @@ from .feedback_analyzer import FeedbackAnalyzer
 class ClaudeService:
     def __init__(self, api_key: str, model_config_name: str = 'current'):
         self.client = Anthropic(api_key=api_key)
-        self.config = ClaudeConfig()
+        # Configuration constants
+        self.MAX_RETRIES = 3
+        self.ENABLE_COST_TRACKING = True
         self.model_config_name = model_config_name
         self.prompts = PromptTemplates()
         self.spatial_preprocessor = SpatialPreprocessor()
@@ -30,28 +32,29 @@ class ClaudeService:
         """Make a Claude request with task-specific model selection and cost tracking"""
 
         # Get model from our new model config system
-        model_name = self.get_model_for_task(task_type, self.model_config_name)
+        model_name = get_model_for_task(task_type, self.model_config_name)
 
-        # Get other settings from the original config
-        task_config = self.config.get_model_config(task_type)
+        # Set default values for temperature and max_tokens
+        temperature = 0.0
+        max_tokens = 8192
 
         print(f"[DEBUG] Using model: {model_name} for task: {task_type} (config: {self.model_config_name})")
         
         request_start = time.time()
         
-        for attempt in range(self.config.MAX_RETRIES):
+        for attempt in range(self.MAX_RETRIES):
             try:
                 # Build request parameters for Claude
                 response = self.client.messages.create(
                     model=model_name,  # Use the model from our config system
-                    max_tokens=task_config['max_tokens'],
-                    temperature=task_config['temperature'],
+                    max_tokens=max_tokens,
+                    temperature=temperature,
                     messages=[{"role": "user", "content": prompt}]
                 )
                 
                 # Track usage and cost if enabled
                 usage_info = {}
-                if self.config.ENABLE_COST_TRACKING:
+                if self.ENABLE_COST_TRACKING:
                     usage_info = self._track_usage(response, task_type, model_name)
                 
                 content = response.content[0].text.strip()
@@ -65,9 +68,9 @@ class ClaudeService:
                     f.write(f"=== CLAUDE ENHANCED DEBUG SESSION ===\n")
                     f.write(f"UPDATED CODE VERSION: 2025-09-13 NEW FORMAT\n")
                     f.write(f"Task Type: {task_type}\n")
-                    f.write(f"Model: {task_config['model']}\n")
-                    f.write(f"Temperature: {task_config['temperature']}\n")
-                    f.write(f"Max Tokens: {task_config['max_tokens']}\n")
+                    f.write(f"Model: {model_name}\n")
+                    f.write(f"Temperature: {temperature}\n")
+                    f.write(f"Max Tokens: {max_tokens}\n")
                     f.write(f"Timestamp: {time.time()}\n")
                     f.write(f"Request Time: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
                     f.write("=" * 80 + "\n")
@@ -86,7 +89,7 @@ class ClaudeService:
                     result = json.loads(content)
                 except json.JSONDecodeError:
                     # Try multiple JSON extraction strategies
-                    result = self._extract_json_from_response(content, task_config['model'], task_type)
+                    result = self._extract_json_from_response(content, model_name, task_type)
                     if not result["success"]:
                         return result
                     result = result["data"]
@@ -95,7 +98,7 @@ class ClaudeService:
                     "success": True, 
                     "data": result,
                     "usage": usage_info,
-                    "model_used": task_config['model'],
+                    "model_used": model_name,
                     "task_type": task_type,
                     "response_time": time.time() - request_start
                 }
@@ -107,16 +110,16 @@ class ClaudeService:
                     "success": False, 
                     "error": f"JSON parsing error: {str(e)}", 
                     "raw_content": content,
-                    "model_used": task_config['model'],
+                    "model_used": model_name,
                     "task_type": task_type
                 }
                 
             except Exception as e:
-                if attempt == self.config.MAX_RETRIES - 1:
+                if attempt == self.MAX_RETRIES - 1:
                     return {
                         "success": False, 
-                        "error": f"Request failed after {self.config.MAX_RETRIES} attempts: {str(e)}",
-                        "model_used": task_config['model'],
+                        "error": f"Request failed after {self.MAX_RETRIES} attempts: {str(e)}",
+                        "model_used": model_name,
                         "task_type": task_type
                     }
                 
@@ -1357,17 +1360,21 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
         """Perform vision-based validation using Claude API"""
         try:
             # Get model config for vision tasks
-            task_config = self.config.get_model_config('field_identification')
+            model_name = get_model_for_task('field_identification', self.model_config_name)
+
+            # Set default values for temperature and max_tokens
+            temperature = 0.0
+            max_tokens = 8192
 
             request_start = time.time()
 
-            for attempt in range(self.config.MAX_RETRIES):
+            for attempt in range(self.MAX_RETRIES):
                 try:
                     # Build message with image content for Claude
                     response = self.client.messages.create(
-                        model=task_config['model'],
-                        max_tokens=task_config['max_tokens'],
-                        temperature=task_config['temperature'],
+                        model=model_name,
+                        max_tokens=max_tokens,
+                        temperature=temperature,
                         messages=[
                             {
                                 "role": "user",
@@ -1388,8 +1395,8 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
 
                     # Track usage if enabled
                     usage_info = {}
-                    if self.config.ENABLE_COST_TRACKING:
-                        usage_info = self._track_usage(response, 'vision_validation', task_config['model'])
+                    if self.ENABLE_COST_TRACKING:
+                        usage_info = self._track_usage(response, 'vision_validation', model_name)
 
                     content = response.content[0].text.strip()
 
@@ -1397,7 +1404,7 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
                     try:
                         result = json.loads(content)
                     except json.JSONDecodeError:
-                        result = self._extract_json_from_response(content, task_config['model'], 'vision_validation')
+                        result = self._extract_json_from_response(content, model_name, 'vision_validation')
                         if not result["success"]:
                             return result
                         result = result["data"]
@@ -1406,7 +1413,7 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
                         "success": True,
                         "data": result,
                         "usage": usage_info,
-                        "model_used": task_config['model'],
+                        "model_used": model_name,
                         "response_time": time.time() - request_start
                     }
 
@@ -1421,10 +1428,10 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
                         backoff_time = 2 ** attempt
                         time.sleep(backoff_time)
 
-                    if attempt == self.config.MAX_RETRIES - 1:
+                    if attempt == self.MAX_RETRIES - 1:
                         return {
                             "success": False,
-                            "error": f"Vision validation failed after {self.config.MAX_RETRIES} attempts: {str(e)}",
+                            "error": f"Vision validation failed after {self.MAX_RETRIES} attempts: {str(e)}",
                             "response_time": time.time() - request_start
                         }
 
@@ -1438,17 +1445,21 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
         """Perform vision-based validation using Claude Files API file_id (token efficient)"""
         try:
             # Get model config for vision tasks
-            task_config = self.config.get_model_config('field_identification')
+            model_name = get_model_for_task('field_identification', self.model_config_name)
+
+            # Set default values for temperature and max_tokens
+            temperature = 0.0
+            max_tokens = 8192
 
             request_start = time.time()
 
-            for attempt in range(self.config.MAX_RETRIES):
+            for attempt in range(self.MAX_RETRIES):
                 try:
                     # Build message with file_id reference for Claude (requires Files API beta header)
                     response = self.client.messages.create(
-                        model=task_config['model'],
-                        max_tokens=task_config['max_tokens'],
-                        temperature=task_config['temperature'],
+                        model=model_name,
+                        max_tokens=max_tokens,
+                        temperature=temperature,
                         messages=[
                             {
                                 "role": "user",
@@ -1469,8 +1480,8 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
 
                     # Track usage if enabled
                     usage_info = {}
-                    if self.config.ENABLE_COST_TRACKING:
-                        usage_info = self._track_usage(response, 'vision_validation_file', task_config['model'])
+                    if self.ENABLE_COST_TRACKING:
+                        usage_info = self._track_usage(response, 'vision_validation_file', model_name)
 
                     content = response.content[0].text.strip()
 
@@ -1478,7 +1489,7 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
                     try:
                         result = json.loads(content)
                     except json.JSONDecodeError:
-                        result = self._extract_json_from_response(content, task_config['model'], 'vision_validation_file')
+                        result = self._extract_json_from_response(content, model_name, 'vision_validation_file')
                         if not result["success"]:
                             return result
                         result = result["data"]
@@ -1487,7 +1498,7 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
                         "success": True,
                         "data": result,
                         "usage": usage_info,
-                        "model_used": task_config['model'],
+                        "model_used": model_name,
                         "response_time": time.time() - request_start,
                         "token_efficient": True
                     }
@@ -1503,10 +1514,10 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
                         backoff_time = 2 ** attempt
                         time.sleep(backoff_time)
 
-                    if attempt == self.config.MAX_RETRIES - 1:
+                    if attempt == self.MAX_RETRIES - 1:
                         return {
                             "success": False,
-                            "error": f"Vision validation with file_id failed after {self.config.MAX_RETRIES} attempts: {str(e)}",
+                            "error": f"Vision validation with file_id failed after {self.MAX_RETRIES} attempts: {str(e)}",
                             "response_time": time.time() - request_start
                         }
 
@@ -1514,4 +1525,103 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
             return {
                 "success": False,
                 "error": f"Vision validation with file_id error: {str(e)}"
+            }
+
+    def upload_image(self, image_path: str) -> Dict[str, Any]:
+        """Upload image to Claude Files API and return file info"""
+        try:
+            # Upload file to Claude Files API
+            with open(image_path, "rb") as image_file:
+                file_upload = self.client.files.create(
+                    file=image_file,
+                    purpose="vision"
+                )
+
+            return {
+                'success': True,
+                'file_id': file_upload.id,
+                'filename': file_upload.filename,
+                'size_bytes': file_upload.size_bytes,
+                'type': file_upload.type
+            }
+
+        except Exception as e:
+            return {
+                'success': False,
+                'error': f"Failed to upload image to Claude: {str(e)}"
+            }
+
+    def delete_file(self, file_id: str) -> Dict[str, Any]:
+        """Delete a specific file from Claude Files API"""
+        try:
+            # Note: Using the correct delete method for Claude Files API
+            response = self.client.beta.files.delete(
+                file_id=file_id,
+                extra_headers={
+                    "anthropic-beta": "files-api-2025-04-14"
+                }
+            )
+            print(f"SUCCESS: Deleted Claude file: {file_id}")
+            return {
+                'success': True,
+                'file_id': file_id
+            }
+
+        except Exception as e:
+            # Check if it's a "not found" error (file already deleted)
+            if "not found" in str(e).lower() or "404" in str(e):
+                print(f"DEBUG: Claude file {file_id} already deleted or not found")
+                return {'success': True, 'file_id': file_id}  # Consider this a success
+            print(f"ERROR: Failed to delete Claude file {file_id}: {str(e)}")
+            return {
+                'success': False,
+                'error': f"Failed to delete file: {str(e)}",
+                'file_id': file_id
+            }
+
+    def delete_all_files(self) -> Dict[str, Any]:
+        """Delete all files from Claude Files API"""
+        try:
+            # List all files
+            files_response = self.client.beta.files.list(
+                extra_headers={"anthropic-beta": "files-api-2025-04-14"}
+            )
+            files = files_response.data
+
+            if not files:
+                return {
+                    "success": True,
+                    "deleted_count": 0,
+                    "message": "No Claude files found"
+                }
+
+            print(f"DEBUG: Attempting to delete {len(files)} Claude files...")
+
+            deleted_count = 0
+            failed_files = []
+
+            for file in files:
+                result = self.delete_file(file.id)
+                if result['success']:
+                    deleted_count += 1
+                else:
+                    failed_files.append(file.id)
+
+            message = f"Deleted {deleted_count} Claude files"
+            if failed_files:
+                message += f", failed to delete {len(failed_files)} files"
+
+            return {
+                "success": len(failed_files) == 0,
+                "deleted_count": deleted_count,
+                "failed_files": failed_files,
+                "message": message
+            }
+
+        except Exception as e:
+            print(f"ERROR: Failed to delete all Claude files: {str(e)}")
+            return {
+                "success": False,
+                "error": f"Failed to delete all files: {str(e)}",
+                "deleted_count": 0
             }

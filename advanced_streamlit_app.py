@@ -19,7 +19,6 @@ import pandas as pd
 # Import our pipeline components
 from services.schema_text_extractor import SchemaTextExtractor
 from services.advanced_pipeline import AdvancedPDFExtractionPipeline
-from config import Config
 from model_configs import get_model_config, list_available_configs, get_cost_comparison
 
 # Configure page
@@ -218,7 +217,7 @@ class AdvancedPipelineUI:
         st.markdown("""
         <div class="main-header">
             <h1>PDF Data Extraction</h1>
-            <p>Claude 3.5 Sonnet • 600 DPI Processing • 100% Accuracy Target</p>
+            <p>Claude vs Gemini Comparison • 600 DPI Processing • POC Evaluation</p>
             <small style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px;">Enhanced v2.0 - Dynamic Metrics & Console Validation Logging</small>
         </div>
         """, unsafe_allow_html=True)
@@ -351,8 +350,44 @@ class AdvancedPipelineUI:
                 except json.JSONDecodeError as e:
                     st.error(f"❌ Invalid JSON: {str(e)}")
 
+        # Model Selection Section
+        st.markdown("---")
+        st.markdown("**🤖 Model Configuration**")
+
+        # Get available model configurations
+        available_configs = list_available_configs()
+
+        # Create a more user-friendly display for model options
+        model_options = {
+            'Claude 3.5 Sonnet': 'claude_sonnet',
+            'Gemini 2.0 Flash (POC)': 'gemini_flash'
+        }
+
+        # Model selection
+        col1, col2 = st.columns([2, 1])
+
+        with col1:
+            selected_model_display = st.selectbox(
+                "Choose model configuration:",
+                options=list(model_options.keys()),
+                index=0,  # Default to "Claude 3.5 Sonnet"
+                disabled=self.pipeline_state['processing'],
+                help="Select Claude or Gemini model for extraction comparison"
+            )
+
+            selected_model_config = model_options[selected_model_display]
+
+        with col2:
+            # Show cost and features for selected model
+            if selected_model_config in available_configs:
+                config_info = available_configs[selected_model_config]
+                st.markdown(f"**Cost:** {config_info['estimated_cost']}")
+                st.markdown(f"**Features:**")
+                for feature in config_info['features'][:2]:  # Show first 2 features
+                    st.markdown(f"• {feature}")
+
         st.markdown('</div>', unsafe_allow_html=True)
-        return pdf_file, page_num, schema, selected_file_id
+        return pdf_file, page_num, schema, selected_file_id, selected_model_config
 
     def render_uploaded_files_section(self):
         """Render uploaded files selection section"""
@@ -860,7 +895,7 @@ def init_extractor():
 
     return SchemaTextExtractor(api_key)
 
-def process_pipeline_sync(pdf_file, schema, page_num, settings, selected_file_id=None):
+def process_pipeline_sync(pdf_file, schema, page_num, settings, selected_model_config='current', selected_file_id=None):
     """Process the pipeline with real-time progress updates"""
 
     # Initialize pipeline state
@@ -910,15 +945,30 @@ def process_pipeline_sync(pdf_file, schema, page_num, settings, selected_file_id
         #api_key = os.environ.get('OPENAI_API_KEY')
        
 
-        # Get model configuration from UI settings
-        model_config = settings.get('model_config', 'current')
+        # Use model configuration selected by user
+        model_config = selected_model_config
+
+        # Check if we're using Gemini
+        config_details = list_available_configs().get(model_config, {})
+        provider = config_details.get('provider', 'anthropic')
 
         # Get API key
         anthropic_key = os.environ.get('ANTHROPIC_API_KEY')
         api_key = anthropic_key
 
-        # Show which configuration is being used
-        st.info(f"🤖 Using model configuration: {model_config.title()}")
+        # Show which configuration is being used with details
+        config_name = model_config.title()
+        config_cost = config_details.get('estimated_cost', 'Unknown cost')
+        provider_name = "Google Gemini" if provider == 'google' else "Anthropic Claude"
+        st.info(f"🤖 Using {provider_name} • {config_name} • {config_cost}")
+
+        # For POC - show Gemini integration status
+        if provider == 'google':
+            gemini_key = os.environ.get('GOOGLE_API_KEY')
+            if not gemini_key:
+                st.error("❌ GOOGLE_API_KEY environment variable not found. Please set it to use Gemini.")
+                st.stop()
+            st.success("✅ Google Gemini API key configured")
 
         try:
             pipeline = AdvancedPDFExtractionPipeline(api_key, model_config)
@@ -1071,7 +1121,7 @@ def main():
     ui.render_pipeline_overview()
 
     # Upload section
-    pdf_file, page_num, schema, selected_file_id = ui.render_upload_section()
+    pdf_file, page_num, schema, selected_file_id, selected_model_config = ui.render_upload_section()
 
     # Processing controls
     controls = ui.render_processing_controls(pdf_file or selected_file_id, schema)
@@ -1099,7 +1149,7 @@ def main():
 
             try:
                 # Process the pipeline
-                result = process_pipeline_sync(pdf_file, schema, page_num, controls['settings'], selected_file_id)
+                result = process_pipeline_sync(pdf_file, schema, page_num, controls['settings'], selected_model_config, selected_file_id)
 
                 # Display result or error
                 if result and not result.get('success', True):

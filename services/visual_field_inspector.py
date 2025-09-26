@@ -12,10 +12,26 @@ from .claude_service import ClaudeService
 
 
 class VisualFieldInspector:
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str, model_config_name: str = 'claude_sonnet'):
         """Initialize visual field inspector with vision capabilities"""
         self.vision_extractor = VisionBasedExtractor(api_key)
-        self.claude_service = ClaudeService(api_key)
+        self.model_config_name = model_config_name
+
+        # Import here to avoid circular imports
+        import sys
+        import os
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from model_configs import get_provider
+        self.provider = get_provider(model_config_name)
+
+        # Initialize appropriate service based on provider
+        if self.provider == 'google':
+            from .gemini_service import GeminiService
+            from model_configs import GOOGLE_API_KEY
+            self.ai_service = GeminiService(GOOGLE_API_KEY, model_config_name)
+        else:
+            self.claude_service = ClaudeService(api_key, model_config_name)
+            self.ai_service = self.claude_service
 
     def validate_all_fields_visually(self, pdf_path: str, extracted_data: Dict,
                                    schema: Dict, page_num: int = 0, file_id: str = None,
@@ -42,12 +58,12 @@ class VisualFieldInspector:
             # Use current_file_id if available (token efficient) or fall back to base64 conversion
             if current_file_id:
                 # Token-efficient approach: use pre-uploaded image file for this specific page
-                response = self.claude_service.validate_with_vision_file(current_file_id, validation_prompt)
+                response = self.ai_service.validate_with_vision_file(current_file_id, validation_prompt)
             else:
                 # Fallback approach: convert PDF to base64 image
                 image_data = self.vision_extractor.convert_pdf_to_image(pdf_path, page_num)
                 image_base64 = self.vision_extractor.encode_image_to_base64(image_data)
-                response = self.claude_service.validate_with_vision(image_base64, validation_prompt)
+                response = self.ai_service.validate_with_vision(image_base64, validation_prompt)
 
             if not response["success"]:
                 # Save failed validation response
@@ -114,12 +130,12 @@ class VisualFieldInspector:
             # Use current_file_id if available (token efficient) or fall back to base64 conversion
             if current_file_id:
                 # Token-efficient approach: use pre-uploaded image file for this specific page
-                response = self.claude_service.validate_with_vision_file(current_file_id, correction_prompt)
+                response = self.ai_service.validate_with_vision_file(current_file_id, correction_prompt)
             else:
                 # Fallback approach: convert PDF to base64 image
                 image_data = self.vision_extractor.convert_pdf_to_image(pdf_path, page_num)
                 image_base64 = self.vision_extractor.encode_image_to_base64(image_data)
-                response = self.claude_service.validate_with_vision(image_base64, correction_prompt)
+                response = self.ai_service.validate_with_vision(image_base64, correction_prompt)
 
             if not response["success"]:
                 # Save failed correction response

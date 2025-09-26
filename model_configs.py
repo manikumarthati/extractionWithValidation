@@ -2,6 +2,18 @@
 Model configuration presets for easy switching between different Claude models
 Allows for cost optimization and performance tuning based on task requirements
 """
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Environment configuration
+ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
+GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
+UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER') or 'uploads'
+RESULTS_FOLDER = os.environ.get('RESULTS_FOLDER') or 'results'
+MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
+MODEL_CONFIG = os.environ.get('MODEL_CONFIG') or 'claude_sonnet'
 
 # Current configuration: Claude 3.5 Haiku for cost-effective tasks, Sonnet for accuracy
 CLAUDE_BALANCED_CONFIG = {
@@ -24,7 +36,8 @@ CLAUDE_SONNET_CONFIG = {
     'reasoning': 'claude-3-5-sonnet-20241022',
     'description': 'Claude 3.5 Sonnet for superior document accuracy',
     'estimated_cost_per_doc': '$0.12-0.25',
-    'features': ['Superior accuracy', 'Better table reasoning', 'Excellent schema compliance', 'Vision + text']
+    'features': ['Superior accuracy', 'Better table reasoning', 'Excellent schema compliance', 'Vision + text'],
+    'provider': 'anthropic'
 }
 
 # Budget configuration: Claude 3.5 Haiku only
@@ -51,25 +64,38 @@ CLAUDE_OPUS_CONFIG = {
     'features': ['Maximum accuracy', 'Best reasoning', 'Premium vision', 'Higher cost']
 }
 
-# Available configurations
-AVAILABLE_CONFIGS = {
-    'budget': CLAUDE_HAIKU_CONFIG,
-    'haiku': CLAUDE_HAIKU_CONFIG,  # Alias for budget
-    'haiku_only': CLAUDE_HAIKU_CONFIG,  # Clear naming
-    'current': CLAUDE_BALANCED_CONFIG,
-    'claude': CLAUDE_SONNET_CONFIG,
-    'balanced': CLAUDE_BALANCED_CONFIG,
-    'premium': CLAUDE_OPUS_CONFIG
+# Gemini model configurations
+GEMINI_FLASH_CONFIG = {
+    'classification': 'gemini-2.0-flash-exp',
+    'field_identification': 'gemini-2.0-flash-exp',
+    'data_extraction': 'gemini-2.0-flash-exp',
+    'vision_validation': 'gemini-2.0-flash-exp',
+    'reasoning': 'gemini-2.0-flash-exp',
+    'description': 'Google Gemini 2.0 Flash for POC document processing',
+    'estimated_cost_per_doc': '$0.05-0.10 (Free: 200/day limit)',
+    'features': ['Ultra fast', 'Multimodal', '1M token context', 'POC suitable'],
+    'provider': 'google'
 }
 
-def get_model_config(config_name: str = 'current') -> dict:
-    """Get model configuration by name"""
-    return AVAILABLE_CONFIGS.get(config_name, CLAUDE_BALANCED_CONFIG)
+# Available configurations
+AVAILABLE_CONFIGS = {
+    'claude_sonnet': CLAUDE_SONNET_CONFIG,
+    'gemini_flash': GEMINI_FLASH_CONFIG
+}
 
-def get_model_for_task(task: str, config_name: str = 'current') -> str:
+def get_model_config(config_name: str = 'claude_sonnet') -> dict:
+    """Get model configuration by name"""
+    return AVAILABLE_CONFIGS.get(config_name, CLAUDE_SONNET_CONFIG)
+
+def get_model_for_task(task: str, config_name: str = 'claude_sonnet') -> str:
     """Get specific model for a task"""
     config = get_model_config(config_name)
     return config.get(task, 'claude-3-5-sonnet-20241022')
+
+def get_provider(config_name: str = 'claude_sonnet') -> str:
+    """Get AI provider for the configuration"""
+    config = get_model_config(config_name)
+    return config.get('provider', 'anthropic')
 
 def list_available_configs() -> dict:
     """List all available configurations with details"""
@@ -78,7 +104,8 @@ def list_available_configs() -> dict:
         result[name] = {
             'description': config['description'],
             'estimated_cost': config['estimated_cost_per_doc'],
-            'features': config['features']
+            'features': config['features'],
+            'provider': config['provider'] 
         }
     return result
 
