@@ -1,0 +1,553 @@
+{
+    "name": "projects/employee-balances/processors/cbiz-employee-balances/dataset/datasetSchema",
+    "documentSchema": {
+        "entityTypes": [
+            {
+                "name": "employee_balances_document",
+                "baseTypes": [
+                    "document"
+                ],
+                "properties": [
+                    {
+                        "name": "Document_Header",
+                        "valueType": "Document_Header",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Document header with company and period information",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Balances",
+                        "valueType": "Employee_Balances",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "description": "Employee balance records for payroll register documents with historical pay information",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Employee Balances Document"
+            },
+            {
+                "name": "Document_Header",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Company_Name",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Company name",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Company_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Company identification number in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Period",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Pay period information",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Page_Number",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Page number",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Document Header"
+            },
+            {
+                "name": "Employee_Balances",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Employee_Information",
+                        "valueType": "Employee_Information",
+                        "occurrenceType": "REQUIRED_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Basic employee identification information",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Earnings",
+                        "valueType": "Paycheck_Earning",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "description": "Employee earning balance details with codes, rates, hours, and amounts",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Taxes",
+                        "valueType": "Paycheck_Tax",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "description": "Employee tax balance information with YTD, monthly, and quarterly amounts",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Employer_Taxes",
+                        "valueType": "Paycheck_Employer_Tax",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "description": "Employer tax balance information with codes and taxable amounts",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Paycheck_Deductions",
+                        "valueType": "Paycheck_Deduction",
+                        "occurrenceType": "OPTIONAL_MULTIPLE",
+                        "propertyMetadata": {},
+                        "description": "Employee deduction balance information with remaining balances",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Pay_Information",
+                        "valueType": "Pay_Information",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "General pay period and check information",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Employee Balances"
+            },
+            {
+                "name": "Employee_Information",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Employee_Identification_Number",
+                        "valueType": "number",
+                        "occurrenceType": "REQUIRED_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Employee identification number",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employee_Name",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Full name of the employee",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Social_Security_Number",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Employee's social security number",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Employee Information"
+            },
+            {
+                "name": "Paycheck_Earning",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Earning_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Code identifier for the earning type",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Earning_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Description of the earning type",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Earning_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Current earning amount for the pay period",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Earning_Hours",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Hours worked for this earning type",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Earning_Rate",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Rate of pay for this earning type",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Earning_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Year-to-date earning amount balance",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Monthly_Earning_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Month-to-date earning amount balance",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Quarterly_Earning_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Quarter-to-date earning amount balance",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Earning_Hours",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Year-to-date earning hours balance",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Paycheck Earning"
+            },
+            {
+                "name": "Paycheck_Tax",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Tax_Code",
+                        "valueType": "string",
+                        "occurrenceType": "REQUIRED_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Employee code for tax balances in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Tax_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Description of the tax type",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Current tax amount for the pay period",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Taxable_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Current taxable amount for this tax",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Employee YTD tax amount balances in vendor system for current YTD",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Monthly_Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Employee amount balances in vendor system for current month",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Quarterly_Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Employee amount balances in vendor system for current quarter",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Taxable_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Employee YTD taxable balances in vendor system for current YTD",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Monthly_Taxable_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Employee taxable balances in vendor system for current month",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Quarterly_Taxable_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Employee taxable balances in vendor system for current quarter",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Paycheck Tax"
+            },
+            {
+                "name": "Paycheck_Employer_Tax",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Employer_Tax_Code",
+                        "valueType": "string",
+                        "occurrenceType": "REQUIRED_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Employer code for tax balances in vendor system",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employer_Tax_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Description of the employer tax type",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employer_Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Current employer tax amount for the pay period",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Employer_Taxable_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Current employer taxable amount for this tax",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Employer_Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Employer YTD tax amount balances in vendor system for current YTD",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Monthly_Employer_Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Employer amount balances in vendor system for current month",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Quarterly_Employer_Tax_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Employer amount balances in vendor system for current quarter",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Employer_Taxable_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Employer YTD taxable balances in vendor system for current YTD",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Monthly_Employer_Taxable_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Employer taxable balances in vendor system for current month",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Quarterly_Employer_Taxable_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Employer taxable balances in vendor system for current quarter",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Paycheck Employer Tax"
+            },
+            {
+                "name": "Paycheck_Deduction",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Deduction_Code",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Code identifier for the deduction type",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Description",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Description of the deduction type",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Current deduction amount for the pay period",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Deduction_Balance",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Balance amount remaining for deduction",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Yearly_Deduction_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Year-to-date deduction amount balance",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Monthly_Deduction_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Month-to-date deduction amount balance",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Quarterly_Deduction_Amount",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Quarter-to-date deduction amount balance",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Paycheck Deduction"
+            },
+            {
+                "name": "Pay_Information",
+                "baseTypes": [
+                    "object"
+                ],
+                "properties": [
+                    {
+                        "name": "Pay_Date",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Date of the paycheck or pay period",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Pay_Period_Start",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Start date of the pay period",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Pay_Period_End",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "End date of the pay period",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Check_Number",
+                        "valueType": "string",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Payroll check number",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Net_Pay",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Net pay amount after taxes and deductions",
+                        "method": "EXTRACT"
+                    },
+                    {
+                        "name": "Gross_Pay",
+                        "valueType": "number",
+                        "occurrenceType": "OPTIONAL_ONCE",
+                        "propertyMetadata": {},
+                        "description": "Gross pay amount before taxes and deductions",
+                        "method": "EXTRACT"
+                    }
+                ],
+                "entityTypeMetadata": {},
+                "displayName": "Pay Information"
+            }
+        ]
+    }
+}

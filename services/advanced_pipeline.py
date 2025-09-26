@@ -949,10 +949,24 @@ class AdvancedPDFExtractionPipeline:
             )
             result["pipeline_steps"]["step4_validation"] = step4_result
 
+            # DEBUG: Log step4 result contents
+            print(f"\nDEBUG: Step4 Result Contents:")
+            print(f"  step4_result keys: {list(step4_result.keys())}")
+            print(f"  final_accuracy_estimate: {step4_result.get('final_accuracy_estimate')}")
+            print(f"  validation_rounds_completed: {step4_result.get('validation_rounds_completed')}")
+            print(f"  total_corrections_applied: {step4_result.get('total_corrections_applied')}")
+
             # Compile final results
             result["success"] = step4_result["success"]
             result["final_data"] = step4_result["final_data"]
             result["workflow_summary"] = self._compile_workflow_summary(result["pipeline_steps"])
+
+            # DEBUG: Log workflow summary contents after compilation
+            print(f"\nDEBUG: Compiled Workflow Summary:")
+            print(f"  workflow_summary keys: {list(result['workflow_summary'].keys())}")
+            print(f"  final_accuracy: {result['workflow_summary'].get('final_accuracy')}")
+            print(f"  validation_rounds_completed: {result['workflow_summary'].get('validation_rounds_completed')}")
+            print(f"  total_corrections_applied: {result['workflow_summary'].get('total_corrections_applied')}")
 
             # Cleanup
             self._cleanup_temp_files(step1_result.get("processed_image_path"))
@@ -1354,10 +1368,15 @@ class AdvancedPDFExtractionPipeline:
                 return {
                     "success": True,
                     "final_data": extracted_data,
+                    "validation_rounds_completed": 0,
+                    "final_accuracy_estimate": 0.85,
+                    "total_corrections_applied": 0,
+                    "validation_time": time.time() - step_start,
+                    "token_efficient": False,
+                    # Keep old names for backward compatibility
                     "validation_rounds": 0,
                     "accuracy_estimate": 0.85,
-                    "validation_time": time.time() - step_start,
-                    "token_efficient": False
+                    "corrections_applied": 0
                 }
 
             log_progress(f"[VALIDATE] Using token-efficient validation with image file: {vision_image_file_id}")
@@ -1372,17 +1391,36 @@ class AdvancedPDFExtractionPipeline:
                 vision_image_file_id, page_file_ids
             )
 
+            # DEBUG: Log validation_result contents
+            print(f"\nDEBUG: Validation Result from multi_round_visual_validation:")
+            print(f"  validation_result keys: {list(validation_result.keys())}")
+            print(f"  rounds_performed: {validation_result.get('rounds_performed')}")
+            print(f"  validation_rounds_completed: {validation_result.get('validation_rounds_completed')}")
+            print(f"  accuracy_estimate: {validation_result.get('accuracy_estimate')}")
+            print(f"  final_accuracy_estimate: {validation_result.get('final_accuracy_estimate')}")
+            print(f"  total_corrections: {validation_result.get('total_corrections')}")
+            print(f"  total_corrections_applied: {validation_result.get('total_corrections_applied')}")
+
             if validation_result["success"]:
-                log_progress(f"[OK] Token-efficient validation complete: {validation_result.get('accuracy_estimate', 0.9):.0%} accuracy")
+                # Use the correct field names from the multi_round_visual_validation result
+                rounds_completed = validation_result.get("validation_rounds_completed", 0)
+                final_accuracy = validation_result.get("final_accuracy_estimate", 0.9)
+                total_corrections = validation_result.get("total_corrections_applied", 0)
+
+                log_progress(f"[OK] Token-efficient validation complete: {final_accuracy:.0%} accuracy")
 
                 return {
                     "success": True,
                     "final_data": validation_result["extracted_data"],
-                    "validation_rounds": validation_result.get("rounds_performed", 0),
-                    "accuracy_estimate": validation_result.get("accuracy_estimate", 0.9),
+                    "validation_rounds_completed": rounds_completed,
+                    "final_accuracy_estimate": final_accuracy,
+                    "total_corrections_applied": total_corrections,
                     "validation_time": time.time() - step_start,
                     "token_efficient": True,
-                    "corrections_applied": validation_result.get("total_corrections", 0)
+                    # Keep old names for backward compatibility
+                    "validation_rounds": rounds_completed,
+                    "accuracy_estimate": final_accuracy,
+                    "corrections_applied": total_corrections
                 }
             else:
                 return {

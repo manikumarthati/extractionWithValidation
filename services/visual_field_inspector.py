@@ -469,25 +469,40 @@ class VisualFieldInspector:
                                          target_accuracy: float) -> float:
         """Enhanced accuracy calculation that can achieve 100% accuracy"""
 
+        print(f"\nDEBUG: _calculate_enhanced_final_accuracy:")
+        print(f"  correction_history length: {len(correction_history)}")
+        print(f"  accuracy_progression length: {len(accuracy_progression)}")
+        print(f"  target_accuracy: {target_accuracy}")
+
         # If no corrections needed and no issues found in final round, assume perfect accuracy
         if not correction_history and accuracy_progression:
             final_round = accuracy_progression[-1]
-            if final_round.get("issues_found", 0) == 0:
+            issues_found = final_round.get("issues_found", 0)
+            print(f"  final_round issues_found: {issues_found}")
+            if issues_found == 0:
+                print(f"  -> Returning 1.0 (perfect accuracy)")
                 return 1.0  # Perfect accuracy achieved
 
         # If we have accuracy progression data, use the latest measurement
         if accuracy_progression:
             latest_accuracy = accuracy_progression[-1].get("accuracy", 0.98)
             issues_found = accuracy_progression[-1].get("issues_found", 0)
+            print(f"  latest_accuracy: {latest_accuracy}")
+            print(f"  issues_found: {issues_found}")
 
             # If no issues found in final round and accuracy is high, boost to target
             if issues_found == 0 and latest_accuracy >= 0.95:
-                return min(1.0, latest_accuracy + 0.05)  # Cap at 100%
+                final_result = min(1.0, latest_accuracy + 0.05)
+                print(f"  -> Boosting to: {final_result}")
+                return final_result  # Cap at 100%
 
+            print(f"  -> Returning latest_accuracy: {latest_accuracy}")
             return latest_accuracy
 
         # Fallback to original calculation
-        return self._calculate_final_accuracy(correction_history)
+        fallback = self._calculate_final_accuracy(correction_history)
+        print(f"  -> Fallback calculation: {fallback}")
+        return fallback
 
     def _detect_column_shifts(self, before_row: Dict, after_row: Dict, round_num: int) -> List[Dict]:
         """Detect and categorize column shifting patterns in table rows"""

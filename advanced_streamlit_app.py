@@ -25,7 +25,7 @@ from model_configs import get_model_config, list_available_configs, get_cost_com
 # Configure page
 st.set_page_config(
     page_title="Advanced PDF Extractor",
-    page_icon="🚀",
+    page_icon=":rocket:",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -217,8 +217,8 @@ class AdvancedPipelineUI:
         """Render main application header"""
         st.markdown("""
         <div class="main-header">
-            <h1>🚀 PDF Data Extraction</h1>
-            <p>🤖 Claude 3.5 Sonnet • 🔍 600 DPI Processing • 🎯 100% Accuracy Target</p>
+            <h1>PDF Data Extraction</h1>
+            <p>Claude 3.5 Sonnet • 600 DPI Processing • 100% Accuracy Target</p>
             <small style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px;">Enhanced v2.0 - Dynamic Metrics & Console Validation Logging</small>
         </div>
         """, unsafe_allow_html=True)
@@ -226,13 +226,13 @@ class AdvancedPipelineUI:
     def render_pipeline_overview(self):
         """Render pipeline steps overview"""
         st.markdown('<div class="feature-card">', unsafe_allow_html=True)
-        st.subheader("📋 Processing Pipeline")
+        st.subheader("Processing Pipeline")
 
         steps = [
-            {"name": "📄 PDF Preprocessing", "desc": "600 DPI conversion, skew correction, enhancement"},
-            {"name": "📤 Claude Upload", "desc": "Upload preprocessed image to Claude Files API"},
-            {"name": "📝 Data Extraction", "desc": "Claude 3.5 Sonnet schema-based extraction"},
-            {"name": "🔍 Vision Validation", "desc": "Iterative validation with Claude Vision (up to 10 rounds)"}
+            {"name": "PDF Preprocessing", "desc": "600 DPI conversion, skew correction, enhancement"},
+            {"name": "Claude Upload", "desc": "Upload preprocessed image to Claude Files API"},
+            {"name": "Data Extraction", "desc": "Claude 3.5 Sonnet schema-based extraction"},
+            {"name": "Vision Validation", "desc": "Iterative validation with Claude Vision (up to 10 rounds)"}
         ]
 
         cols = st.columns(4)
@@ -242,16 +242,16 @@ class AdvancedPipelineUI:
                 # Determine step status
                 if i in self.pipeline_state['steps_completed']:
                     status_class = "step-complete"
-                    status_icon = "✅"
+                    status_icon = "[OK]"
                 elif i == self.pipeline_state['current_step'] and self.pipeline_state['processing']:
                     status_class = "step-active"
-                    status_icon = "🔄"
+                    status_icon = "[ACTIVE]"
                 elif self.pipeline_state.get('error') and i == self.pipeline_state['current_step']:
                     status_class = "step-error"
-                    status_icon = "❌"
+                    status_icon = "[ERROR]"
                 else:
                     status_class = "pipeline-step"
-                    status_icon = "⏳"
+                    status_icon = "[PENDING]"
 
                 st.markdown(f"""
                 <div class="pipeline-step {status_class}">
@@ -693,21 +693,39 @@ class AdvancedPipelineUI:
 
         st.subheader("🎉 Extraction Complete!")
 
-        # Enhanced summary metrics with real-time data
+        # Enhanced summary metrics with workflow summary data
         workflow_summary = results.get('workflow_summary', {})
 
-        # Calculate dynamic metrics from validation rounds
-        validation_rounds = st.session_state.get('validation_rounds', [])
+        # Debug logging for workflow summary
+        print(f"\nDEBUG: Workflow Summary Contents:")
+        print(f"  workflow_summary keys: {list(workflow_summary.keys())}")
+        print(f"  final_accuracy: {workflow_summary.get('final_accuracy')}")
+        print(f"  validation_rounds_completed: {workflow_summary.get('validation_rounds_completed')}")
+        print(f"  total_corrections_applied: {workflow_summary.get('total_corrections_applied')}")
 
-        # Get actual metrics from validation data
-        if validation_rounds:
-            final_accuracy = validation_rounds[-1].get('accuracy_estimate', 0) if validation_rounds else workflow_summary.get('final_accuracy', 0)
+        # Get metrics from workflow summary (this is the authoritative source)
+        final_accuracy = workflow_summary.get('final_accuracy', 0)
+        total_corrections = workflow_summary.get('total_corrections_applied', 0)
+        rounds_completed = workflow_summary.get('validation_rounds_completed', 0)
+
+        # Fallback to validation rounds if workflow summary is empty
+        validation_rounds = st.session_state.get('validation_rounds', [])
+        print(f"  validation_rounds available: {len(validation_rounds) if validation_rounds else 0}")
+
+        if final_accuracy == 0 and validation_rounds:
+            final_accuracy = validation_rounds[-1].get('accuracy_estimate', 0) if validation_rounds else 0
+            print(f"  Using fallback final_accuracy: {final_accuracy}")
+        if total_corrections == 0 and validation_rounds:
             total_corrections = sum(len(r.get('corrections_applied', [])) for r in validation_rounds)
+            print(f"  Using fallback total_corrections: {total_corrections}")
+        if rounds_completed == 0 and validation_rounds:
             rounds_completed = len(validation_rounds)
-        else:
-            final_accuracy = workflow_summary.get('final_accuracy', 0)
-            total_corrections = workflow_summary.get('total_corrections_applied', 0)
-            rounds_completed = workflow_summary.get('validation_rounds_completed', 0)
+            print(f"  Using fallback rounds_completed: {rounds_completed}")
+
+        print(f"🐛 DEBUG: Final UI Values:")
+        print(f"  Final Accuracy: {final_accuracy*100:.1f}%")
+        print(f"  Validation Rounds: {rounds_completed}")
+        print(f"  Total Corrections: {total_corrections}")
 
         col1, col2, col3, col4 = st.columns(4)
 
