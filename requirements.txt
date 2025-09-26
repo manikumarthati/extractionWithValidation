@@ -1,8 +1,45 @@
+# Core Framework Dependencies
+streamlit==1.49.1
 Flask==2.3.3
+Flask-SQLAlchemy==3.0.5
+
+# AI/ML API Clients
+anthropic==0.68.0
+openai==1.107.1
+
+# PDF Processing
 PyMuPDF==1.26.4
-openai==1.50.2
-anthropic==0.34.2
-python-dotenv==1.0.0
+pdfplumber==0.11.7
+pdfminer.six==20250506
+pypdfium2==4.30.0
+
+# Image Processing
+Pillow==11.3.0
+opencv-python==4.12.0.88
+
+# Data Processing & Visualization
+pandas==2.3.2
+numpy==2.2.6
+plotly==6.3.0
+altair==5.5.0
+
+# HTTP & Web
+requests==2.32.5
+httpx==0.28.1
 Werkzeug==2.3.7
-streamlit==1.28.1
-Pillow==10.0.1
+
+# Configuration & Environment
+python-dotenv==1.0.0
+PyYAML==6.0.2
+toml==0.10.2
+
+# Data Validation
+pydantic==2.11.7
+jsonschema==4.25.1
+
+# Utility Libraries
+python-dateutil==2.9.0.post0
+tqdm==4.67.1
+watchdog==6.0.0
+click==8.2.1
+colorama==0.4.6

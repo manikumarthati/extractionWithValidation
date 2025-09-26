@@ -483,15 +483,55 @@ class SchemaTextExtractor:
         clean_schema_for_prompt = self._extract_clean_schema_structure(schema)
 
         # Build prompt without f-string to avoid format issues with JSON examples
-        prompt = """Extract structured data from the following text according to the provided schema.
+        prompt = """You are an expert data extraction specialist. Your task is to extract ALL structured data from the provided text using systematic chain-of-thought reasoning.
+
+**CRITICAL MISSION**: Extract EVERY table row and EVERY data element. Missing data is unacceptable.
 
 SCHEMA TO FOLLOW:
 """ + json.dumps(clean_schema_for_prompt, indent=2) + """
 
-RAW TEXT:
+RAW TEXT TO ANALYZE:
 """ + raw_text + """
 
-EXTRACTION INSTRUCTIONS:
+## CHAIN OF THOUGHT EXTRACTION PROCESS:
+
+**STEP 1: DOCUMENT STRUCTURE ANALYSIS**
+Before extracting, analyze and explain:
+- What type of document is this? (employee profile, tax document, benefit summary, etc.)
+- What are the main sections? (personal info, tables, lists, etc.)
+- How many tables/arrays do I see in the text?
+- Where are the table headers and how can I identify table boundaries?
+
+**STEP 2: SYSTEMATIC TABLE IDENTIFICATION**
+For each array/list in the schema, think step by step:
+- What table does this array represent?
+- Where does this table start in the raw text?
+- What are the column headers for this table?
+- Where does this table end?
+- How many rows can I count?
+
+**STEP 3: COMPLETE TABLE SCANNING METHODOLOGY**
+For EACH table/array field, use this process:
+
+**3A: BOUNDARY DETECTION**
+- Identify table start: Look for headers, section titles, or repeated patterns
+- Identify table end: Look for next section, blank lines, or different content type
+- Mark the entire table region for systematic scanning
+
+**3B: ROW-BY-ROW SYSTEMATIC EXTRACTION**
+- Start from first data row after headers
+- Extract each row completely, maintaining column alignment
+- Continue row by row until table boundary
+- Count total rows as you go: "Row 1: [data], Row 2: [data], Row 3: [data]..."
+- Verify against raw text: "I see X rows in the table"
+
+**3C: COMPLETENESS VERIFICATION**
+- Did I reach the end of the table?
+- Are there any rows I might have missed?
+- Do the row counts match what I can see in the text?
+- Let me re-scan one more time to ensure completeness
+
+## ENHANCED EXTRACTION INSTRUCTIONS:
 1. Extract data exactly as specified in the schema structure
 2. Use the exact field names and structure from the schema
 3. Find values corresponding to each field/column specified in the schema
@@ -512,21 +552,49 @@ EXTRACTION INSTRUCTIONS:
 14. **ABBREVIATION EXPANSION:** Use the most complete form available in the raw text
 15. **TEXT PRIORITY:** Raw text completeness takes priority over partial visual representations
 
-CRITICAL TABLE EXTRACTION RULES:
-16. **FOR TABLES/ARRAYS:** EXTRACT ALL TABLES .Extract ALL rows visible in the document, not just the first one
-17. **TABLE COMPLETENESS:** If schema shows an array/list, extract every single row from the table
-18. **ROW COUNT:** Never limit to one row - extract all data rows present in tables
-19. **MULTIPLE ENTRIES:** When multiple similar entries exist (like employees, benefits, transactions), capture them all
-20. **FULL TABLE DATA:** Scan the entire table from top to bottom and include every row with data - scan the entire table top to bottom
+## SELF-EXPLANATORY TABLE EXTRACTION WITH REASONING:
 
-**AGGRESSIVE TABLE ROW EXTRACTION - MANDATORY:**
-21. **EXHAUSTIVE SCANNING:** Look for data in ALL possible formats - different fonts, sizes, colors, alignments
-22. **BOUNDARY CHECKING:** Check for rows near page boundaries, margins, or at the very bottom of tables
-23. **FORMATTING VARIATIONS:** Include rows that might have different formatting, spacing, or appear faded
-24. **PARTIAL ROWS:** Include any row that has even partial data visible
-25. **HIDDEN PATTERNS:** Look for data patterns that might indicate additional rows (sequences, numbering, etc.)
-26. **ZERO TOLERANCE:** If you suspect there might be more rows, extract them - better to include questionable rows than miss real data
-27. **VALIDATION REQUIREMENT:** After extraction, count your rows and ensure you haven't missed any by scanning the text again
+**STEP 4: EXPLAIN YOUR TABLE DETECTION PROCESS**
+For each table/array in schema, provide reasoning:
+- "I found the [table_name] table starting at [location_in_text]"
+- "The table headers are: [list headers]"
+- "I can see [X] rows of data below the headers"
+- "The table appears to end at [location] before [next_section]"
+
+**STEP 5: DEMONSTRATE ROW EXTRACTION WITH EXAMPLES**
+As you extract each table, explain your process:
+- "Row 1 contains: [show how you parse the first row]"
+- "Row 2 contains: [show second row parsing]"
+- "I continue this pattern and find [total_count] rows"
+- "Let me verify by re-scanning: [confirm count]"
+
+**MANDATORY TABLE EXTRACTION METHODOLOGY:**
+
+16. **SYSTEMATIC TABLE SCANNING**: For each array field in schema:
+    a) Locate the corresponding table in raw text
+    b) Identify exact start and end boundaries
+    c) Count total rows before starting extraction
+    d) Extract row by row with verification
+
+17. **COMPLETE ROW EXTRACTION**: Use this thinking process:
+    - "I'm looking for [field_name] array data"
+    - "I found a table with headers: [headers]"
+    - "Scanning row by row: Row 1=[data], Row 2=[data]..."
+    - "Total rows found: [count]. Extracting all of them."
+
+18. **BOUNDARY VERIFICATION**: Explicitly check:
+    - "Table starts after: [previous_content]"
+    - "Table ends before: [next_content]"
+    - "No additional rows found beyond this boundary"
+
+19. **COMPLETENESS CONFIRMATION**: Always verify:
+    - "I've extracted [X] rows from [table_name] table"
+    - "Re-scanning to confirm no missed rows..."
+    - "Confirmed: All [X] rows have been captured"
+
+20. **ZERO TOLERANCE FOR MISSING DATA**: If unsure, always include:
+    - "This row might be incomplete, but I'll include it to avoid missing data"
+    - "Better to extract questionable data than miss valid information"
 
 CRITICAL JSON REQUIREMENTS:
 - Return ONLY valid JSON, no additional text or explanations
@@ -538,50 +606,72 @@ CRITICAL JSON REQUIREMENTS:
 - If a string value contains quotes, escape them with backslash
 - Keep values concise - extract only the essential information without verbose descriptions
 
-EXAMPLE OF ENHANCED OUTPUT WITH BLANK FIELDS AND COMPLETE TEXT:
+## WORKING EXAMPLE WITH CHAIN OF THOUGHT:
+
+**REASONING EXAMPLE**: If I see in the raw text:
+```
+Employee: John Smith
+Department: IT
+
+Tax Information:
+TAX_CODE    DESCRIPTION              RATE
+MED-R       Medicare - Employer      1.45%
+FICA        Social Security          6.2%
+MNDW        Minnesota Workforce      0.25%
+```
+
+**MY CHAIN OF THOUGHT PROCESS**:
+1. "I found employee info: John Smith in IT department"
+2. "I found a tax table starting after 'Tax Information:'"
+3. "Table headers are: TAX_CODE, DESCRIPTION, RATE"
+4. "Scanning rows: Row 1=MED-R|Medicare - Employer|1.45%, Row 2=FICA|Social Security|6.2%, Row 3=MNDW|Minnesota Workforce|0.25%"
+5. "Total rows found: 3. Extracting all of them."
+6. "Confirmed: All 3 tax rows captured"
+
+**RESULTING JSON**:
 {
-  "Employee_Name": "Caroline Jones",
-  "Position": "",
-  "Emp_Type": "",
-  "Title": "",
-  "Department": "Finance",
-  "employer_taxes": [
+  "Employee_Name": "John Smith",
+  "Department": "IT",
+  "tax_information": [
     {
       "tax_code": "MED-R",
       "description": "Medicare - Employer",
-      "effective_dates": "04/28/2023 to 12/31/2100"
+      "rate": "1.45%"
+    },
+    {
+      "tax_code": "FICA",
+      "description": "Social Security",
+      "rate": "6.2%"
     },
     {
       "tax_code": "MNDW",
-      "description": "Workforce Enhancement Fee",
-      "effective_dates": "04/28/2023 to 12/31/2100"
-    },
-    {
-      "tax_code": "MNSUI",
-      "description": "Minnesota SUI",
-      "effective_dates": "04/28/2023 to 12/31/2100"
-    }
-  ],
-  "deductions": [
-    {
-      "code": "401KC",
-      "description": "401K Contribution",
-      "rate": 100.00,
-      "effective_dates": "07/01/2023 to 12/31/2100"
-    },
-     {
-      "code": "DNTL",
-      "description": "Dental Insurance",
-      "rate": 100.00,
-      "effective_dates": "07/01/2023 to 12/31/2100"
+      "description": "Minnesota Workforce",
+      "rate": "0.25%"
     }
   ]
 }
 
-OUTPUT FORMAT:
-Return valid JSON that matches the exact structure of the provided schema with concise data values only.
+## FINAL EXECUTION INSTRUCTIONS:
 
-Extract the data now and return ONLY the JSON:"""
+**NOW EXTRACT THE DATA USING THIS SYSTEMATIC APPROACH:**
+
+1. **FIRST**: Analyze the document structure (Step 1)
+2. **SECOND**: Identify all tables/arrays in the text (Step 2)
+3. **THIRD**: Use the complete table scanning methodology for each array (Step 3)
+4. **FOURTH**: Apply self-explanatory reasoning as you extract (Steps 4-5)
+5. **FIFTH**: Verify completeness using the mandatory methodology (Steps 16-20)
+
+**CRITICAL SUCCESS CRITERIA:**
+- Every table row must be extracted
+- Every array field in schema must be populated with ALL available data
+- If a table has 5 rows, extract ALL 5 rows
+- If you find any table/array data in the text, it must appear in your JSON
+- Missing entire tables or incomplete row extraction is UNACCEPTABLE
+
+**OUTPUT FORMAT:**
+Return valid JSON that matches the exact structure of the provided schema with ALL data values extracted.
+
+**EXECUTE THE EXTRACTION NOW - RETURN ONLY THE JSON:**"""
 
         return prompt
 
