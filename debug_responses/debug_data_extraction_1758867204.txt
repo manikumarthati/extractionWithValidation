@@ -4,8 +4,8 @@ Task Type: data_extraction
 Model: claude-3-5-sonnet-20241022
 Temperature: 0.0
 Max Tokens: 8192
-Timestamp: 1758818355.2215362
-Request Time: 2025-09-25 22:09:15
+Timestamp: 1758867204.2952821
+Request Time: 2025-09-26 11:43:24
 ================================================================================
 PROMPT SENT TO LLM:
 --------------------------------------------------------------------------------
@@ -576,7 +576,7 @@ EXTRACTION INSTRUCTIONS:
 15. **TEXT PRIORITY:** Raw text completeness takes priority over partial visual representations
 
 CRITICAL TABLE EXTRACTION RULES:
-16. **FOR TABLES/ARRAYS:** Extract ALL rows visible in the document, not just the first one
+16. **FOR TABLES/ARRAYS:** EXTRACT ALL TABLES .Extract ALL rows visible in the document, not just the first one
 17. **TABLE COMPLETENESS:** If schema shows an array/list, extract every single row from the table
 18. **ROW COUNT:** Never limit to one row - extract all data rows present in tables
 19. **MULTIPLE ENTRIES:** When multiple similar entries exist (like employees, benefits, transactions), capture them all
@@ -773,15 +773,6 @@ RAW RESPONSE FROM LLM:
             "Effective_Start_Date": "01/04/2016",
             "Effective_End_Date": "12/31/2100",
             "Default_Indicator": "Yes"
-          },
-          {
-            "Tax_Code": "MN",
-            "Tax_Description": "Minnesota SITW",
-            "Filing_Status": "M-1",
-            "Additional_Amount": 0.00,
-            "Effective_Start_Date": "01/04/2016",
-            "Effective_End_Date": "12/31/2100",
-            "Default_Indicator": "Yes"
           }
         ],
         "Employer_Taxes": [
@@ -802,54 +793,6 @@ RAW RESPONSE FROM LLM:
             "Tax_Description": "Fed Unemployment",
             "Effective_Start_Date": "01/15/2016",
             "Effective_End_Date": "12/31/2100"
-          },
-          {
-            "Tax_Code": "MNAST",
-            "Tax_Description": "Minnesota Federal Loan Assessment",
-            "Effective_Start_Date": "01/15/2016",
-            "Effective_End_Date": "12/31/2100"
-          },
-          {
-            "Tax_Code": "MNDW",
-            "Tax_Description": "Workforce Enhancement Fee",
-            "Effective_Start_Date": "01/15/2016",
-            "Effective_End_Date": "12/31/2100"
-          },
-          {
-            "Tax_Code": "MNSUI",
-            "Tax_Description": "Minnesota SUI",
-            "Effective_Start_Date": "01/15/2016",
-            "Effective_End_Date": "12/31/2100"
-          }
-        ]
-      },
-      "Deduction_Information": {
-        "Deduction_Records": [
-          {
-            "Code": "401KC",
-            "Description": "401K Contribution",
-            "Rate": 6.00,
-            "Calc_Code": "%401K",
-            "Frequency": "",
-            "Goal_Paid": "0.00/0.00",
-            "Min_Max_Annual_Max": "0.00/0.00/0.00",
-            "Arrears": 0.00,
-            "Agency": "",
-            "Effective_Start_Date": "04/01/2016",
-            "Effective_End_Date": "12/31/2100"
-          },
-          {
-            "Code": "401kUM",
-            "Description": "401kUnmatch",
-            "Rate": 14.00,
-            "Calc_Code": "%401K",
-            "Frequency": "",
-            "Goal_Paid": "0.00/0.00",
-            "Min_Max_Annual_Max": "0.00/0.00/0.00",
-            "Arrears": 0.00,
-            "Agency": "",
-            "Effective_Start_Date": "08/01/2022",
-            "Effective_End_Date": "12/31/2100"
           }
         ]
       },
@@ -859,7 +802,7 @@ RAW RESPONSE FROM LLM:
             "Sequence_Number": 99,
             "Transit_Number": "296076262",
             "Account_Number": "2743046665",
-            "Account_Type": "Checking",
+            "Account_Type": "Yes",
             "Account_Name": "Jocelyn, Taylor",
             "Amount_Code": "%",
             "Amount": 100.00,
@@ -868,25 +811,6 @@ RAW RESPONSE FROM LLM:
             "Effective_End_Date": "12/31/2100",
             "Exclude_Indicator": "No",
             "Special_Indicator": ""
-          }
-        ]
-      },
-      "Fringe_Benefit_Information": {
-        "Fringe_Benefit_Records": [
-          {
-            "Earnings_Code": "STD",
-            "Calc_Code": "",
-            "Rate_Code": "",
-            "Rate": 0.00,
-            "Rate_Per": "",
-            "Amount": 11.07,
-            "Tabled_Indicator": "No",
-            "Units": 0.00,
-            "Frequency": "ML",
-            "Goal_Paid_Goal_Balance": "0.00/0.00/0.00",
-            "Min_Max_Annual_Max": "0.00/0.00/0.00",
-            "Effective_Start_Date": "03/17/2019",
-            "Effective_End_Date": "12/31/2100"
           }
         ]
       }

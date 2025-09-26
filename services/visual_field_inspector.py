@@ -19,14 +19,14 @@ class VisualFieldInspector:
 
     def validate_all_fields_visually(self, pdf_path: str, extracted_data: Dict,
                                    schema: Dict, page_num: int = 0, file_id: str = None,
-                                   page_file_ids: Dict[int, str] = None) -> Dict:
+                                   page_file_ids: Dict[int, str] = None, raw_text: str = None) -> Dict:
         """
         Human-like visual inspection of all fields
         """
         try:
-            # Build comprehensive validation prompt
+            # Build comprehensive validation prompt with raw text support
             validation_prompt = self._build_comprehensive_visual_validation_prompt(
-                extracted_data, schema, page_num
+                extracted_data, schema, page_num, None  # Using extracted_data directly in prompt
             )
 
             # Save validation prompt to debug folder
@@ -624,7 +624,7 @@ class VisualFieldInspector:
         except ValueError:
             return "unknown_shift"
 
-    def _build_comprehensive_visual_validation_prompt(self, extracted_data: Dict, schema: Dict, page_num: int = 0) -> str:
+    def _build_comprehensive_visual_validation_prompt(self, extracted_data: Dict, schema: Dict, page_num: int = 0, raw_text: str = None) -> str:
         """Build Chain of Thought prompt that mimics human visual inspection with step-by-step reasoning"""
 
         prompt = f"""**CRITICAL: You are viewing the uploaded document image for PAGE {page_num}.** Perform TRUE VISUAL INSPECTION by examining the actual document layout and spatial positioning in the image.
@@ -653,18 +653,30 @@ For deduction table with columns [DeductionCode, CalCode, Frequency]:
 - If CalCode column appears empty but contains "B5", and Frequency column is empty but should contain "B5"
 - This indicates a LEFT-SHIFT: "B5" moved one column left from Frequency to CalCode
 
-CURRENT EXTRACTED DATA TO VERIFY AGAINST PAGE {page_num} IMAGE:
+CURRENT EXTRACTED DATA TO VERIFY AND CROSS-REFERENCE:
 {json.dumps(extracted_data, indent=2)}
 
 EXPECTED SCHEMA:
 {json.dumps(schema, indent=2)}
 
 **CRITICAL VISUAL INSPECTION INSTRUCTIONS:**
-You are looking at page {page_num}. USE THE ACTUAL VISUAL LAYOUT to verify data:
+You are looking at page {page_num}. USE THE ACTUAL VISUAL LAYOUT to verify the extracted data above:
 - Where is each value positioned in the image relative to its intended field/column?
 - Are there empty spaces where values should be?
 - Are values positioned under wrong columns or next to wrong labels?
-- What do the visual alignment cues (lines, spacing, borders) tell you?""" + """
+- What do the visual alignment cues (lines, spacing, borders) tell you?
+
+**COMMON VALIDATION ISSUES TO PREVENT:**
+1. **FALSE FREQUENCY DETECTION**: Some deduction codes have NO frequency value
+   - If a field appears empty in the image, mark it as empty (not "B" or partial text)
+   - Don't assume truncated single letters are valid frequency codes
+
+2. **TEXT TRUNCATION HANDLING**: Visual extraction may truncate values
+   - If you see partial text in the image (like "B" instead of "B5"), use the complete value from the extracted data above
+   - Example: Visual shows "B", extracted data above has "B5" → use "B5" as the correct value
+   - Cross-reference with the extracted data when visual text appears incomplete
+   - **CRITICAL**: If text in extracted data is truncated (like "Minnesota Federal Lo" instead of "Minnesota Federal Loan Assessment"), flag this as an ERROR even if positioning is correct
+""" + """
 
 ## CHAIN OF THOUGHT VALIDATION PROCESS:
 
@@ -1029,7 +1041,31 @@ TARGET SCHEMA:
 Look at page {page_num} image and make corrections based on ACTUAL VISUAL POSITIONING:
 - Where do you see each value positioned relative to headers/labels?
 - What does the visual layout tell you about correct field/column assignments?
-- Use spacing, alignment, and visual structure to guide corrections.""" + """
+- Use spacing, alignment, and visual structure to guide corrections.
+
+**CRITICAL CORRECTION GUIDELINES:**
+1. **EMPTY FREQUENCY FIELDS**: If frequency column appears empty in image, keep it empty
+   - Don't add "B" or single letters unless you clearly see complete text
+   - Some deduction codes legitimately have no frequency value
+
+2. **MANDATORY TEXT PRESERVATION**: ALWAYS preserve complete text from original extracted data
+   - NEVER truncate text during corrections - visual inspection may show partial text due to image resolution
+   - If original data has "Minnesota Federal Loan Assessment", keep it as "Minnesota Federal Loan Assessment"
+   - If visual shows "Minnesota Federal Lo", use complete text from original data above
+   - CRITICAL: Only fix POSITIONING and COLUMN ASSIGNMENT - never shorten text descriptions
+
+3. **CORRECTION PRIORITY ORDER**:
+   - FIRST: Fix column misalignment (move values to correct columns)
+   - SECOND: Use complete text values from original extracted data
+   - THIRD: Only change values if they are completely wrong (not just truncated)
+
+4. **SPECIFIC CORRECTION EXAMPLES**:
+   - Column shift: Move "B5" from CalCode to Frequency (preserve "B5")
+   - Text preservation: Keep "Minnesota Federal Loan Assessment" complete, don't truncate to "Minnesota Federal Lo"
+   - Empty field: If CalCode appears empty in image, keep it empty ("")
+
+**FINAL TEXT PRESERVATION REMINDER:**
+Before outputting your correction, verify that ALL text descriptions match the complete versions from the original extracted data above. Do not truncate any text - if visual appears truncated, use the complete original text.""" + """
 
 CORRECTION INSTRUCTIONS:
 

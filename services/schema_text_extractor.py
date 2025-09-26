@@ -513,7 +513,7 @@ EXTRACTION INSTRUCTIONS:
 15. **TEXT PRIORITY:** Raw text completeness takes priority over partial visual representations
 
 CRITICAL TABLE EXTRACTION RULES:
-16. **FOR TABLES/ARRAYS:** Extract ALL rows visible in the document, not just the first one
+16. **FOR TABLES/ARRAYS:** EXTRACT ALL TABLES .Extract ALL rows visible in the document, not just the first one
 17. **TABLE COMPLETENESS:** If schema shows an array/list, extract every single row from the table
 18. **ROW COUNT:** Never limit to one row - extract all data rows present in tables
 19. **MULTIPLE ENTRIES:** When multiple similar entries exist (like employees, benefits, transactions), capture them all
