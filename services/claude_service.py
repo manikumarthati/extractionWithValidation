@@ -8,6 +8,7 @@ from .spatial_preprocessor import SpatialPreprocessor
 from .coordinate_table_extractor import CoordinateTableExtractor
 from .vision_extractor import VisionBasedExtractor
 from .feedback_analyzer import FeedbackAnalyzer
+from .provider_prompt_registry import prompt_registry, Provider, PromptType
 
 class ClaudeService:
     def __init__(self, api_key: str, model_config_name: str = 'current'):

@@ -1163,14 +1163,14 @@ class AdvancedPDFExtractionPipeline:
             from model_configs import get_model_for_task
             model_name = get_model_for_task('data_extraction', self.model_config_name)
 
-            if model_name.startswith('claude'):
+            #if model_name.startswith('claude'):
                 # Use Claude-based extraction with vision
-                log_progress("[VALIDATE] Using Claude 3.5 Sonnet for data extraction...")
-                return self._step3_claude_extraction(pdf_path, schema, page_num, log_progress, step_start, file_id)
-            else:
+            #    log_progress("[VALIDATE] Using Claude 3.5 Sonnet for data extraction...")
+            #    return self._step3_claude_extraction(pdf_path, schema, page_num, log_progress, step_start, file_id)
+            #else:
                 # Use traditional text-based extraction with Claude
-                log_progress("[STEP] Using Claude text extraction...")
-                return self._step3_claude_text_extraction(pdf_path, schema, page_num, log_progress, step_start, file_id)
+            log_progress("[STEP] Using  text extraction...")
+            return self._step3_claude_text_extraction(pdf_path, schema, page_num, log_progress, step_start, file_id)
 
         except Exception as e:
             return {
@@ -1185,7 +1185,12 @@ class AdvancedPDFExtractionPipeline:
         try:
             # Extract raw text
             text_result = self.text_extractor.extract_raw_text(pdf_path, page_num)
+            if self.debug_logger:
+                self.debug_logger.save_step("01_extracted_raw_text_from_pdf", text_result, "txt")
+                
 
+            log_progress("🤖 Extracting data from PDF text using Claude 3.5 Sonnet...")
+            
             if not text_result["success"]:
                 return text_result
 
@@ -1196,7 +1201,9 @@ class AdvancedPDFExtractionPipeline:
 
             if extraction_result["success"]:
                 log_progress("[OK] Claude text extraction complete")
-
+                if self.debug_logger:
+                    self.debug_logger.save_step("01_extracted_data_with_Schema", extraction_result, "json")
+             
                 return {
                     "success": True,
                     "extracted_data": extraction_result["extracted_data"],

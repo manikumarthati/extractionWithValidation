@@ -14,7 +14,7 @@ import fitz  # PyMuPDF
 from typing import Dict, Any, List, Optional, Tuple
 from .vision_extractor import VisionBasedExtractor
 from .claude_service import ClaudeService
-from .visual_field_inspector import VisualFieldInspector
+from .visual_field_inspector_refactored import ProviderAwareVisualFieldInspector
 
 
 class SchemaTextExtractor:
@@ -23,7 +23,9 @@ class SchemaTextExtractor:
         self.api_key = api_key
         self.model_config_name = model_config_name
         self.vision_extractor = VisionBasedExtractor(api_key)
-        self.visual_inspector = VisualFieldInspector(api_key, model_config_name)
+        self.visual_inspector = ProviderAwareVisualFieldInspector(api_key, model_config_name)
+
+        print(f"[INIT] Using provider-aware visual inspector with config: {model_config_name}")
 
         # Import here to avoid circular imports
         import sys
@@ -200,6 +202,8 @@ class SchemaTextExtractor:
         """Extract structured data from raw text using provided schema and LLM"""
         try:
             extraction_prompt = self._build_text_schema_prompt(raw_text, schema)
+            #self.debug_logger.save_step("03_extract_with_schema_from_text_prompt", extraction_prompt, "json")
+    
 
             # Use unified AI service call for all providers
             result = self._make_unified_request(extraction_prompt, 'data_extraction')
@@ -1025,17 +1029,27 @@ VALIDATION ISSUES FOUND:
 TARGET SCHEMA:
 """ + json.dumps(self._extract_clean_schema_structure(schema), indent=2) + """
 
+**CRITICAL TEXT PRESERVATION RULE:**
+NEVER truncate or shorten text that was correctly extracted in the original JSON above. Visual correction should ONLY fix positioning, column alignment, and missing values - NOT replace complete text with partial text.
+
 CORRECTION INSTRUCTIONS:
-1. Fix column shifting issues by properly aligning table data
-2. Correct field-value mappings by matching values to correct fields
-3. Add any missing data identified in validation
-4. Ensure all data matches what's actually visible in the image
+1. **TEXT PRESERVATION PRIORITY**: Before making any changes, preserve ALL complete text from original extracted JSON
+   - If original has "Dental Insurance S125", keep "Dental Insurance S125" (don't truncate to "Dental Insurance")
+   - If original has "Minnesota Federal Loan Assessment", keep "Minnesota Federal Loan Assessment" (don't truncate to "Minnesota Federal")
+   - ONLY extract new text if the original field was null/empty or completely wrong
+
+2. Fix column shifting issues by properly aligning table data while preserving complete text values
+3. Correct field-value mappings by moving complete values to correct fields
+4. Add any missing data identified in validation (use null if truly empty)
 5. Maintain the exact schema structure provided
-6. IMPORTANT: Return ONLY concise data values, no metadata or verbose descriptions
-7. Keep the response minimal and focused on essential data only
+6. IMPORTANT: Return ONLY the data values from original extraction, no metadata or verbose descriptions
+7. Keep the response focused on essential data with complete text preservation
+
+**MANDATORY FINAL CHECK:**
+Before returning JSON, verify that every text field preserves the complete text from the original extracted JSON above. If you find any truncated text, restore the complete version from the original data.
 
 OUTPUT FORMAT:
-Return the corrected JSON in the EXACT structure of the target schema above with concise data values only.
+Return the corrected JSON in the EXACT structure of the target schema above with complete preserved text values.
 
 Provide the corrected data:"""
 

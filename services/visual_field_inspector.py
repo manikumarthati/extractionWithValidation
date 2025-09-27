@@ -692,10 +692,12 @@ EXPECTED SCHEMA:
 
 **CRITICAL VISUAL INSPECTION INSTRUCTIONS:**
 You are looking at page {page_num}. USE THE ACTUAL VISUAL LAYOUT to verify the extracted data above:
+- **REPORT ONLY PROBLEMS**: Only include fields/cells with actual issues in your response
 - Where is each value positioned in the image relative to its intended field/column?
 - Are there empty spaces where values should be?
 - Are values positioned under wrong columns or next to wrong labels?
 - What do the visual alignment cues (lines, spacing, borders) tell you?
+- **SKIP PERFECT MATCHES**: Do not report fields/cells that are correctly extracted
 
 **COMMON VALIDATION ISSUES TO PREVENT:**
 1. **FALSE FREQUENCY DETECTION**: Some deduction codes have NO frequency value
@@ -728,10 +730,14 @@ For each extracted field, I will reason through:
 2. "Let me scan the document for the field label..."
 3. "I found/didn't find the label at [LOCATION]"
 4. "The value near this label appears to be [ACTUAL_VALUE]"
-5. "Comparing extracted vs actual: [MATCH/MISMATCH/EMPTY]"
-6. "My confidence in this assessment: [CONFIDENCE_SCORE] because [REASONING]"
+5. "CRITICAL: Is [ACTUAL_VALUE] a field label or a field value?"
+   - "Field labels are descriptive text that identify what data goes in a field"
+   - "Field values are the actual data content for that field"
+   - "Never confuse a label with the value it describes"
+6. "Comparing extracted vs actual: [MATCH/MISMATCH/EMPTY/LABEL_CONFUSION]"
+7. "My confidence in this assessment: [CONFIDENCE_SCORE] because [REASONING]"
 
-**STEP 3: TABLE STRUCTURE ANALYSIS WITH EXPLICIT COUNTING**
+**STEP 3: TABLE STRUCTURE ANALYSIS WITH EXPLICIT COUNTING & CELL-LEVEL VALIDATION**
 For each table, I will explicitly reason:
 
 *Table Analysis Process:*
@@ -746,14 +752,25 @@ For each table, I will explicitly reason:
 5. "Total rows in extracted data: [EXTRACTED_COUNT]"
 6. "Comparison: [MATCH/MISMATCH] - [EXPLANATION]"
 
-**STEP 4: COLUMN ALIGNMENT VERIFICATION WITH DETAILED REASONING**
-For tables with potential alignment issues:
+**STEP 3A: SIMPLIFIED COLUMN ALIGNMENT CHECK**
+Focus on the core column alignment issues that matter most:
+
+*Critical Column Alignment Process:*
+1. "Looking at each table row, checking if values are in the right columns"
+2. "For each cell: Does the data type match what this column should contain?"
+3. "Empty Column Skip Detection: Are values appearing in columns that should be empty?"
+4. "If a column should be empty but contains data, where should that data actually go?"
+5. "Generate cell validation results for significant misalignments only"
+
+**STEP 4: ROW-LEVEL COLUMN ALIGNMENT VERIFICATION (After Cell-Level Analysis)**
+After detailed cell validation, analyze row-level patterns:
 
 *Column Alignment Analysis:*
 1. "Looking at row [N]: [ROW_DATA]"
-2. "For each column, let me verify the semantic match:"
-   - "Column [NAME]: Expected type [TYPE], actual value [VALUE]"
-   - "Does '[VALUE]' make sense for '[COLUMN_NAME]'? [YES/NO] because [REASONING]"
+2. "Based on cell-level validation results, overall row alignment:"
+   - "Cells with correct column assignment: [COUNT]"
+   - "Cells with column misalignment: [COUNT]"
+   - "Pattern detected: [LEFT_SHIFT/RIGHT_SHIFT/MIXED_SHIFT/NO_ISSUES]"
 3. "**CRITICAL: Empty Column Skip Analysis:**"
    - "Are any columns that should be empty showing values?"
    - "Are any columns that should have values showing as empty?"
@@ -772,7 +789,24 @@ Before finalizing my assessment:
 4. "How confident am I in each major finding? Why?"
 5. "What would I do differently if I were to re-examine this?"
 
-**STEP 6: COMPREHENSIVE REASONING SYNTHESIS**
+**STEP 6: ISSUE-ONLY RESULTS GENERATION**
+Generate validation results ONLY for items with problems:
+
+*Issue-Only JSON Generation:*
+1. "Only include fields that have mismatches, errors, or issues"
+2. "Only include cells that have column misalignment, truncation, or wrong values"
+3. "Skip all fields and cells that are perfectly correct"
+4. "Focus response on actionable items that need correction"
+
+**STEP 7: VALIDATION SUMMARY GENERATION**
+Calculate the validation summary fields:
+1. "Count total fields with issues in field_validation_results array"
+2. "Count total cells with issues in cell_validation_results arrays"
+3. "Calculate overall_accuracy: (total_items - issues_found) / total_items"
+4. "Set issues_found = count of all field and cell issues"
+5. "Set needs_correction = true if issues_found > 0"
+
+**STEP 8: COMPREHENSIVE REASONING SYNTHESIS**
 Finally, I will synthesize my findings:
 1. "Based on my systematic analysis..."
 2. "The main issues I identified are..."
@@ -988,6 +1022,24 @@ Before providing the final validation results, show your step-by-step reasoning 
   }
 }
 
+## CRITICAL VALIDATION REQUIREMENT:
+
+**REPORT ONLY ISSUES**: Only include validation results for fields and cells that have problems. Do not report items that are correct.
+
+**FIELD VALIDATION**: Only include fields with issues:
+- Value mismatches
+- Label confusion
+- Missing values
+- Text truncation
+
+**CELL VALIDATION**: Only include cells with problems:
+- Column misalignment
+- Text truncation
+- Wrong values
+- Missing data
+
+**SKIP CORRECT ITEMS**: Do not include fields/cells that match perfectly - focus only on what needs attention.
+
 ## REQUIRED JSON RESPONSE FORMAT:
 
 You MUST respond with valid JSON only, no additional text. Use this exact format:
@@ -995,15 +1047,12 @@ You MUST respond with valid JSON only, no additional text. Use this exact format
 {
   "field_validation_results": [
     {
-      "field_name": "field_name_here",
-      "extracted_value": "value_or_null",
+      "field_name": "field_with_issue_only",
+      "extracted_value": "incorrect_or_missing_value",
       "visual_inspection": {
-        "field_label_found": true,
-        "actual_value_in_document": "actual_value_or_null",
-        "value_matches_extraction": true,
-        "field_is_actually_empty": false,
-        "confidence": 0.95,
-        "issue": "description_if_any_or_null"
+        "actual_value_in_document": "what_actually_seen",
+        "issue": "description_of_problem",
+        "confidence": 0.95
       }
     }
   ],
@@ -1013,6 +1062,19 @@ You MUST respond with valid JSON only, no additional text. Use this exact format
       "rows_visible_in_image": 0,
       "rows_extracted": 0,
       "row_completeness_issue": false,
+      "cell_validation_results": [
+        {
+          "row_index": 0,
+          "column_name": "problematic_column_only",
+          "extracted_value": "wrong_value",
+          "visual_inspection": {
+            "actual_value_in_document": "correct_value_seen",
+            "correct_column_assignment": false,
+            "belongs_in_column": "where_it_should_be",
+            "issue": "description_of_problem"
+          }
+        }
+      ],
       "column_alignment_issues": []
     }
   ],
@@ -1022,6 +1084,11 @@ You MUST respond with valid JSON only, no additional text. Use this exact format
     "accuracy_estimate": 0.95,
     "major_issues": [],
     "recommendation": "description_here"
+  },
+  "validation_summary": {
+    "overall_accuracy": 0.95,
+    "issues_found": 0,
+    "needs_correction": false
   }
 }
 
@@ -1100,11 +1167,22 @@ Before outputting your correction, verify that ALL text descriptions match the c
 
 CORRECTION INSTRUCTIONS:
 
+**CRITICAL TEXT PRESERVATION RULE:**
+NEVER truncate or shorten text that was correctly extracted in the original data above. Visual correction should ONLY fix positioning, column alignment, and missing values - NOT replace complete text with partial text.
+
 1. **FOR FIELDS WITH ISSUES:**
-   - Look at the document image carefully
-   - Find the correct field labels and their corresponding values
-   - Extract the actual values you see in the document
-   - If a field is truly empty, use null
+   - FIRST: Check if the original extracted data contains complete text for this field
+   - IF original data has complete text (e.g., "Dental Insurance S125"), PRESERVE IT EXACTLY
+   - ONLY extract new values from document image if:
+     * The field was completely missing (null/empty in original data)
+     * The original value is clearly wrong (not just visually truncated)
+   - If a field is truly empty in the document, use null
+
+   **TEXT PRESERVATION EXAMPLES:**
+   - Original: "Dental Insurance S125" → Keep: "Dental Insurance S125" (even if image shows "Dental Insurance")
+   - Original: "Minnesota Federal Loan Assessment" → Keep: "Minnesota Federal Loan Assessment" (even if image shows "Minnesota Federal Lo")
+   - Original: null → Extract from image: "New Value Found"
+   - Original: "Wrong Company Name" → Extract from image: "Correct Company Name" (only if clearly wrong)
 
 2. **FOR COMPLEX TABLE ALIGNMENT & MULTIPLE COLUMN SHIFTS:**
    - Look at the table structure in the image with extreme care
@@ -1143,14 +1221,26 @@ CORRECTION INSTRUCTIONS:
    - **MANDATORY RECOUNT:** Count rows again if extraction seems incomplete
 
 3. **FOR MISMATCHED VALUES:**
-   - Verify the correct field-value relationships
-   - Move misplaced values to their correct fields
-   - Extract any missed values
+   - ONLY move values between columns/fields - DO NOT change the text content
+   - If original data has "Dental Insurance S125" but it's in wrong column, move the COMPLETE text "Dental Insurance S125"
+   - Move misplaced values to their correct fields while preserving exact text
+   - NEVER extract shortened versions of text that already exists in original data
 
-4. **VISUAL VERIFICATION:**
-   - Double-check your corrections against what you actually see
-   - Ensure logical consistency (names look like names, numbers like numbers)
+4. **FINAL TEXT PRESERVATION CHECK:**
+   Before returning your JSON, perform this mandatory verification:
+   - Compare every text field in your correction against the original extracted data above
+   - If original data has "Dental Insurance S125" and you have "Dental Insurance", RESTORE the complete text
+   - If original data has "Minnesota Federal Loan Assessment" and you have "Minnesota Federal", RESTORE the complete text
+   - If original data has "401K Contribution6.00" and you have "401K Contribution", RESTORE the complete text
+   - ONLY use new text if the original field was null/empty or completely wrong
+
+5. **VISUAL VERIFICATION:**
+   - Verify positioning and column alignment corrections
+   - Ensure all complete text from original data is preserved
    - Maintain the original schema structure
+
+**BEFORE RETURNING JSON: MANDATORY TEXT PRESERVATION SCAN**
+Scan your corrected JSON for any text that appears shorter than the corresponding text in the original extracted data above. If found, replace with the complete original text.
 
 Return the corrected data in the exact schema format.
 IMPORTANT: Return ONLY the corrected JSON data, no additional text or explanations. ENSURE data is in valid JSON format."""

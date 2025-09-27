@@ -229,9 +229,9 @@ class AdvancedPipelineUI:
 
         steps = [
             {"name": "PDF Preprocessing", "desc": "600 DPI conversion, skew correction, enhancement"},
-            {"name": "Claude Upload", "desc": "Upload preprocessed image to Claude Files API"},
-            {"name": "Data Extraction", "desc": "Claude 3.5 Sonnet schema-based extraction"},
-            {"name": "Vision Validation", "desc": "Iterative validation with Claude Vision (up to 10 rounds)"}
+            {"name": "AI Upload", "desc": "Upload preprocessed image to AI provider Files API"},
+            {"name": "Data Extraction", "desc": "LLM-based schema extraction"},
+            {"name": "Vision Validation", "desc": "Iterative validation with vision models (up to 10 rounds)"}
         ]
 
         cols = st.columns(4)
@@ -360,7 +360,7 @@ class AdvancedPipelineUI:
         # Create a more user-friendly display for model options
         model_options = {
             'Claude 3.5 Sonnet': 'claude_sonnet',
-            'Gemini 2.0 Flash (POC)': 'gemini_flash'
+            'Gemini 2.0 Flash ': 'gemini_flash'
         }
 
         # Model selection
@@ -370,12 +370,15 @@ class AdvancedPipelineUI:
             selected_model_display = st.selectbox(
                 "Choose model configuration:",
                 options=list(model_options.keys()),
-                index=0,  # Default to "Claude 3.5 Sonnet"
+                index=1,  # Default to "Gemini"
                 disabled=self.pipeline_state['processing'],
                 help="Select Claude or Gemini model for extraction comparison"
             )
 
             selected_model_config = model_options[selected_model_display]
+
+            # Store selected model in session state for use in file management
+            st.session_state['selected_model_config'] = selected_model_config
 
         with col2:
             # Show cost and features for selected model
@@ -394,14 +397,30 @@ class AdvancedPipelineUI:
         try:
             # Import here to avoid circular imports
             from services.advanced_pipeline import OptimizedFileManager
+            from model_configs import get_provider
 
-            # Get API key from environment
-            api_key = os.environ.get('ANTHROPIC_API_KEY')
-            if not api_key:
-                st.error("❌ ANTHROPIC_API_KEY not found in environment variables")
-                return None
+            # Get selected model config to determine provider
+            selected_model_config = st.session_state.get('selected_model_config', 'gemini_flash')
+            provider = get_provider(selected_model_config)
+            provider_name = "Google Gemini" if provider == 'google' else "Anthropic Claude"
 
-            file_manager = OptimizedFileManager(api_key)
+            # Get provider-specific API key
+            if provider == 'google':
+                api_key = os.environ.get('GOOGLE_API_KEY')
+                if not api_key:
+                    st.error(f"❌ GOOGLE_API_KEY not found for {provider_name}")
+                    return None
+            else:
+                api_key = os.environ.get('ANTHROPIC_API_KEY')
+                if not api_key:
+                    st.error(f"❌ ANTHROPIC_API_KEY not found for {provider_name}")
+                    return None
+
+            # Create provider-aware file manager
+            file_manager = OptimizedFileManager(api_key, provider, selected_model_config)
+
+            # Show which provider's files we're accessing
+            st.info(f"📁 Accessing {provider_name} uploaded files")
 
             with st.spinner("📋 Loading uploaded files..."):
                 uploaded_files = file_manager.list_uploaded_files()
@@ -467,25 +486,38 @@ class AdvancedPipelineUI:
         try:
             # Import here to avoid circular imports
             from services.advanced_pipeline import OptimizedFileManager
+            from model_configs import get_provider
 
-            # Get API key from environment
-            api_key = os.environ.get('ANTHROPIC_API_KEY')
-            if not api_key:
-                st.error("❌ ANTHROPIC_API_KEY not found in environment variables")
-                return
+            # Get selected model config to determine provider
+            selected_model_config = st.session_state.get('selected_model_config', 'gemini_flash')
+            provider = get_provider(selected_model_config)
+            provider_name = "Google Gemini" if provider == 'google' else "Anthropic Claude"
 
-            file_manager = OptimizedFileManager(api_key)
+            # Get provider-specific API key
+            if provider == 'google':
+                api_key = os.environ.get('GOOGLE_API_KEY')
+                if not api_key:
+                    st.error(f"❌ GOOGLE_API_KEY not found for {provider_name}")
+                    return
+            else:
+                api_key = os.environ.get('ANTHROPIC_API_KEY')
+                if not api_key:
+                    st.error(f"❌ ANTHROPIC_API_KEY not found for {provider_name}")
+                    return
+
+            # Create provider-aware file manager
+            file_manager = OptimizedFileManager(api_key, provider, selected_model_config)
 
             # Get file count
             with st.spinner("📊 Getting file count..."):
                 uploaded_files = file_manager.list_uploaded_files()
                 file_count = len(uploaded_files) if uploaded_files else 0
 
-            st.markdown("**📁 File Management:**")
+            st.markdown(f"**📁 File Management ({provider_name}):**")
 
             col1, col2 = st.columns([2, 1])
             with col1:
-                st.info(f"📊 Total uploaded files: {file_count}")
+                st.info(f"📊 Total {provider_name} files: {file_count}")
 
             with col2:
                 if file_count > 0:
@@ -527,10 +559,10 @@ class AdvancedPipelineUI:
         col1, col2, col3, col4 = st.columns(4)
 
         with col1:
-            st.info("🤖 **Model: Claude 3.5 Sonnet**")
+            st.info("🤖 **Model: Gemini 2.0 Flash**")
 
         with col2:
-            st.info("🔄 **Max rounds: 3**")
+            st.info("🔄 **Max rounds: 10**")
 
         with col3:
             st.info("🖼️ **Resolution: 600 DPI**")
@@ -549,7 +581,7 @@ class AdvancedPipelineUI:
                 st.write("✅ **Enhanced processing: Active**")
 
         # Hardcoded settings - all optimal values
-        max_rounds = 3  # Fixed to 3
+        max_rounds = 10  # Fixed to 3
         dpi_setting = 600  # Fixed to 600 DPI
         selected_config_name = 'claude'  # Hardcoded to Claude Sonnet
         enable_preprocessing = True
@@ -600,7 +632,7 @@ class AdvancedPipelineUI:
         if self.pipeline_state['processing']:
             st.subheader("🔄 Processing...")
             current_step = self.pipeline_state['current_step']
-            step_names = ["Preprocessing PDF", "Uploading to Claude", "Extracting data", "Validating (3 rounds max)"]
+            step_names = ["Preprocessing PDF", "Uploading to AI provider", "Extracting data", "Validating (3 rounds max)"]
 
             if current_step < len(step_names):
                 st.info(f"📋 {step_names[current_step]}")
@@ -1003,7 +1035,7 @@ def process_pipeline_sync(pdf_file, schema, page_num, settings, selected_model_c
             if "Step 1" in message or "Preprocessing" in message:
                 update_progress(1, "Preprocessing PDF to 600 DPI...")
             elif "Step 2" in message or "Uploading" in message:
-                update_progress(2, "Uploading to Claude Files API...")
+                update_progress(2, f"Uploading to {provider_name} Files API...")
             elif "Step 3" in message or "extraction" in message.lower():
                 update_progress(3, "Extracting data with schema...")
             elif "Step 4" in message or "Validation" in message:
@@ -1011,7 +1043,7 @@ def process_pipeline_sync(pdf_file, schema, page_num, settings, selected_model_c
 
         # Process the document
         if selected_file_id:
-            # For selected files, we still need a dummy PDF path (Claude will use the selected file)
+            # For selected files, we still need a dummy PDF path (AI provider will use the selected file)
             dummy_pdf_path = tmp_pdf_path or "dummy.pdf"  # Fallback for selected files
             result = pipeline.process_document(
                 pdf_path=dummy_pdf_path,

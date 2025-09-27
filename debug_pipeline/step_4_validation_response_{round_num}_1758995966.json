@@ -1,0 +1,52 @@
+{
+  "field_validation_results": [],
+  "table_validation_results": [
+    {
+      "table_name": "Rate_Salary_Information",
+      "rows_visible_in_image": 11,
+      "rows_extracted": 11,
+      "row_completeness_issue": false,
+      "cell_validation_results": []
+    },
+    {
+      "table_name": "Employee_Tax_Record",
+      "rows_visible_in_image": 4,
+      "rows_extracted": 4,
+      "row_completeness_issue": false,
+      "cell_validation_results": []
+    },
+    {
+      "table_name": "Employer_Tax_Record",
+      "rows_visible_in_image": 6,
+      "rows_extracted": 6,
+      "row_completeness_issue": false,
+      "cell_validation_results": []
+    },
+    {
+      "table_name": "Deduction_Record",
+      "rows_visible_in_image": 5,
+      "rows_extracted": 5,
+      "row_completeness_issue": false,
+      "cell_validation_results": []
+    },
+    {
+      "table_name": "Direct_Deposit_Record",
+      "rows_visible_in_image": 1,
+      "rows_extracted": 1,
+      "row_completeness_issue": false,
+      "cell_validation_results": []
+    },
+    {
+      "table_name": "Fringe_Benefit_Record",
+      "rows_visible_in_image": 1,
+      "rows_extracted": 1,
+      "row_completeness_issue": false,
+      "cell_validation_results": []
+    }
+  ],
+  "overall_assessment": {
+    "fields_with_issues": 0,
+    "accuracy_estimate": 1.0,
+    "major_issues": []
+  }
+}

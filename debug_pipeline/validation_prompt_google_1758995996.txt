@@ -1,0 +1,1938 @@
+Provider: google
+Model Config: gemini_flash
+Page: 0
+Timestamp: 1758995996
+================================================================================
+TASK: Validate extracted data by VISUALLY INSPECTING the document image (PAGE 0)
+
+VISUAL INSPECTION PROCESS:
+1. **EXAMINE THE IMAGE**: Look at the actual document image uploaded
+2. **LOCATE EACH FIELD**: Find form fields, labels, and their values in the image
+3. **TRACE TABLE STRUCTURE**: Identify table headers and follow columns down to data
+4. **SPOT MISALIGNMENTS**: Look for data in wrong columns or incorrect field associations
+5. **COMPARE EXTRACTION**: Check if extracted JSON matches what you visually see
+
+FIELD INSPECTION - Look at the image and verify:
+• **Form Fields**: Is each extracted value in the correct labeled field?
+• **Label-Value Pairs**: Are values associated with the right labels?
+• **Field Positioning**: Does the spatial layout match the extraction?
+
+TABLE INSPECTION - Look at table structure and verify:
+• **Column Headers**: Does each extracted value belong under the correct header?
+• **Data Alignment**: Are values shifted left/right from their intended columns?
+• **Empty vs Filled Cells**: Are null values actually empty in the image?
+• **Row Completeness**: Are all visible table rows extracted?
+
+EXTRACTED DATA:
+{
+  "employee_profile_document": {
+    "Document_Header": {
+      "Company_Name": "Velorynt Labs",
+      "Company_Code": "37546",
+      "Period_From": "2024-12-17T00:00:00",
+      "Period_To": "2024-12-26T00:00:00",
+      "Page_Number": "69"
+    },
+    "Employee_Profile": {
+      "Basic_Information": {
+        "Employee_Name": "Jocelyn Taylor",
+        "Address": {
+          "Street_Address": "1006 Shery St",
+          "City": "Shaontown",
+          "State": "WY",
+          "Zip_Code": "93506-7144"
+        },
+        "Employment_Details": {
+          "Employee_ID": 5532,
+          "Status": "A",
+          "Employee_Type": "RFT",
+          "Position": "Statutory",
+          "Title": "Seasonal",
+          "Pay_Group": null,
+          "Job_Code": null,
+          "Hire_Date": "2016-01-04T00:00:00",
+          "Rehire_Date": null,
+          "Term_Date": null,
+          "Term_Reason": null,
+          "Tax_Form": "W2",
+          "WCC": "8810",
+          "Locations": "606",
+          "Positions": "700"
+        },
+        "Personal_Details": {
+          "SSN": "609-85-2596",
+          "DOB": "1961-12-28T00:00:00",
+          "Gender": "M",
+          "Marital_Status": "M",
+          "Visa_Type": null,
+          "Visa_Expiration": null,
+          "Citizen": null,
+          "I9_Verified": "Yes",
+          "I9_Reverify": null
+        },
+        "Contact_Information": {
+          "Home_Phone": null,
+          "Work_Phone": null,
+          "Extension": null,
+          "Email": null,
+          "Mail_Stop": null
+        },
+        "Status_Indicators": {
+          "Statutory": "0.00",
+          "Seasonal": "0.00",
+          "Domestic_Emp": "No",
+          "Probation": 0.0,
+          "Union_Status": null,
+          "Union_Date": null,
+          "Collect_Dues": "No",
+          "Paid_Init_Fees": "No",
+          "Supervisor_ID": null,
+          "Supervisor_Name": null,
+          "Veteran": null,
+          "Disability": null,
+          "Smoker": "No",
+          "Pension": "No",
+          "Deceased": "No",
+          "Def_Comp": "No",
+          "Legal_Rep": "No"
+        }
+      },
+      "Rate_Salary_Information": {
+        "AutoPay_Status": null,
+        "Pay_Frequency": "B",
+        "OT_Exempt": "No",
+        "Default_Hours": 0.0,
+        "Rate_Records": [
+          {
+            "Rate_Code": "Base",
+            "Description": "Base Rate",
+            "Rate": 20.95,
+            "Salary": null,
+            "Effective_Start_Date": "2024-01-03T00:00:00",
+            "Effective_End_Date": "2100-12-31T00:00:00"
+          },
+          {
+            "Rate_Code": "Base",
+            "Description": "Base Rate",
+            "Rate": 20.3,
+            "Salary": null,
+            "Effective_Start_Date": "2023-01-03T00:00:00",
+            "Effective_End_Date": "2024-01-02T00:00:00"
+          },
+          {
+            "Rate_Code": "Base",
+            "Description": "Base Rate",
+            "Rate": 19.75,
+            "Salary": null,
+            "Effective_Start_Date": "2022-05-08T00:00:00",
+            "Effective_End_Date": "2023-01-02T00:00:00"
+          },
+          {
+            "Rate_Code": "Base",
+            "Description": "Base Rate",
+            "Rate": 16.75,
+            "Salary": null,
+            "Effective_Start_Date": "2022-01-03T00:00:00",
+            "Effective_End_Date": "2022-05-07T00:00:00"
+          },
+          {
+            "Rate_Code": "Base",
+            "Description": "Base Rate",
+            "Rate": 16.0,
+            "Salary": null,
+            "Effective_Start_Date": "2021-01-05T00:00:00",
+            "Effective_End_Date": "2022-01-02T00:00:00"
+          },
+          {
+            "Rate_Code": "Base",
+            "Description": "Base Rate",
+            "Rate": 14.6,
+            "Salary": null,
+            "Effective_Start_Date": "2020-01-04T00:00:00",
+            "Effective_End_Date": "2021-01-04T00:00:00"
+          },
+          {
+            "Rate_Code": "Base",
+            "Description": "Base Rate",
+            "Rate": 14.05,
+            "Salary": null,
+            "Effective_Start_Date": "2019-01-04T00:00:00",
+            "Effective_End_Date": "2020-01-03T00:00:00"
+          },
+          {
+            "Rate_Code": "Base",
+            "Description": "Base Rate",
+            "Rate": 13.75,
+            "Salary": null,
+            "Effective_Start_Date": "2018-01-04T00:00:00",
+            "Effective_End_Date": "2019-01-03T00:00:00"
+          },
+          {
+            "Rate_Code": "Base",
+            "Description": "Base Rate",
+            "Rate": 13.4,
+            "Salary": null,
+            "Effective_Start_Date": "2017-01-04T00:00:00",
+            "Effective_End_Date": "2018-01-03T00:00:00"
+          },
+          {
+            "Rate_Code": "Base",
+            "Description": "Base Rate",
+            "Rate": 13.0,
+            "Salary": null,
+            "Effective_Start_Date": "2016-04-04T00:00:00",
+            "Effective_End_Date": "2017-01-03T00:00:00"
+          },
+          {
+            "Rate_Code": "Base",
+            "Description": "Base Rate",
+            "Rate": 12.0,
+            "Salary": null,
+            "Effective_Start_Date": "2016-01-04T00:00:00",
+            "Effective_End_Date": "2016-04-03T00:00:00"
+          }
+        ]
+      },
+      "Tax_Information": {
+        "Employee_Taxes": {
+          "Employee_Tax_Record": [
+            {
+              "Tax_Code": "MED",
+              "Tax_Description": "Medicare",
+              "Filing_Status": null,
+              "Additional_Amount": 0.0,
+              "Effective_Start_Date": "2016-01-15T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00",
+              "Default_Indicator": "Yes"
+            },
+            {
+              "Tax_Code": "SS",
+              "Tax_Description": "OASDI",
+              "Filing_Status": null,
+              "Additional_Amount": 0.0,
+              "Effective_Start_Date": "2016-01-15T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00",
+              "Default_Indicator": "Yes"
+            },
+            {
+              "Tax_Code": "FITW",
+              "Tax_Description": "Federal Income Tax",
+              "Filing_Status": "M-1",
+              "Additional_Amount": 20.0,
+              "Effective_Start_Date": "2016-01-04T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00",
+              "Default_Indicator": "Yes"
+            },
+            {
+              "Tax_Code": "MN",
+              "Tax_Description": "Minnesota SITW",
+              "Filing_Status": "M-1",
+              "Additional_Amount": 0.0,
+              "Effective_Start_Date": "2016-01-04T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00",
+              "Default_Indicator": "Yes"
+            }
+          ]
+        },
+        "Employer_Taxes": {
+          "Employer_Tax_Record": [
+            {
+              "Tax_Code": "MED-R",
+              "Tax_Description": "Medicare - Employer",
+              "Effective_Start_Date": "2016-01-15T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00"
+            },
+            {
+              "Tax_Code": "SS-R",
+              "Tax_Description": "OASDI - Employer",
+              "Effective_Start_Date": "2016-01-15T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00"
+            },
+            {
+              "Tax_Code": "FUTA",
+              "Tax_Description": "Fed Unemployment",
+              "Effective_Start_Date": "2016-01-15T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00"
+            },
+            {
+              "Tax_Code": "MNAST",
+              "Tax_Description": "Minnesota Federal Loan Assessment",
+              "Effective_Start_Date": "2016-01-15T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00"
+            },
+            {
+              "Tax_Code": "MNDW",
+              "Tax_Description": "Workforce Enhancement Fee",
+              "Effective_Start_Date": "2016-01-15T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00"
+            },
+            {
+              "Tax_Code": "MNSUI",
+              "Tax_Description": "Minnesota SUI",
+              "Effective_Start_Date": "2016-01-15T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00"
+            }
+          ]
+        }
+      },
+      "Deduction_Information": {
+        "Deduction_Records": [
+          {
+            "Code": "401KC",
+            "Description": "401K Contribution",
+            "Rate": 6.0,
+            "Calc_Code": "%401K",
+            "Frequency": null,
+            "Goal_Paid": "0.00/0.00",
+            "Min_Max_Annual_Max": "0.00/0.00/0.00",
+            "Arrears": 0.0,
+            "Agency": null,
+            "Effective_Start_Date": "2016-04-01T00:00:00",
+            "Effective_End_Date": "2100-12-31T00:00:00"
+          },
+          {
+            "Code": "401kUM",
+            "Description": "401kUnmatch",
+            "Rate": 14.0,
+            "Calc_Code": "%401K",
+            "Frequency": null,
+            "Goal_Paid": "0.00/0.00",
+            "Min_Max_Annual_Max": "0.00/0.00/0.00",
+            "Arrears": 0.0,
+            "Agency": null,
+            "Effective_Start_Date": "2022-08-01T00:00:00",
+            "Effective_End_Date": "2100-12-31T00:00:00"
+          },
+          {
+            "Code": "401kUnmatc",
+            "Description": "401K Unmatch",
+            "Rate": 12.0,
+            "Calc_Code": "%401K",
+            "Frequency": null,
+            "Goal_Paid": "0.00/0.00",
+            "Min_Max_Annual_Max": "0.00/0.00/0.00",
+            "Arrears": 0.0,
+            "Agency": null,
+            "Effective_Start_Date": "2019-03-31T00:00:00",
+            "Effective_End_Date": "2022-08-01T00:00:00"
+          },
+          {
+            "Code": "DNTL",
+            "Description": "Dental Insurance S125",
+            "Rate": 18.32,
+            "Calc_Code": "B5",
+            "Frequency": null,
+            "Goal_Paid": "0.00/0.00",
+            "Min_Max_Annual_Max": "0.00/0.00/0.00",
+            "Arrears": 0.0,
+            "Agency": null,
+            "Effective_Start_Date": "2019-09-01T00:00:00",
+            "Effective_End_Date": "2100-12-31T00:00:00"
+          },
+          {
+            "Code": "FH125",
+            "Description": "Health Insurance S125",
+            "Rate": 158.14,
+            "Calc_Code": "B5",
+            "Frequency": null,
+            "Goal_Paid": "0.00/0.00",
+            "Min_Max_Annual_Max": "0.00/0.00/0.00",
+            "Arrears": 0.0,
+            "Agency": null,
+            "Effective_Start_Date": "2019-09-01T00:00:00",
+            "Effective_End_Date": "2100-12-31T00:00:00"
+          }
+        ]
+      },
+      "AutoPay_Information": {
+        "AutoPay_Records": []
+      },
+      "Direct_Deposit_Information": {
+        "Direct_Deposit_Records": [
+          {
+            "Sequence_Number": null,
+            "Transit_Number": "296076262",
+            "Account_Number": "2743046665",
+            "Account_Type": "Checking?",
+            "Account_Name": "Jocelyn, Taylor",
+            "Amount_Code": "%",
+            "Amount": 100.0,
+            "Prenote_Date": "2016-02-12T00:00:00",
+            "Effective_Start_Date": "2016-02-12T00:00:00",
+            "Effective_End_Date": "2100-12-31T00:00:00",
+            "Exclude_Indicator": "No",
+            "Special_Indicator": null
+          }
+        ]
+      },
+      "Labor_Allocation_Information": {
+        "Labor_Allocation_Records": []
+      },
+      "Fringe_Benefit_Information": {
+        "Fringe_Benefit_Records": [
+          {
+            "Earnings_Code": "STD",
+            "Calc_Code": null,
+            "Rate_Code": null,
+            "Rate": 0.0,
+            "Rate_Per": null,
+            "Amount": 0.0,
+            "Tabled_Indicator": "No",
+            "Units": 11.07,
+            "Frequency": null,
+            "Goal_Paid_Goal_Balance": "0.00/0.00/0.00",
+            "Min_Max_Annual_Max": "0.00/0.00/0.00",
+            "Effective_Start_Date": "2019-03-17T00:00:00",
+            "Effective_End_Date": "2100-12-31T00:00:00"
+          }
+        ]
+      },
+      "Benefit_Accrual_Information": {
+        "Benefit_Accrual_Records": []
+      },
+      "Detail_401k_Information": {
+        "Detail_401k_Records": []
+      },
+      "Review_Information": {
+        "Review_Records": []
+      },
+      "Emergency_Contact_Information": {
+        "Emergency_Contact_Records": []
+      }
+    }
+  }
+}
+
+SCHEMA:
+{
+  "name": "projects/employee-profile/processors/cbiz-employee-profile/dataset/datasetSchema",
+  "documentSchema": {
+    "entityTypes": [
+      {
+        "name": "employee_profile_document",
+        "baseTypes": [
+          "document"
+        ],
+        "properties": [
+          {
+            "name": "Document_Header",
+            "valueType": "Document_Header",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Document header with company and period information",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Employee_Profile",
+            "valueType": "Employee_Profile",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Complete employee profile information",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Employee Profile Document"
+      },
+      {
+        "name": "Document_Header",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Company_Name",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Company name (e.g., Velorynt Labs)",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Company_Code",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Company code in parentheses",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Period_From",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Period start date",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Period_To",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Period end date",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Page_Number",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Page number",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Document Header"
+      },
+      {
+        "name": "Employee_Profile",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Basic_Information",
+            "valueType": "Basic_Information",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Employee basic demographic and employment information",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Rate_Salary_Information",
+            "valueType": "Rate_Salary_Information",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Rate and salary information section",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Tax_Information",
+            "valueType": "Tax_Information",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Tax information section containing both employee and employer taxes",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Deduction_Information",
+            "valueType": "Deduction_Information",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Deduction information section",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "AutoPay_Information",
+            "valueType": "AutoPay_Information",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "AutoPay information section",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Direct_Deposit_Information",
+            "valueType": "Direct_Deposit_Information",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Direct deposit information section",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Labor_Allocation_Information",
+            "valueType": "Labor_Allocation_Information",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Labor allocation information section",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Fringe_Benefit_Information",
+            "valueType": "Fringe_Benefit_Information",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Fringe benefit information section",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Benefit_Accrual_Information",
+            "valueType": "Benefit_Accrual_Information",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Benefit accrual information section",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Detail_401k_Information",
+            "valueType": "Detail_401k_Information",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "401k detail information section",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Review_Information",
+            "valueType": "Review_Information",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Review information section",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Emergency_Contact_Information",
+            "valueType": "Emergency_Contact_Information",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Emergency contact information section",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Employee Profile"
+      },
+      {
+        "name": "Basic_Information",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Employee_Name",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Employee full name",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Address",
+            "valueType": "Address",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Employee address information",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Employment_Details",
+            "valueType": "Employment_Details",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Employment related details",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Personal_Details",
+            "valueType": "Personal_Details",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Personal demographic details",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Contact_Information",
+            "valueType": "Contact_Information",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Phone and contact details",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Status_Indicators",
+            "valueType": "Status_Indicators",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Various employment status indicators",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Basic Information"
+      },
+      {
+        "name": "Address",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Street_Address",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "City",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "State",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Zip_Code",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Address"
+      },
+      {
+        "name": "Employment_Details",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Employee_ID",
+            "valueType": "number",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Status",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Employee_Type",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Position",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Title",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Pay_Group",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Job_Code",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Hire_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Rehire_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Term_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Term_Reason",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Tax_Form",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "WCC",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Locations",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Positions",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Employment Details"
+      },
+      {
+        "name": "Personal_Details",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "SSN",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "DOB",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Gender",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Marital_Status",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Visa_Type",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Visa_Expiration",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Citizen",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "I9_Verified",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "I9_Reverify",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Personal Details"
+      },
+      {
+        "name": "Contact_Information",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Home_Phone",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Work_Phone",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Extension",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Email",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Mail_Stop",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Contact Information"
+      },
+      {
+        "name": "Status_Indicators",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Statutory",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Seasonal",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Domestic_Emp",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Probation",
+            "valueType": "number",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Union_Status",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Union_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Collect_Dues",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Paid_Init_Fees",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Supervisor_ID",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Supervisor_Name",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Veteran",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Disability",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Smoker",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Pension",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Deceased",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Def_Comp",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Legal_Rep",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Status Indicators"
+      },
+      {
+        "name": "Rate_Salary_Information",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "AutoPay_Status",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "AutoPay status",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Pay_Frequency",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Pay frequency",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "OT_Exempt",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Overtime exempt status",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Default_Hours",
+            "valueType": "number",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Default hours",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Rate_Records",
+            "valueType": "Rate_Record",
+            "occurrenceType": "OPTIONAL_MULTIPLE",
+            "propertyMetadata": {},
+            "description": "Array of rate records with effective dates",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Rate Salary Information"
+      },
+      {
+        "name": "Rate_Record",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Rate_Code",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Description",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Rate",
+            "valueType": "number",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Salary",
+            "valueType": "number",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Effective_Start_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Effective_End_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Rate Record"
+      },
+      {
+        "name": "Tax_Information",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Employee_Taxes",
+            "valueType": "Employee_Tax_Record",
+            "occurrenceType": "OPTIONAL_MULTIPLE",
+            "propertyMetadata": {},
+            "description": "Array of employee tax records",
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Employer_Taxes",
+            "valueType": "Employer_Tax_Record",
+            "occurrenceType": "OPTIONAL_MULTIPLE",
+            "propertyMetadata": {},
+            "description": "Array of employer tax records",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Tax Information"
+      },
+      {
+        "name": "Employee_Tax_Record",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Tax_Code",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Tax_Description",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Filing_Status",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Additional_Amount",
+            "valueType": "number",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Effective_Start_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Effective_End_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Default_Indicator",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Employee Tax Record"
+      },
+      {
+        "name": "Employer_Tax_Record",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Tax_Code",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Tax_Description",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Effective_Start_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Effective_End_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Employer Tax Record"
+      },
+      {
+        "name": "Deduction_Information",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Deduction_Records",
+            "valueType": "Deduction_Record",
+            "occurrenceType": "OPTIONAL_MULTIPLE",
+            "propertyMetadata": {},
+            "description": "Array of deduction records",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Deduction Information"
+      },
+      {
+        "name": "Deduction_Record",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Code",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Description",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Rate",
+            "valueType": "number",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Calc_Code",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Frequency",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Goal_Paid",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Min_Max_Annual_Max",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Arrears",
+            "valueType": "number",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Agency",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Effective_Start_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Effective_End_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Deduction Record"
+      },
+      {
+        "name": "AutoPay_Information",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "AutoPay_Records",
+            "valueType": "AutoPay_Record",
+            "occurrenceType": "OPTIONAL_MULTIPLE",
+            "propertyMetadata": {},
+            "description": "Array of AutoPay records (may be empty)",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "AutoPay Information"
+      },
+      {
+        "name": "AutoPay_Record",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Status",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "AutoPay status or 'No AutoPay Information'",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "AutoPay Record"
+      },
+      {
+        "name": "Direct_Deposit_Information",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Direct_Deposit_Records",
+            "valueType": "Direct_Deposit_Record",
+            "occurrenceType": "OPTIONAL_MULTIPLE",
+            "propertyMetadata": {},
+            "description": "Array of direct deposit records",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Direct Deposit Information"
+      },
+      {
+        "name": "Direct_Deposit_Record",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Sequence_Number",
+            "valueType": "number",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Transit_Number",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Account_Number",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Account_Type",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Account_Name",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Amount_Code",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Amount",
+            "valueType": "number",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Prenote_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Effective_Start_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Effective_End_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Exclude_Indicator",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Special_Indicator",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Direct Deposit Record"
+      },
+      {
+        "name": "Labor_Allocation_Information",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Labor_Allocation_Records",
+            "valueType": "Labor_Allocation_Record",
+            "occurrenceType": "OPTIONAL_MULTIPLE",
+            "propertyMetadata": {},
+            "description": "Array of labor allocation records (may be empty)",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Labor Allocation Information"
+      },
+      {
+        "name": "Labor_Allocation_Record",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Status",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Labor allocation status or 'No Labor Allocation Information'",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Labor Allocation Record"
+      },
+      {
+        "name": "Fringe_Benefit_Information",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Fringe_Benefit_Records",
+            "valueType": "Fringe_Benefit_Record",
+            "occurrenceType": "OPTIONAL_MULTIPLE",
+            "propertyMetadata": {},
+            "description": "Array of fringe benefit records",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Fringe Benefit Information"
+      },
+      {
+        "name": "Fringe_Benefit_Record",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Earnings_Code",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Calc_Code",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Rate_Code",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Rate",
+            "valueType": "number",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Rate_Per",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Amount",
+            "valueType": "number",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Tabled_Indicator",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Units",
+            "valueType": "number",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Frequency",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Goal_Paid_Goal_Balance",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Min_Max_Annual_Max",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Effective_Start_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Effective_End_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Fringe Benefit Record"
+      },
+      {
+        "name": "Benefit_Accrual_Information",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Benefit_Accrual_Records",
+            "valueType": "Benefit_Accrual_Record",
+            "occurrenceType": "OPTIONAL_MULTIPLE",
+            "propertyMetadata": {},
+            "description": "Array of benefit accrual records",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Benefit Accrual Information"
+      },
+      {
+        "name": "Benefit_Accrual_Record",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Benefit_Code",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Rate",
+            "valueType": "number",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Amount",
+            "valueType": "number",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Hours",
+            "valueType": "number",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Max_Carryover_Max",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Length_Of_Service",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Hours_Used_Avail_Total_Prob",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Dollars_Used_Avail_Total_Prob",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Effective_Start_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          },
+          {
+            "name": "Effective_End_Date",
+            "valueType": "datetime",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Benefit Accrual Record"
+      },
+      {
+        "name": "Detail_401k_Information",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Detail_401k_Records",
+            "valueType": "Detail_401k_Record",
+            "occurrenceType": "OPTIONAL_MULTIPLE",
+            "propertyMetadata": {},
+            "description": "Array of 401k detail records (may be empty)",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "401k Detail Information"
+      },
+      {
+        "name": "Detail_401k_Record",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Status",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "401k detail status or 'No 401k Detail Information'",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "401k Detail Record"
+      },
+      {
+        "name": "Review_Information",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Review_Records",
+            "valueType": "Review_Record",
+            "occurrenceType": "OPTIONAL_MULTIPLE",
+            "propertyMetadata": {},
+            "description": "Array of review records (may be empty)",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Review Information"
+      },
+      {
+        "name": "Review_Record",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Status",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Review status or 'No Review Information'",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Review Record"
+      },
+      {
+        "name": "Emergency_Contact_Information",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Emergency_Contact_Records",
+            "valueType": "Emergency_Contact_Record",
+            "occurrenceType": "OPTIONAL_MULTIPLE",
+            "propertyMetadata": {},
+            "description": "Array of emergency contact records (may be empty)",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Emergency Contact Information"
+      },
+      {
+        "name": "Emergency_Contact_Record",
+        "baseTypes": [
+          "object"
+        ],
+        "properties": [
+          {
+            "name": "Status",
+            "valueType": "string",
+            "occurrenceType": "OPTIONAL_ONCE",
+            "propertyMetadata": {},
+            "description": "Emergency contact status or contact details",
+            "method": "EXTRACT"
+          }
+        ],
+        "entityTypeMetadata": {},
+        "displayName": "Emergency Contact Record"
+      }
+    ]
+  }
+}
+
+VALIDATION RULES:
+✓ Report ONLY problems - skip correct items
+✓ For tables: Check each cell is in correct column
+✓ Count all visible rows - report if extraction missed any
+✓ Check empty fields are actually empty in document
+
+RESPONSE FORMAT (JSON only):
+{
+  "field_validation_results": [
+    {
+      "field_name": "problem_field",
+      "extracted_value": "wrong_value",
+      "visual_inspection": {
+        "actual_value_in_document": "correct_value",
+        "issue": "description",
+        "confidence": 0.95
+      }
+    }
+  ],
+  "table_validation_results": [
+    {
+      "table_name": "table_name",
+      "rows_visible_in_image": 6,
+      "rows_extracted": 5,
+      "row_completeness_issue": true,
+      "cell_validation_results": [
+        {
+          "row_index": 0,
+          "column_name": "wrong_column",
+          "extracted_value": "misplaced_value",
+          "visual_inspection": {
+            "actual_value_in_document": "correct_value",
+            "belongs_in_column": "correct_column",
+            "issue": "column_shift"
+          }
+        }
+      ]
+    }
+  ],
+  "overall_assessment": {
+    "fields_with_issues": 2,
+    "accuracy_estimate": 0.90,
+    "major_issues": ["column_shift_in_benefits_table"]
+  }
+}

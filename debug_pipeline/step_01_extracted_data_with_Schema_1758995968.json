@@ -1,0 +1,631 @@
+{
+  "success": true,
+  "extracted_data": {
+    "employee_profile_document": {
+      "Document_Header": {
+        "Company_Name": "Velorynt Labs",
+        "Company_Code": "37546",
+        "Period_From": "2024-12-17T00:00:00",
+        "Period_To": "2024-12-26T00:00:00",
+        "Page_Number": "69"
+      },
+      "Employee_Profile": {
+        "Basic_Information": {
+          "Employee_Name": "Jocelyn Taylor",
+          "Address": {
+            "Street_Address": "1006 Shery St",
+            "City": "Shaontown",
+            "State": "WY",
+            "Zip_Code": "93506-7144"
+          },
+          "Employment_Details": {
+            "Employee_ID": 5532,
+            "Status": "A",
+            "Employee_Type": "RFT",
+            "Position": "Statutory",
+            "Title": "Seasonal",
+            "Pay_Group": null,
+            "Job_Code": null,
+            "Hire_Date": "2016-01-04T00:00:00",
+            "Rehire_Date": null,
+            "Term_Date": null,
+            "Term_Reason": null,
+            "Tax_Form": "W2",
+            "WCC": "8810",
+            "Locations": "606",
+            "Positions": "700"
+          },
+          "Personal_Details": {
+            "SSN": "609-85-2596",
+            "DOB": "1961-12-28T00:00:00",
+            "Gender": "M",
+            "Marital_Status": "M",
+            "Visa_Type": null,
+            "Visa_Expiration": null,
+            "Citizen": null,
+            "I9_Verified": "Yes",
+            "I9_Reverify": null
+          },
+          "Contact_Information": {
+            "Home_Phone": null,
+            "Work_Phone": null,
+            "Extension": null,
+            "Email": null,
+            "Mail_Stop": null
+          },
+          "Status_Indicators": {
+            "Statutory": "0.00",
+            "Seasonal": "0.00",
+            "Domestic_Emp": "No",
+            "Probation": 0.0,
+            "Union_Status": null,
+            "Union_Date": null,
+            "Collect_Dues": "No",
+            "Paid_Init_Fees": "No",
+            "Supervisor_ID": null,
+            "Supervisor_Name": null,
+            "Veteran": null,
+            "Disability": null,
+            "Smoker": "No",
+            "Pension": "No",
+            "Deceased": "No",
+            "Def_Comp": "No",
+            "Legal_Rep": "No"
+          }
+        },
+        "Rate_Salary_Information": {
+          "AutoPay_Status": null,
+          "Pay_Frequency": "B",
+          "OT_Exempt": "No",
+          "Default_Hours": 0.0,
+          "Rate_Records": [
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 20.95,
+              "Salary": null,
+              "Effective_Start_Date": "2024-01-03T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 20.3,
+              "Salary": null,
+              "Effective_Start_Date": "2023-01-03T00:00:00",
+              "Effective_End_Date": "2024-01-02T00:00:00"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 19.75,
+              "Salary": null,
+              "Effective_Start_Date": "2022-05-08T00:00:00",
+              "Effective_End_Date": "2023-01-02T00:00:00"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 16.75,
+              "Salary": null,
+              "Effective_Start_Date": "2022-01-03T00:00:00",
+              "Effective_End_Date": "2022-05-07T00:00:00"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 16.0,
+              "Salary": null,
+              "Effective_Start_Date": "2021-01-05T00:00:00",
+              "Effective_End_Date": "2022-01-02T00:00:00"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 14.6,
+              "Salary": null,
+              "Effective_Start_Date": "2020-01-04T00:00:00",
+              "Effective_End_Date": "2021-01-04T00:00:00"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 14.05,
+              "Salary": null,
+              "Effective_Start_Date": "2019-01-04T00:00:00",
+              "Effective_End_Date": "2020-01-03T00:00:00"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 13.75,
+              "Salary": null,
+              "Effective_Start_Date": "2018-01-04T00:00:00",
+              "Effective_End_Date": "2019-01-03T00:00:00"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 13.4,
+              "Salary": null,
+              "Effective_Start_Date": "2017-01-04T00:00:00",
+              "Effective_End_Date": "2018-01-03T00:00:00"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 13.0,
+              "Salary": null,
+              "Effective_Start_Date": "2016-04-04T00:00:00",
+              "Effective_End_Date": "2017-01-03T00:00:00"
+            },
+            {
+              "Rate_Code": "Base",
+              "Description": "Base Rate",
+              "Rate": 12.0,
+              "Salary": null,
+              "Effective_Start_Date": "2016-01-04T00:00:00",
+              "Effective_End_Date": "2016-04-03T00:00:00"
+            }
+          ]
+        },
+        "Tax_Information": {
+          "Employee_Taxes": {
+            "Employee_Tax_Record": [
+              {
+                "Tax_Code": "MED",
+                "Tax_Description": "Medicare",
+                "Filing_Status": null,
+                "Additional_Amount": 0.0,
+                "Effective_Start_Date": "2016-01-15T00:00:00",
+                "Effective_End_Date": "2100-12-31T00:00:00",
+                "Default_Indicator": "Yes"
+              },
+              {
+                "Tax_Code": "SS",
+                "Tax_Description": "OASDI",
+                "Filing_Status": null,
+                "Additional_Amount": 0.0,
+                "Effective_Start_Date": "2016-01-15T00:00:00",
+                "Effective_End_Date": "2100-12-31T00:00:00",
+                "Default_Indicator": "Yes"
+              },
+              {
+                "Tax_Code": "FITW",
+                "Tax_Description": "Federal Income Tax",
+                "Filing_Status": "M-1",
+                "Additional_Amount": 20.0,
+                "Effective_Start_Date": "2016-01-04T00:00:00",
+                "Effective_End_Date": "2100-12-31T00:00:00",
+                "Default_Indicator": "Yes"
+              },
+              {
+                "Tax_Code": "MN",
+                "Tax_Description": "Minnesota SITW",
+                "Filing_Status": "M-1",
+                "Additional_Amount": 0.0,
+                "Effective_Start_Date": "2016-01-04T00:00:00",
+                "Effective_End_Date": "2100-12-31T00:00:00",
+                "Default_Indicator": "Yes"
+              }
+            ]
+          },
+          "Employer_Taxes": {
+            "Employer_Tax_Record": [
+              {
+                "Tax_Code": "MED-R",
+                "Tax_Description": "Medicare - Employer",
+                "Effective_Start_Date": "2016-01-15T00:00:00",
+                "Effective_End_Date": "2100-12-31T00:00:00"
+              },
+              {
+                "Tax_Code": "SS-R",
+                "Tax_Description": "OASDI - Employer",
+                "Effective_Start_Date": "2016-01-15T00:00:00",
+                "Effective_End_Date": "2100-12-31T00:00:00"
+              },
+              {
+                "Tax_Code": "FUTA",
+                "Tax_Description": "Fed Unemployment",
+                "Effective_Start_Date": "2016-01-15T00:00:00",
+                "Effective_End_Date": "2100-12-31T00:00:00"
+              },
+              {
+                "Tax_Code": "MNAST",
+                "Tax_Description": "Minnesota Federal Loan Assessment",
+                "Effective_Start_Date": "2016-01-15T00:00:00",
+                "Effective_End_Date": "2100-12-31T00:00:00"
+              },
+              {
+                "Tax_Code": "MNDW",
+                "Tax_Description": "Workforce Enhancement Fee",
+                "Effective_Start_Date": "2016-01-15T00:00:00",
+                "Effective_End_Date": "2100-12-31T00:00:00"
+              },
+              {
+                "Tax_Code": "MNSUI",
+                "Tax_Description": "Minnesota SUI",
+                "Effective_Start_Date": "2016-01-15T00:00:00",
+                "Effective_End_Date": "2100-12-31T00:00:00"
+              }
+            ]
+          }
+        },
+        "Deduction_Information": {
+          "Deduction_Records": [
+            {
+              "Code": "401KC",
+              "Description": "401K Contribution",
+              "Rate": 6.0,
+              "Calc_Code": "%401K",
+              "Frequency": null,
+              "Goal_Paid": "0.00/0.00",
+              "Min_Max_Annual_Max": "0.00/0.00/0.00",
+              "Arrears": 0.0,
+              "Agency": null,
+              "Effective_Start_Date": "2016-04-01T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00"
+            },
+            {
+              "Code": "401kUM",
+              "Description": "401kUnmatch",
+              "Rate": 14.0,
+              "Calc_Code": "%401K",
+              "Frequency": null,
+              "Goal_Paid": "0.00/0.00",
+              "Min_Max_Annual_Max": "0.00/0.00/0.00",
+              "Arrears": 0.0,
+              "Agency": null,
+              "Effective_Start_Date": "2022-08-01T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00"
+            },
+            {
+              "Code": "401kUnmatc",
+              "Description": "401K Unmatch",
+              "Rate": 12.0,
+              "Calc_Code": "%401K",
+              "Frequency": null,
+              "Goal_Paid": "0.00/0.00",
+              "Min_Max_Annual_Max": "0.00/0.00/0.00",
+              "Arrears": 0.0,
+              "Agency": null,
+              "Effective_Start_Date": "2019-03-31T00:00:00",
+              "Effective_End_Date": "2022-08-01T00:00:00"
+            },
+            {
+              "Code": "DNTL",
+              "Description": "Dental Insurance S125",
+              "Rate": 18.32,
+              "Calc_Code": "B5",
+              "Frequency": null,
+              "Goal_Paid": "0.00/0.00",
+              "Min_Max_Annual_Max": "0.00/0.00/0.00",
+              "Arrears": 0.0,
+              "Agency": null,
+              "Effective_Start_Date": "2019-09-01T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00"
+            },
+            {
+              "Code": "FH125",
+              "Description": "Health Insurance S125",
+              "Rate": 158.14,
+              "Calc_Code": "B5",
+              "Frequency": null,
+              "Goal_Paid": "0.00/0.00",
+              "Min_Max_Annual_Max": "0.00/0.00/0.00",
+              "Arrears": 0.0,
+              "Agency": null,
+              "Effective_Start_Date": "2019-09-01T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00"
+            }
+          ]
+        },
+        "AutoPay_Information": {
+          "AutoPay_Records": []
+        },
+        "Direct_Deposit_Information": {
+          "Direct_Deposit_Records": [
+            {
+              "Sequence_Number": null,
+              "Transit_Number": "296076262",
+              "Account_Number": "2743046665",
+              "Account_Type": "Checking?",
+              "Account_Name": "Jocelyn, Taylor",
+              "Amount_Code": "%",
+              "Amount": 100.0,
+              "Prenote_Date": "2016-02-12T00:00:00",
+              "Effective_Start_Date": "2016-02-12T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00",
+              "Exclude_Indicator": "No",
+              "Special_Indicator": null
+            }
+          ]
+        },
+        "Labor_Allocation_Information": {
+          "Labor_Allocation_Records": []
+        },
+        "Fringe_Benefit_Information": {
+          "Fringe_Benefit_Records": [
+            {
+              "Earnings_Code": "STD",
+              "Calc_Code": null,
+              "Rate_Code": null,
+              "Rate": 0.0,
+              "Rate_Per": null,
+              "Amount": 0.0,
+              "Tabled_Indicator": "No",
+              "Units": 11.07,
+              "Frequency": null,
+              "Goal_Paid_Goal_Balance": "0.00/0.00/0.00",
+              "Min_Max_Annual_Max": "0.00/0.00/0.00",
+              "Effective_Start_Date": "2019-03-17T00:00:00",
+              "Effective_End_Date": "2100-12-31T00:00:00"
+            }
+          ]
+        },
+        "Benefit_Accrual_Information": {
+          "Benefit_Accrual_Records": []
+        },
+        "Detail_401k_Information": {
+          "Detail_401k_Records": []
+        },
+        "Review_Information": {
+          "Review_Records": []
+        },
+        "Emergency_Contact_Information": {
+          "Emergency_Contact_Records": []
+        }
+      }
+    }
+  },
+  "extraction_method": "text_based_schema",
+  "schema_structure": {
+    "employee_profile_document": {
+      "Document_Header": "object",
+      "Employee_Profile": "object"
+    },
+    "Document_Header": {
+      "Company_Name": "string",
+      "Company_Code": "string",
+      "Period_From": "object",
+      "Period_To": "object",
+      "Page_Number": "string"
+    },
+    "Employee_Profile": {
+      "Basic_Information": "object",
+      "Rate_Salary_Information": "object",
+      "Tax_Information": "object",
+      "Deduction_Information": "object",
+      "AutoPay_Information": "object",
+      "Direct_Deposit_Information": "object",
+      "Labor_Allocation_Information": "object",
+      "Fringe_Benefit_Information": "object",
+      "Benefit_Accrual_Information": "object",
+      "Detail_401k_Information": "object",
+      "Review_Information": "object",
+      "Emergency_Contact_Information": "object"
+    },
+    "Basic_Information": {
+      "Employee_Name": "string",
+      "Address": "object",
+      "Employment_Details": "object",
+      "Personal_Details": "object",
+      "Contact_Information": "object",
+      "Status_Indicators": "object"
+    },
+    "Address": {
+      "Street_Address": "string",
+      "City": "string",
+      "State": "string",
+      "Zip_Code": "string"
+    },
+    "Employment_Details": {
+      "Employee_ID": "number",
+      "Status": "string",
+      "Employee_Type": "string",
+      "Position": "string",
+      "Title": "string",
+      "Pay_Group": "string",
+      "Job_Code": "string",
+      "Hire_Date": "object",
+      "Rehire_Date": "object",
+      "Term_Date": "object",
+      "Term_Reason": "string",
+      "Tax_Form": "string",
+      "WCC": "string",
+      "Locations": "string",
+      "Positions": "string"
+    },
+    "Personal_Details": {
+      "SSN": "string",
+      "DOB": "object",
+      "Gender": "string",
+      "Marital_Status": "string",
+      "Visa_Type": "string",
+      "Visa_Expiration": "object",
+      "Citizen": "string",
+      "I9_Verified": "string",
+      "I9_Reverify": "string"
+    },
+    "Contact_Information": {
+      "Home_Phone": "string",
+      "Work_Phone": "string",
+      "Extension": "string",
+      "Email": "string",
+      "Mail_Stop": "string"
+    },
+    "Status_Indicators": {
+      "Statutory": "string",
+      "Seasonal": "string",
+      "Domestic_Emp": "string",
+      "Probation": "number",
+      "Union_Status": "string",
+      "Union_Date": "object",
+      "Collect_Dues": "string",
+      "Paid_Init_Fees": "string",
+      "Supervisor_ID": "string",
+      "Supervisor_Name": "string",
+      "Veteran": "string",
+      "Disability": "string",
+      "Smoker": "string",
+      "Pension": "string",
+      "Deceased": "string",
+      "Def_Comp": "string",
+      "Legal_Rep": "string"
+    },
+    "Rate_Salary_Information": {
+      "AutoPay_Status": "string",
+      "Pay_Frequency": "string",
+      "OT_Exempt": "string",
+      "Default_Hours": "number",
+      "Rate_Records": "object"
+    },
+    "Rate_Record": [
+      {
+        "Rate_Code": "string",
+        "Description": "string",
+        "Rate": "number",
+        "Salary": "number",
+        "Effective_Start_Date": "datetime",
+        "Effective_End_Date": "datetime"
+      }
+    ],
+    "Tax_Information": {
+      "Employee_Taxes": "object",
+      "Employer_Taxes": "object"
+    },
+    "Employee_Tax_Record": [
+      {
+        "Tax_Code": "string",
+        "Tax_Description": "string",
+        "Filing_Status": "string",
+        "Additional_Amount": "number",
+        "Effective_Start_Date": "datetime",
+        "Effective_End_Date": "datetime",
+        "Default_Indicator": "string"
+      }
+    ],
+    "Employer_Tax_Record": [
+      {
+        "Tax_Code": "string",
+        "Tax_Description": "string",
+        "Effective_Start_Date": "datetime",
+        "Effective_End_Date": "datetime"
+      }
+    ],
+    "Deduction_Information": {
+      "Deduction_Records": "object"
+    },
+    "Deduction_Record": [
+      {
+        "Code": "string",
+        "Description": "string",
+        "Rate": "number",
+        "Calc_Code": "string",
+        "Frequency": "string",
+        "Goal_Paid": "string",
+        "Min_Max_Annual_Max": "string",
+        "Arrears": "number",
+        "Agency": "string",
+        "Effective_Start_Date": "datetime",
+        "Effective_End_Date": "datetime"
+      }
+    ],
+    "AutoPay_Information": {
+      "AutoPay_Records": "object"
+    },
+    "AutoPay_Record": [
+      {
+        "Status": "string"
+      }
+    ],
+    "Direct_Deposit_Information": {
+      "Direct_Deposit_Records": "object"
+    },
+    "Direct_Deposit_Record": [
+      {
+        "Sequence_Number": "number",
+        "Transit_Number": "string",
+        "Account_Number": "string",
+        "Account_Type": "string",
+        "Account_Name": "string",
+        "Amount_Code": "string",
+        "Amount": "number",
+        "Prenote_Date": "datetime",
+        "Effective_Start_Date": "datetime",
+        "Effective_End_Date": "datetime",
+        "Exclude_Indicator": "string",
+        "Special_Indicator": "string"
+      }
+    ],
+    "Labor_Allocation_Information": {
+      "Labor_Allocation_Records": "object"
+    },
+    "Labor_Allocation_Record": [
+      {
+        "Status": "string"
+      }
+    ],
+    "Fringe_Benefit_Information": {
+      "Fringe_Benefit_Records": "object"
+    },
+    "Fringe_Benefit_Record": [
+      {
+        "Earnings_Code": "string",
+        "Calc_Code": "string",
+        "Rate_Code": "string",
+        "Rate": "number",
+        "Rate_Per": "string",
+        "Amount": "number",
+        "Tabled_Indicator": "string",
+        "Units": "number",
+        "Frequency": "string",
+        "Goal_Paid_Goal_Balance": "string",
+        "Min_Max_Annual_Max": "string",
+        "Effective_Start_Date": "datetime",
+        "Effective_End_Date": "datetime"
+      }
+    ],
+    "Benefit_Accrual_Information": {
+      "Benefit_Accrual_Records": "object"
+    },
+    "Benefit_Accrual_Record": [
+      {
+        "Benefit_Code": "string",
+        "Rate": "number",
+        "Amount": "number",
+        "Hours": "number",
+        "Max_Carryover_Max": "string",
+        "Length_Of_Service": "string",
+        "Hours_Used_Avail_Total_Prob": "string",
+        "Dollars_Used_Avail_Total_Prob": "string",
+        "Effective_Start_Date": "datetime",
+        "Effective_End_Date": "datetime"
+      }
+    ],
+    "Detail_401k_Information": {
+      "Detail_401k_Records": "object"
+    },
+    "Detail_401k_Record": [
+      {
+        "Status": "string"
+      }
+    ],
+    "Review_Information": {
+      "Review_Records": "object"
+    },
+    "Review_Record": [
+      {
+        "Status": "string"
+      }
+    ],
+    "Emergency_Contact_Information": {
+      "Emergency_Contact_Records": "object"
+    },
+    "Emergency_Contact_Record": [
+      {
+        "Status": "string"
+      }
+    ]
+  }
+}

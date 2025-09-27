@@ -1,6 +1,6 @@
 """
 Google Gemini 2.0 Flash service for PDF data extraction
-Provides text extraction and vision validation capabilities
+Provides text extraction and vision validation capabilities with provider-optimized prompts
 """
 import google.generativeai as genai
 import json
@@ -9,6 +9,7 @@ import time
 from typing import Dict, Any, List
 from PIL import Image
 from model_configs import get_model_for_task
+from .provider_prompt_registry import prompt_registry, Provider, PromptType
 
 class GeminiService:
     def __init__(self, api_key: str, model_config_name: str = 'gemini_flash'):
@@ -45,7 +46,7 @@ class GeminiService:
                     content,
                     generation_config=genai.types.GenerationConfig(
                         temperature=0.0,
-                        max_output_tokens=8192,
+                        max_output_tokens=65536,
                     )
                 )
 
@@ -89,29 +90,17 @@ class GeminiService:
         }
 
     def extract_data(self, text: str, schema: dict, page_num: int = 0) -> Dict[str, Any]:
-        """Extract structured data from text using Gemini"""
+        """Extract structured data from text using Gemini with provider-optimized prompts"""
 
-        # Create extraction prompt
-        schema_str = json.dumps(schema, indent=2)
-        prompt = f"""
-You are a data extraction specialist. Extract structured data from the provided PDF text according to the given JSON schema.
+        # Use provider-optimized extraction prompt
+        prompt = prompt_registry.get_prompt(
+            provider=Provider.GOOGLE,
+            prompt_type=PromptType.EXTRACTION,
+            text=text,
+            schema=schema
+        )
 
-SCHEMA:
-{schema_str}
-
-PDF TEXT:
-{text}
-
-INSTRUCTIONS:
-1. Extract data that matches the schema structure exactly
-2. Return ONLY valid JSON that conforms to the schema
-3. If a field is not found, use null
-4. For arrays/tables, extract all available rows
-5. Ensure proper data types (strings, numbers, booleans)
-6. Do not add any additional fields not in the schema
-
-Return the extracted data as valid JSON:
-"""
+        print(f"[EXTRACTION] Using Gemini-optimized prompt for data extraction")
 
         result = self._make_gemini_request(prompt, 'data_extraction')
 
@@ -148,47 +137,23 @@ Return the extracted data as valid JSON:
         else:
             return result
 
-    def validate_with_vision(self, image_path: str, extracted_data: dict, schema: dict) -> Dict[str, Any]:
-        """Validate extracted data against PDF image using Gemini Vision"""
+    def validate_with_vision(self, image_path: str, extracted_data: dict, schema: dict, page_num: int = 0) -> Dict[str, Any]:
+        """Validate extracted data against PDF image using Gemini Vision with optimized prompts"""
 
         try:
             # Load and prepare image
             image = Image.open(image_path)
 
-            # Create validation prompt
-            schema_str = json.dumps(schema, indent=2)
-            data_str = json.dumps(extracted_data, indent=2)
+            # Use provider-optimized validation prompt
+            prompt = prompt_registry.get_prompt(
+                provider=Provider.GOOGLE,
+                prompt_type=PromptType.VALIDATION,
+                extracted_data=extracted_data,
+                schema=schema,
+                page_num=page_num
+            )
 
-            prompt = f"""
-You are a data validation specialist. Compare the extracted data against the actual PDF image to verify accuracy.
-
-SCHEMA:
-{schema_str}
-
-EXTRACTED DATA:
-{data_str}
-
-INSTRUCTIONS:
-1. Examine the PDF image carefully
-2. Compare each extracted field with what you see in the image
-3. Identify any missing, incorrect, or misaligned data
-4. For tables, check row counts and column alignments
-5. Return validation results as JSON
-
-Return JSON with this structure:
-{{
-    "validation_passed": true/false,
-    "accuracy_estimate": 0.95,
-    "issues_found": [
-        {{
-            "field": "field_name",
-            "issue": "description of issue",
-            "suggested_correction": "corrected value"
-        }}
-    ],
-    "corrected_data": {{}} // Only if corrections needed
-}}
-"""
+            print(f"[VALIDATION] Using Gemini-optimized validation prompt for page {page_num}")
 
             result = self._make_gemini_request(prompt, 'vision_validation', image)
 
@@ -251,10 +216,12 @@ Return JSON with this structure:
             }
 
     def validate_with_vision_file(self, file_id: str, prompt: str) -> Dict[str, Any]:
-        """Validate using uploaded file ID with Gemini"""
+        """Validate using uploaded file ID with Gemini (accepts pre-generated prompt)"""
         try:
             # Get the uploaded file
             uploaded_file = genai.get_file(file_id)
+
+            print(f"[VALIDATION] Using Gemini file-based validation with file ID: {file_id[:12]}...")
 
             # Make request with file
             result = self._make_gemini_request(prompt, 'vision_validation', uploaded_file)
