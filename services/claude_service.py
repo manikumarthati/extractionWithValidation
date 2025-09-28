@@ -61,7 +61,7 @@ class ClaudeService:
                 
                 # Save prompt and response for debugging
                 import os
-                debug_dir = "debug_responses"
+                debug_dir = "debug_pipeline"
                 os.makedirs(debug_dir, exist_ok=True)
                 debug_file = os.path.join(debug_dir, f"debug_{task_type}_{int(time.time())}.txt")
                 with open(debug_file, 'w', encoding='utf-8') as f:
@@ -942,7 +942,7 @@ Remember: This is an iterative refinement process. Each feedback builds on the p
         try:
             import os
             import time
-            debug_dir = "debug_responses"
+            debug_dir = "debug_pipeline"
             os.makedirs(debug_dir, exist_ok=True)
             context_file = os.path.join(debug_dir, f"step3_form_extraction_context_{int(time.time())}.txt")
             with open(context_file, 'w', encoding='utf-8') as f:

@@ -66,11 +66,11 @@ CLAUDE_OPUS_CONFIG = {
 
 # Gemini model configurations
 GEMINI_FLASH_CONFIG = {
-    'classification': 'gemini-2.0-flash-exp',
-    'field_identification': 'gemini-2.0-flash-exp',
-    'data_extraction': 'gemini-2.0-flash-exp',
-    'vision_validation': 'gemini-2.0-flash-exp',
-    'reasoning': 'gemini-2.0-flash-exp',
+    'classification': 'gemini-2.5-flash-lite',
+    'field_identification': 'gemini-2.5-flash-lite',
+    'data_extraction': 'gemini-2.5-flash-lite',
+    'vision_validation': 'gemini-2.5-pro',
+    'reasoning': 'gemini-2.5-flash-lite',
     'description': 'Google Gemini 2.0 Flash for POC document processing',
     'estimated_cost_per_doc': '$0.05-0.10 (Free: 200/day limit)',
     'features': ['Ultra fast', 'Multimodal', '1M token context', 'POC suitable'],

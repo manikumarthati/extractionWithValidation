@@ -45,7 +45,7 @@ class GeminiService:
                     content,
                     generation_config=genai.types.GenerationConfig(
                         temperature=0.0,
-                        max_output_tokens=8192,
+                        max_output_tokens=65000,
                     )
                 )
 
@@ -54,6 +54,38 @@ class GeminiService:
 
                 # Extract the response text
                 if response.text:
+                    # Save prompt and response for debugging
+                    import os
+                    debug_dir = "debug_pipeline"
+                    os.makedirs(debug_dir, exist_ok=True)
+                    debug_file = os.path.join(debug_dir, f"debug_{task_type}_{int(time.time())}.txt")
+                    with open(debug_file, 'w', encoding='utf-8') as f:
+                        f.write(f"=== GEMINI DEBUG SESSION ===\n")
+                        f.write(f"Task Type: {task_type}\n")
+                        f.write(f"Model: {model_name}\n")
+                        f.write(f"Temperature: 0.0\n")
+                        f.write(f"Max Tokens: 8192\n")
+                        f.write(f"Timestamp: {time.time()}\n")
+                        f.write(f"Request Time: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+                        f.write(f"Request Duration: {request_duration:.2f}s\n")
+                        if hasattr(response, 'usage_metadata'):
+                            f.write(f"Input Tokens: {getattr(response.usage_metadata, 'prompt_token_count', 0)}\n")
+                            f.write(f"Output Tokens: {getattr(response.usage_metadata, 'candidates_token_count', 0)}\n")
+                            f.write(f"Total Tokens: {getattr(response.usage_metadata, 'total_token_count', 0)}\n")
+                        f.write("=" * 80 + "\n")
+                        f.write("PROMPT SENT TO LLM:\n")
+                        f.write("-" * 80 + "\n")
+                        f.write(prompt)
+                        f.write("\n" + "=" * 80 + "\n")
+                        f.write("RAW RESPONSE FROM LLM:\n")
+                        f.write("-" * 80 + "\n")
+                        f.write(response.text)
+                        f.write("\n" + "=" * 80 + "\n")
+                        if image_data:
+                            f.write("IMAGE DATA: Included (vision task)\n")
+                            f.write("=" * 80 + "\n")
+                    print(f"DEBUG - Prompt & response saved to: {debug_file}")
+
                     return {
                         'success': True,
                         'content': response.text,
@@ -231,24 +263,49 @@ Return JSON with this structure:
             }
 
     def upload_image(self, image_path: str) -> Dict[str, Any]:
-        """Upload image to Gemini File API and return file info"""
-        try:
-            # Upload file to Gemini
-            uploaded_file = genai.upload_file(image_path)
+        """Upload image to Gemini File API and return file info with retry logic"""
+        import time
 
-            return {
-                'success': True,
-                'file_id': uploaded_file.name,
-                'file_uri': uploaded_file.uri,
-                'mime_type': uploaded_file.mime_type,
-                'size_bytes': getattr(uploaded_file, 'size_bytes', 0)
-            }
+        retry_delays = [5, 10, 15]  # Exponential backoff: 5s, 10s, 15s
 
-        except Exception as e:
-            return {
-                'success': False,
-                'error': f"Failed to upload image to Gemini: {str(e)}"
-            }
+        for attempt in range(len(retry_delays) + 1):  # 3 retries + initial attempt = 4 total
+            try:
+                print(f"[DEBUG] Gemini upload attempt {attempt + 1}")
+                # Upload file to Gemini
+                uploaded_file = genai.upload_file(image_path)
+
+                print(f"[SUCCESS] Gemini upload succeeded on attempt {attempt + 1}")
+                return {
+                    'success': True,
+                    'file_id': uploaded_file.name,
+                    'file_uri': uploaded_file.uri,
+                    'mime_type': uploaded_file.mime_type,
+                    'size_bytes': getattr(uploaded_file, 'size_bytes', 0)
+                }
+
+            except Exception as e:
+                error_str = str(e)
+                print(f"[ERROR] Gemini upload attempt {attempt + 1} failed: {error_str}")
+
+                # Check if it's a retryable error (503, 429, network issues)
+                if any(code in error_str for code in ['503', '429', 'Service Unavailable', 'Rate limit', 'timeout']):
+                    if attempt < len(retry_delays):  # Still have retries left
+                        delay = retry_delays[attempt]
+                        print(f"[RETRY] Retrying in {delay} seconds...")
+                        time.sleep(delay)
+                        continue
+
+                # Non-retryable error or all retries exhausted
+                return {
+                    'success': False,
+                    'error': f"Failed to upload image to Gemini after {attempt + 1} attempts: {error_str}"
+                }
+
+        # Should never reach here, but just in case
+        return {
+            'success': False,
+            'error': "Upload failed after all retry attempts"
+        }
 
     def validate_with_vision_file(self, file_id: str, prompt: str) -> Dict[str, Any]:
         """Validate using uploaded file ID with Gemini"""

@@ -199,14 +199,20 @@ class SchemaTextExtractor:
     def extract_with_schema_from_text(self, raw_text: str, schema: Dict[str, Any]) -> Dict[str, Any]:
         """Extract structured data from raw text using provided schema and LLM"""
         try:
-            extraction_prompt = self._build_text_schema_prompt(raw_text, schema)
-
-            # Use unified AI service call for all providers
-            result = self._make_unified_request(extraction_prompt, 'data_extraction')
+            if self.provider == 'google':
+                # Use Gemini's optimized extraction method
+                result = self.ai_service.extract_data(raw_text, schema)
+            else:
+                # Use Claude's detailed extraction prompt
+                extraction_prompt = self._build_text_schema_prompt(raw_text, schema)
+                result = self._make_unified_request(extraction_prompt, 'data_extraction')
 
             if result["success"]:
                 # Additional JSON validation and cleaning
-                extracted_data = result["data"]
+                if self.provider == 'google':
+                    extracted_data = result["extracted_data"]
+                else:
+                    extracted_data = result["data"]
 
                 # If the data is already a dict (successfully parsed), validate it
                 if isinstance(extracted_data, dict):
@@ -491,20 +497,47 @@ class SchemaTextExtractor:
 
             # Step 2: Optional visual validation (recommended for high accuracy)
             if use_visual_validation:
-                if multi_round_validation:
-                    print("👁️ Performing multi-round high-accuracy visual validation...")
-                    visual_validation_result = self.visual_inspector.multi_round_visual_validation(
-                        pdf_path, extracted_data, schema, page_num, max_rounds=10, target_accuracy=1.0
-                    )
+                if self.provider == 'google':
+                    # Use Gemini's simpler validation to avoid JSON truncation
+                    print("👁️ Performing Gemini visual validation...")
+                    image_data = self.vision_extractor.convert_pdf_to_image(pdf_path, page_num)
+                    visual_validation_result = self.ai_service.validate_with_vision(image_data, extracted_data, schema)
                 else:
-                    print("👁️ Performing single-round visual validation...")
-                    visual_validation_result = self.visual_inspector.complete_visual_validation_workflow(
-                        pdf_path, extracted_data, schema, page_num, None
-                    )
+                    # Use Claude's detailed visual inspector
+                    if multi_round_validation:
+                        print("👁️ Performing multi-round high-accuracy visual validation...")
+                        visual_validation_result = self.visual_inspector.multi_round_visual_validation(
+                            pdf_path, extracted_data, schema, page_num, max_rounds=10, target_accuracy=1.0
+                        )
+                    else:
+                        print("👁️ Performing single-round visual validation...")
+                        visual_validation_result = self.visual_inspector.complete_visual_validation_workflow(
+                            pdf_path, extracted_data, schema, page_num, None
+                        )
 
                 if visual_validation_result["success"]:
-                    final_data = visual_validation_result["extracted_data"]
-                    visual_summary = visual_validation_result
+                    if self.provider == 'google':
+                        # Handle Gemini response format
+                        validation_data = visual_validation_result.get("validation_result", {})
+                        if validation_data.get("validation_passed", True):
+                            final_data = extracted_data  # Use original data if validation passed
+                        else:
+                            # Apply corrections if available
+                            final_data = validation_data.get("corrected_data", extracted_data)
+
+                        visual_summary = {
+                            "visual_validation_applied": True,
+                            "corrections_needed": not validation_data.get("validation_passed", True),
+                            "validation_summary": {
+                                "accuracy_estimate": validation_data.get("accuracy_estimate", 0.95),
+                                "issues_found": len(validation_data.get("issues_found", []))
+                            },
+                            "detailed_findings": validation_data
+                        }
+                    else:
+                        # Handle visual inspector response format
+                        final_data = visual_validation_result["extracted_data"]
+                        visual_summary = visual_validation_result
                 else:
                     # If visual validation fails, use original data with warning
                     final_data = extracted_data

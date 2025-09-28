@@ -597,7 +597,7 @@ class ValidationCorrectionEngine:
             # Use Claude messages API with Files API beta header
             response = self.client.messages.create(
                 model=self.model_config['vision_model'],
-                max_tokens=4000,
+                max_tokens=16000,
                 temperature=0.0,
                 messages=[{
                     "role": "user",
@@ -1409,15 +1409,24 @@ class AdvancedPDFExtractionPipeline:
 
             log_progress(f"[VALIDATE] Using token-efficient validation with image file: {vision_image_file_id}")
 
-            # Use SchemaTextExtractor's multi-round visual validation
-            # This is more token efficient as it reuses the uploaded image
-            # Create page-specific file ID mapping for this page
-            page_file_ids = {page_num: vision_image_file_id} if vision_image_file_id else None
+            # Use provider-specific validation logic
+            if hasattr(self.text_extractor, 'provider') and self.text_extractor.provider == 'google':
+                # Use Gemini's multi-round validation with simple prompts
+                log_progress(f"[VALIDATE] Using Gemini-optimized multi-round validation")
 
-            validation_result = self.text_extractor.visual_inspector.multi_round_visual_validation(
-                pdf_path, extracted_data, schema, page_num, max_rounds, target_accuracy,
-                vision_image_file_id, page_file_ids
-            )
+                validation_result = self._gemini_multi_round_validation(
+                    pdf_path, extracted_data, schema, page_num, max_rounds, target_accuracy, vision_image_file_id
+                )
+            else:
+                # Use Claude's detailed visual inspector
+                # This is more token efficient as it reuses the uploaded image
+                # Create page-specific file ID mapping for this page
+                page_file_ids = {page_num: vision_image_file_id} if vision_image_file_id else None
+
+                validation_result = self.text_extractor.visual_inspector.multi_round_visual_validation(
+                    pdf_path, extracted_data, schema, page_num, max_rounds, target_accuracy,
+                    vision_image_file_id, page_file_ids
+                )
 
             # DEBUG: Log validation_result contents
             print(f"\nDEBUG: Validation Result from multi_round_visual_validation:")
@@ -1509,6 +1518,144 @@ class AdvancedPDFExtractionPipeline:
                 "final_data": extracted_data,
                 "total_validation_time": time.time() - step_start
             }
+
+    def _gemini_multi_round_validation(self, pdf_path: str, extracted_data: dict, schema: dict,
+                                     page_num: int, max_rounds: int, target_accuracy: float,
+                                     vision_image_file_id: str = None) -> dict:
+        """Multi-round validation for Gemini using simple prompts"""
+        import json
+        import time
+
+        validation_history = []
+        rounds_performed = 0
+        current_data = extracted_data.copy()
+        final_accuracy = 0.85  # Default starting accuracy
+        total_corrections = 0
+
+        for round_num in range(1, max_rounds + 1):
+            rounds_performed = round_num
+
+            # Build simple validation prompt
+            schema_str = json.dumps(schema, indent=2)
+            data_str = json.dumps(current_data, indent=2)
+            prompt = f"""
+You are a data validation specialist. Compare the extracted data against the actual PDF image to verify accuracy.
+
+ROUND {round_num} of {max_rounds} - VALIDATION WITH CORRECTIONS:
+
+EXTRACTED DATA:
+{data_str}
+
+CRITICAL VALIDATION RULES:
+
+1. **TEXT TRUNCATION HANDLING - CRITICAL RULE:**
+   - **ALWAYS PRESERVE the longer extracted text over shorter visual text**
+   - If extracted data = "Dental Insurance S125" but image shows = "Dental Insurance", KEEP "Dental Insurance S125"
+   - If extracted data = "Minnesota Federal Loan Assessment" but image shows = "Minnesota Federal Lo...", KEEP the full text
+   - **NEVER truncate good extracted data to match visually truncated image text**
+   - Only change if extracted text is completely wrong (different meaning entirely)
+
+0. **DATE FORMAT STANDARDIZATION:**
+   - Convert dates to clean format: "YYYY-MM-DD" (e.g., "2024-12-17")
+   - Remove time components: "2024-12-17T00:00:00" should become "2024-12-17"
+   - Apply to ALL date fields consistently
+
+2. **TABLE ROW COUNT ACCURACY:**
+   - Count EXACTLY how many rows you see in each table in the PDF
+   - Do NOT add extra rows that don't exist in the PDF
+   - Flag if extracted data has more rows than visually present
+
+3. **COLUMN ALIGNMENT VALIDATION:**
+   - For deduction tables: Check if values are in correct columns
+   - Look for shifts: "B5" appearing in CalCode instead of Frequency column
+   - Verify each value is under the correct column header
+
+4. **COMPLETE DATA PRESERVATION:**
+   - In corrected_data, include the ENTIRE JSON structure
+   - Only modify the specific fields that have errors
+   - Keep all other data unchanged from the original extraction
+
+INSTRUCTIONS:
+1. **PRESERVE FULL TEXT**: Never shorten extracted text to match truncated visual text
+2. Count table rows precisely - never add rows that don't exist
+3. Check column alignment carefully for deduction information
+4. Clean all date formats to YYYY-MM-DD (remove time components)
+5. Return complete JSON structure in corrected_data (not just the problem section)
+6. Only set accuracy_estimate to 1.0 (100%) if NO issues are found in this round
+7. Return VALIDATION RESULTS in JSON format ONLY - no extra commentary
+Return JSON with this structure:
+{{
+    "validation_passed": true/false,
+    "accuracy_estimate": 0.95,
+    "issues_found": [
+        {{
+            "field": "field_name",
+            "issue": "description of issue",
+            "suggested_correction": "corrected value"
+        }}
+    ],
+    "corrected_data": {{}} // COMPLETE JSON with all fields, only corrections applied
+}}
+"""
+
+            # Perform validation round
+            if vision_image_file_id:
+                result = self.text_extractor.ai_service.validate_with_vision_file(
+                    vision_image_file_id, prompt
+                )
+            else:
+                image_data = self.text_extractor.vision_extractor.convert_pdf_to_image(pdf_path, page_num)
+                result = self.text_extractor.ai_service.validate_with_vision(image_data, current_data, schema)
+
+            if not result.get('success'):
+                break
+
+            # Extract validation data
+            if vision_image_file_id:
+                validation_data = result.get('data', {})
+            else:
+                validation_data = result.get('validation_result', {})
+
+            validation_history.append({
+                'round': round_num,
+                'accuracy_estimate': validation_data.get('accuracy_estimate', 0.85),
+                'issues_found': validation_data.get('issues_found', []),
+                'validation_passed': validation_data.get('validation_passed', False)
+            })
+
+            final_accuracy = validation_data.get('accuracy_estimate', 0.85)
+            issues_found = validation_data.get('issues_found', [])
+            total_corrections += len(issues_found)
+
+            # Apply corrections if available
+            corrected_data = validation_data.get('corrected_data')
+            if corrected_data:
+                print(f"[DEBUG] Round {round_num}: Applying corrections to data")
+                print(f"[DEBUG] Corrected data keys: {list(corrected_data.keys()) if isinstance(corrected_data, dict) else 'Not a dict'}")
+                current_data = corrected_data
+            else:
+                print(f"[DEBUG] Round {round_num}: No corrected_data found in validation response")
+                print(f"[DEBUG] validation_data keys: {list(validation_data.keys()) if isinstance(validation_data, dict) else 'Not a dict'}")
+
+            # Only stop if no issues found (true 100% accuracy)
+            if not issues_found and validation_data.get('validation_passed', False):
+                break
+
+            # Check if target accuracy reached (but continue if we just applied corrections)
+            if final_accuracy >= target_accuracy and not issues_found:
+                break
+
+        return {
+            'success': True,
+            'validation_rounds_completed': rounds_performed,
+            'rounds_performed': rounds_performed,
+            'accuracy_estimate': final_accuracy,
+            'final_accuracy_estimate': final_accuracy,
+            'total_corrections': total_corrections,
+            'extracted_data': current_data,
+            'validation_history': validation_history,
+            'target_accuracy_reached': final_accuracy >= target_accuracy
+        }
 
     def _step4_validate_correct(self, file_id: str, extracted_data: dict, schema: dict,
                                max_rounds: int, target_accuracy: float, log_progress) -> dict:

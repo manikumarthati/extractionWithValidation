@@ -501,7 +501,7 @@ class VisionBasedExtractor:
     def _save_debug_response(self, content: str, task_type: str, page_num: int):
         """Save debug response to file"""
         try:
-            debug_dir = "debug_responses"
+            debug_dir = "debug_pipeline"
             os.makedirs(debug_dir, exist_ok=True)
             debug_file = os.path.join(debug_dir, f"vision_response_{task_type}_page{page_num}_{int(time.time())}.txt")
             

@@ -377,6 +377,27 @@ class AdvancedPipelineUI:
 
             selected_model_config = model_options[selected_model_display]
 
+            # Check if model configuration changed and cleanup files if needed
+            if 'previous_model_config' not in st.session_state:
+                st.session_state.previous_model_config = selected_model_config
+            elif st.session_state.previous_model_config != selected_model_config:
+                # Model config changed - cleanup Gemini files
+                if st.session_state.previous_model_config == 'gemini_flash':
+                    try:
+                        from services.gemini_service import GeminiService
+                        from model_configs import GOOGLE_API_KEY
+                        gemini_service = GeminiService(GOOGLE_API_KEY, 'gemini_flash')
+                        cleanup_result = gemini_service.delete_all_files()
+                        if cleanup_result['success']:
+                            st.success(f"🗑️ Cleaned up {cleanup_result['deleted_count']} Gemini files")
+                        else:
+                            st.warning(f"⚠️ File cleanup warning: {cleanup_result.get('message', 'Unknown error')}")
+                    except Exception as e:
+                        st.warning(f"⚠️ Could not cleanup Gemini files: {str(e)}")
+
+                # Update the stored config
+                st.session_state.previous_model_config = selected_model_config
+
         with col2:
             # Show cost and features for selected model
             if selected_model_config in available_configs:
