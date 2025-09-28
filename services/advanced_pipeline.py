@@ -1104,8 +1104,17 @@ class AdvancedPDFExtractionPipeline:
             # Cache with deterministic key instead of temp path
             self.file_manager.uploaded_files[f"{cache_key}_{image_path}"] = vision_file_id
 
-            # Clean up temporary image
-            os.unlink(image_path)
+            # Clean up temporary image with retry logic
+            try:
+                os.unlink(image_path)
+            except PermissionError:
+                # File locked, wait and retry
+                time.sleep(0.5)
+                try:
+                    os.unlink(image_path)
+                except (PermissionError, FileNotFoundError):
+                    # Log warning but don't fail the operation
+                    log_progress(f"[WARNING] Could not delete temp file: {image_path}")
 
             return {
                 "success": True,
