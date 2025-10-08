@@ -303,7 +303,7 @@ class OptimizedFileManager:
             return cached_file_id
 
         provider_name = "Gemini" if self.provider == 'google' else "Claude"
-        print(f"[UPLOAD] Uploading image to {provider_name} Files API...")
+        print(f"[UPLOAD] Uploading image to Gemini Files API...")
 
         # Add small delay to help with rate limiting
         time.sleep(2)  # 2 second delay before upload
@@ -1178,7 +1178,7 @@ class AdvancedPDFExtractionPipeline:
                 return self._step3_claude_extraction(pdf_path, schema, page_num, log_progress, step_start, file_id)
             else:
                 # Use traditional text-based extraction with Claude
-                log_progress("[STEP] Using Claude text extraction...")
+                log_progress("[STEP] Using Gemini text extraction...")
                 return self._step3_claude_text_extraction(pdf_path, schema, page_num, log_progress, step_start, file_id)
 
         except Exception as e:
@@ -1204,7 +1204,7 @@ class AdvancedPDFExtractionPipeline:
             )
 
             if extraction_result["success"]:
-                log_progress("[OK] Claude text extraction complete")
+                log_progress("[OK] Gemini text extraction complete")
 
                 return {
                     "success": True,

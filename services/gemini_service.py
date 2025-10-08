@@ -11,9 +11,41 @@ from PIL import Image
 from model_configs import get_model_for_task
 
 class GeminiService:
-    def __init__(self, api_key: str, model_config_name: str = 'gemini_flash'):
-        """Initialize Gemini service"""
-        genai.configure(api_key=api_key)
+    def __init__(self, api_key: str = None, model_config_name: str = 'gemini_flash'):
+        """Initialize Gemini service with API key or service account"""
+        # Prefer API key when explicitly provided (needed for File API)
+        if api_key:
+            print(f"[DEBUG] Using API key authentication (explicit)")
+            genai.configure(api_key=api_key)
+        else:
+            # Try service account as fallback
+            service_account_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+
+            if service_account_path and os.path.exists(service_account_path):
+                print(f"[DEBUG] Using service account authentication: {service_account_path}")
+                # Configure with service account only
+                import google.auth
+                from google.oauth2 import service_account
+
+                # Temporarily clear API key environment variables to avoid conflicts
+                old_google_api_key = os.environ.pop('GOOGLE_API_KEY', None)
+                old_gemini_api_key = os.environ.pop('GEMINI_API_KEY', None)
+
+                credentials = service_account.Credentials.from_service_account_file(
+                    service_account_path,
+                    scopes=[
+                        'https://www.googleapis.com/auth/generative-language',
+                        'https://www.googleapis.com/auth/cloud-platform'
+                    ]
+                )
+                # Configure with service account credentials only
+                genai.configure(credentials=credentials)
+
+                # Store removed keys for reference (don't restore to avoid conflicts)
+                self._removed_api_keys = {'GOOGLE_API_KEY': old_google_api_key, 'GEMINI_API_KEY': old_gemini_api_key}
+            else:
+                raise ValueError("Either api_key or GOOGLE_APPLICATION_CREDENTIALS must be provided")
+
         self.model_config_name = model_config_name
         self.MAX_RETRIES = 3
 
@@ -268,7 +300,7 @@ Return JSON with this structure:
 
         retry_delays = [5, 10, 15]  # Exponential backoff: 5s, 10s, 15s
 
-        for attempt in range(len(retry_delays) + 1):  # 3 retries + initial attempt = 4 total
+        for attempt in range(30):  # 30 total attempts
             try:
                 print(f"[DEBUG] Gemini upload attempt {attempt + 1}")
                 # Upload file to Gemini
@@ -289,8 +321,8 @@ Return JSON with this structure:
 
                 # Check if it's a retryable error (503, 429, network issues)
                 if any(code in error_str for code in ['503', '429', 'Service Unavailable', 'Rate limit', 'timeout']):
-                    if attempt < len(retry_delays):  # Still have retries left
-                        delay = retry_delays[attempt]
+                    if attempt < 29:  # Still have retries left (29 more attempts)
+                        delay = retry_delays[attempt % len(retry_delays)]  # Cycle through delays
                         print(f"[RETRY] Retrying in {delay} seconds...")
                         time.sleep(delay)
                         continue
@@ -304,7 +336,7 @@ Return JSON with this structure:
         # Should never reach here, but just in case
         return {
             'success': False,
-            'error': "Upload failed after all retry attempts"
+            'error': "Upload failed after 30 retry attempts"
         }
 
     def validate_with_vision_file(self, file_id: str, prompt: str) -> Dict[str, Any]:
